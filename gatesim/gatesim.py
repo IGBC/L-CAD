@@ -1,5 +1,6 @@
 #imports
 import sys, time
+import gate_logic
 
 from PyQt4 import QtGui, QtCore, uic
 
