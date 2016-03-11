@@ -20,15 +20,44 @@
    <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QGraphicsView" name="graphicsView">
+     <widget class="QScrollArea" name="scrollArea">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
         <horstretch>9</horstretch>
-        <verstretch>0</verstretch>
+        <verstretch>9</verstretch>
        </sizepolicy>
       </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>620</width>
+         <height>528</height>
+        </rect>
+       </property>
+       <widget class="QGraphicsView" name="graphicsView">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1920</width>
+          <height>1080</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </item>
     <item>
@@ -75,7 +104,11 @@
         <item row="2" column="1">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QLineEdit" name="gateLabelEdit"/>
+           <widget class="QLineEdit" name="gateLabelEdit">
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QPushButton" name="gateLabelClearButton">
@@ -106,7 +139,7 @@
            <string>Delete</string>
           </property>
           <property name="icon">
-           <iconset theme="window-close">
+           <iconset theme="edit-delete">
             <normaloff/>
            </iconset>
           </property>
@@ -192,7 +225,7 @@
      <x>0</x>
      <y>0</y>
      <width>904</width>
-     <height>31</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -263,6 +296,11 @@
    </property>
   </action>
   <action name="actionConnection_Manager">
+   <property name="icon">
+    <iconset theme="network-connect">
+     <normaloff/>
+    </iconset>
+   </property>
    <property name="text">
     <string>Connection Manager</string>
    </property>
