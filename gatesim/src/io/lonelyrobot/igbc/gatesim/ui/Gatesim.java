@@ -1,4 +1,4 @@
-package io.lonelyrobot.igbc.gatesim;
+package io.lonelyrobot.igbc.gatesim.ui;
 
 public class Gatesim {
 
@@ -8,7 +8,8 @@ public class Gatesim {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		//Congrats its a hello world program *slow clap*
+		System.out.println("Hello World");
 	}
 
 }
