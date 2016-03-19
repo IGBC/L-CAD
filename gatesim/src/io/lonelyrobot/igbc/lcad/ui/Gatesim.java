@@ -1,4 +1,4 @@
-package io.lonelyrobot.igbc.gatesim.ui;
+package io.lonelyrobot.igbc.lcad.ui;
 
 public class Gatesim {
 

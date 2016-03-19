@@ -1,10 +1,10 @@
-package io.lonelyrobot.igbc.gatesim.simulation;
+package io.lonelyrobot.igbc.lcad.simulation;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import io.lonelyrobot.igbc.gatesim.simulation.LogicGateException.LogicGateExceptionTypes;
+import io.lonelyrobot.igbc.lcad.simulation.LogicGateException.LogicGateExceptionTypes;
 import lombok.Getter;
 
 public class LogicGate {
@@ -32,7 +32,7 @@ public class LogicGate {
 	 * @return new {@link #LogicGate}
 	 * @throws Exception
 	 */
-	public static LogicGate build(LogicGateType type) throws Exception {
+	public static LogicGate build(LogicGateType type) {
 		// Sane defaults
 		int maxInputs = -1;
 		LogicGateInputMode inputMode;
@@ -60,7 +60,9 @@ public class LogicGate {
 		// This will only happen if someone adds a new type and forgets to
 		// program it in.
 		default:
-			throw new Exception("Unprogrammed gate type");
+			//Be an AND.
+			inputMode = LogicGateInputMode.AND;
+			break;
 		}
 
 		// Set negation mode
@@ -222,6 +224,13 @@ public class LogicGate {
 			this.parents.add(_new);
 		} else {
 			throw new LogicGateException(LogicGateExceptionTypes.MAX_INPUTS_EXEEDED);
+		}
+	}
+	
+	public void removeParent(LogicGate remove) {
+		if (this.parents.contains(remove)) {
+			while (this.parents.(remove); ////NOPE
+					//THAT MOMENT YOU REALSE YOU'RE WRITING A RELATIONAL DATABASE.
 		}
 	}
 

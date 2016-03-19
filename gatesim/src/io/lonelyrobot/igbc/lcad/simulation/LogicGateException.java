@@ -1,4 +1,4 @@
-package io.lonelyrobot.igbc.gatesim.simulation;
+package io.lonelyrobot.igbc.lcad.simulation;
 
 /** 
  * Exception Class for Logic Gate, offering types for many common exceptions, allowing easier handling. 
@@ -11,7 +11,7 @@ public class LogicGateException extends Exception {
 	 * Exception Type definitions.
 	 * Should be defined in plain old English
 	 */
-	public static enum LogicGateExceptionTypes {UNKNOWN, MAX_INPUTS_EXEEDED};
+	public static enum LogicGateExceptionTypes {UNKNOWN, MAX_INPUTS_EXEEDED, UUID_NOT_FOUND};
 	
 	public final LogicGateExceptionTypes type;
 	

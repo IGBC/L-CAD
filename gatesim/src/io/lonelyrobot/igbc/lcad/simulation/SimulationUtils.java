@@ -1,4 +1,4 @@
-package io.lonelyrobot.igbc.gatesim.simulation;
+package io.lonelyrobot.igbc.lcad.simulation;
 
 import java.util.Random;
 
