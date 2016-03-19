@@ -7,6 +7,12 @@ import java.util.UUID;
 import io.lonelyrobot.igbc.lcad.simulation.LogicGateException.LogicGateExceptionTypes;
 import lombok.Getter;
 
+/**
+ * Represents a logic gate in the simulation.
+ * 
+ * @author IGBC
+ *
+ */
 public class LogicGate {
 
 	/*
@@ -60,7 +66,7 @@ public class LogicGate {
 		// This will only happen if someone adds a new type and forgets to
 		// program it in.
 		default:
-			//Be an AND.
+			// Be an AND.
 			inputMode = LogicGateInputMode.AND;
 			break;
 		}
@@ -226,7 +232,7 @@ public class LogicGate {
 			throw new LogicGateException(LogicGateExceptionTypes.MAX_INPUTS_EXEEDED);
 		}
 	}
-	
+
 	public void removeParent(LogicGate remove) {
 		if (this.parents.contains(remove)) {
 			while (this.parents.(remove); ////NOPE

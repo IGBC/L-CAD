@@ -63,6 +63,11 @@ public class Simulation {
 			throw new LogicGateException(LogicGateExceptionTypes.UUID_NOT_FOUND);
 		}
 	}
+	
+	
+	public void removeConnection(UUID parent, UUID child) {
+		
+	}
 
 	public Simulation() {
 		// TODO Auto-generated constructor stub
