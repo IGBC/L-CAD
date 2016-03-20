@@ -1,9 +1,10 @@
 package io.lonelyrobot.igbc.lcad.simulation;
 
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 
+import io.lonelyrobot.igbc.lcad.simulation.LogicGateException.LogicGateExceptionTypes;
 import lombok.Getter;
 
 /**
@@ -58,10 +59,14 @@ public class LogicGate {
 	/* Runtime Fields */
 
 	/**
-	 * Defines a list of the gates connected to the inputs of this gate, This
-	 * defines the connections that form the gate graph.
+	 * Defines a list of the connections to the inputs of this gate.
 	 */
-	private List<LogicGate> parents;
+	private HashMap<UUID, Connection> parents;
+
+	/**
+	 * Defines a list of the connections to the output of this gate.
+	 */
+	private HashMap<UUID, Connection> children;
 
 	/**
 	 * Defines the output state of the gate during the current computation step.
@@ -152,6 +157,45 @@ public class LogicGate {
 
 	/* ! End Of Factory */
 
+	// ***Graph Management Functions***
+
+	/**
+	 * Adds a {@link #Connection} to an input of the gate.
+	 * 
+	 * @param connection
+	 *            {@link #Connection} to add.
+	 * @throws {@link
+	 *             #LogicGateException} if maximum number of inputs is exceeded.
+	 */
+	public void addParentConnection(Connection connection) throws LogicGateException {
+		if (parents.size() < maxInputs) {
+			parents.put(connection.ID, connection);
+		} else {
+			throw new LogicGateException(LogicGateExceptionTypes.MAX_INPUTS_EXEEDED);
+		}
+	}
+
+	/**
+	 * Adds a {@link #Connection} to the output of the gate.
+	 * 
+	 * @param connection
+	 *            {@link #Connection} to add.
+	 */
+	public void addChildConnection(Connection connection) {
+		children.put(connection.ID, connection);
+	}
+
+	/**
+	 * Removes a {@link #Connection} from the gate entirely.
+	 * 
+	 * @param connection
+	 *            {@link #Connection} to delete.
+	 */
+	public void deleteConnection(Connection connection) {
+		parents.remove(connection.ID);
+		children.remove(connection.ID);
+	}
+
 	// ***Computation Functions***
 
 	/**
@@ -168,15 +212,15 @@ public class LogicGate {
 			// For AND, OR, and XOR gates
 
 			// Generate an iterator that can search the inputs.
-			Iterator<LogicGate> itr = parents.iterator();
+			Iterator<Connection> itr = parents.values().iterator();
 
 			// If we have a first input load it into a
 			if (itr.hasNext()) {
-				a = itr.next().isOutput();
+				a = itr.next().parent.isOutput();
 			}
 			// For each remaining input perform the logic function against it.
 			while (itr.hasNext()) {
-				boolean b = itr.next().isOutput();
+				boolean b = itr.next().parent.isOutput();
 				switch (this.inputMode) {
 				case OR:
 					a = a | b;
@@ -202,7 +246,7 @@ public class LogicGate {
 			// For single input buffer / not gates
 			// Take first input and ignore the rest
 			if (parents.size() > 0) {
-				a = parents.get(0).isOutput();
+				a = parents.get(0).parent.isOutput();
 			}
 			break;
 		}
@@ -244,5 +288,18 @@ public class LogicGate {
 		this.inputMode = inputMode;
 		this.inputNegate = inputNegate;
 		this.ID = UUID.randomUUID();
+	}
+
+	/**
+	 * Destructor. Cleans Up connections to and from this gate, making it ready
+	 * for removal.
+	 */
+	public void dispose() {
+		for (Connection connection : parents.values()) {
+			connection.dispose();
+		}
+		for (Connection connection : children.values()) {
+			connection.dispose();
+		}
 	}
 }
