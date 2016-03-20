@@ -295,11 +295,13 @@ public class LogicGate {
 	 * for removal.
 	 */
 	public void dispose() {
+		// These have to call up to the simulation level so that the connections
+		// ...are dereferenced in the simulation global maps
 		for (Connection connection : parents.values()) {
-			connection.dispose();
+			Simulation.instance().removeConnection(connection.ID);
 		}
 		for (Connection connection : children.values()) {
-			connection.dispose();
+			Simulation.instance().removeConnection(connection.ID);
 		}
 	}
 }
