@@ -3,8 +3,6 @@ package io.lonelyrobot.igbc.lcad.simulation;
 import java.util.HashMap;
 import java.util.UUID;
 
-import io.lonelyrobot.igbc.lcad.simulation.LogicGateException.LogicGateExceptionTypes;
-
 public class Simulation {
 
 	/**
@@ -44,29 +42,6 @@ public class Simulation {
 		LogicGate gate = LogicGate.build(type);
 		gateList.put(gate.ID, gate);
 		return gate.ID;
-	}
-
-	/**
-	 * Creates a logical connection between the output of parent and the input
-	 * of parent. This function works with the gate's UUIDs.
-	 * 
-	 * @param parent
-	 *            {@link #UUID} Gate to output from.
-	 * @param child
-	 *            {@link #UUID} Gate to input to.
-	 * @throws LogicGateException
-	 */
-	public void addConnection(UUID parent, UUID child) throws LogicGateException {
-		if ((gateList.get(parent) != null) && (gateList.get(child) != null)) {
-			gateList.get(child).addParent(gateList.get(parent));
-		} else {
-			throw new LogicGateException(LogicGateExceptionTypes.UUID_NOT_FOUND);
-		}
-	}
-	
-	
-	public void removeConnection(UUID parent, UUID child) {
-		
 	}
 
 	public Simulation() {

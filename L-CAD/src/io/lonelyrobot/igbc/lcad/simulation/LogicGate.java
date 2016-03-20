@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import io.lonelyrobot.igbc.lcad.simulation.LogicGateException.LogicGateExceptionTypes;
 import lombok.Getter;
 
 /**
@@ -14,6 +13,73 @@ import lombok.Getter;
  *
  */
 public class LogicGate {
+	/*
+	 * Definitions of all the logic gate types and input modes, There is some
+	 * data duplication here, but that can be optimised out later.
+	 */
+
+	/**
+	 * <b>Defines Operation to perform on gate inputs: <br/>
+	 * AND, OR:</b> Standard implementation<br/>
+	 * <b>XOR:</b> Unusual implementation supporting N inputs, will behave
+	 * weirdly for more than 2 or 3 (TODO: Fix this)<br/>
+	 * <b>UNITY:</b> Takes first input and ignores the rest<br/>
+	 * <b>EXT:</b> Asks the {@link #Simulation} for an external input
+	 * 
+	 */
+	public static enum LogicGateInputMode {
+		AND, OR, XOR, UNITY, EXT, RAND
+		// RAND is an Undocumented Easter egg
+	};
+
+	/* Class Fields */
+
+	/* Gate Configuration Fields */
+
+	/**
+	 * Defines operation to perform in gate inputs
+	 */
+	public final LogicGateInputMode inputMode;
+	/**
+	 * Defines whether or not to negate the result of the output computation.
+	 */
+	public final boolean inputNegate;
+	/**
+	 * Unique identifier for the gate.
+	 */
+	public final UUID ID;
+	/**
+	 * Maximum number of inputs that can be sanely connected to the logic gate.
+	 * <br/>
+	 * A value of -1 indicates no limit.
+	 */
+	public final int maxInputs;
+
+	/* Runtime Fields */
+
+	/**
+	 * Defines a list of the gates connected to the inputs of this gate, This
+	 * defines the connections that form the gate graph.
+	 */
+	private List<LogicGate> parents;
+
+	/**
+	 * Defines the output state of the gate during the current computation step.
+	 * This value remains unchanging for the duration of the step making it safe
+	 * to access repeatedly during the computation of the next step. This value
+	 * will not be updated until {@link #update()} is called.
+	 */
+	private @Getter boolean output;
+	/**
+	 * Stores the result of {@link #compute()} temporarily until the step is
+	 * incremented with {@link #update()}
+	 */
+	private boolean outputDelta;
+
+	/**
+	 * Auto-Factory Pattern methods and fields. An auto-factory is a factory
+	 * pattern baked into the class that it creates.
+	 */
 
 	/*
 	 * Static Functions and Fields for a auto-factory pattern
@@ -86,66 +152,7 @@ public class LogicGate {
 
 	/* ! End Of Factory */
 
-	/*
-	 * Definitions of all the logic gate types and input modes, There is some
-	 * data duplication here, but that can be optimised out later.
-	 */
-
-	/**
-	 * <b>Defines Operation to perform on gate inputs: <br/>
-	 * AND, OR:</b> Standard implementation<br/>
-	 * <b>XOR:</b> Unusual implementation supporting N inputs, will behave
-	 * weirdly for more than 2 or 3 (TODO: Fix this)<br/>
-	 * <b>UNITY:</b> Takes first input and ignores the rest<br/>
-	 * <b>EXT:</b> Asks the {@link #Simulation} for an external input
-	 * 
-	 */
-	public static enum LogicGateInputMode {
-		AND, OR, XOR, UNITY, EXT, RAND
-		// RAND is an Undocumented Easter egg
-	};
-
-	/* Gate Configuration Fields */
-
-	/**
-	 * Defines operation to perform in gate inputs
-	 */
-	public final LogicGateInputMode inputMode;
-	/**
-	 * Defines whether or not to negate the result of the output computation.
-	 */
-	public final boolean inputNegate;
-	/**
-	 * Unique identifier for the gate.
-	 */
-	public final UUID ID;
-	/**
-	 * Maximum number of inputs that can be sanely connected to the logic gate.
-	 * <br/>
-	 * A value of -1 indicates no limit.
-	 */
-	public final int maxInputs;
-
-	/* Runtime Fields */
-
-	/**
-	 * Defines a list of the gates connected to the inputs of this gate, This
-	 * defines the connections that form the gate graph.
-	 */
-	private List<LogicGate> parents;
-
-	/**
-	 * Defines the output state of the gate during the current computation step.
-	 * This value remains unchanging for the duration of the step making it safe
-	 * to access repeatedly during the computation of the next step. This value
-	 * will not be updated until {@link #update()} is called.
-	 */
-	private @Getter boolean output;
-	/**
-	 * Stores the result of {@link #compute()} temporarily until the step is
-	 * incremented with {@link #update()}
-	 */
-	private boolean outputDelta;
+	// ***Computation Functions***
 
 	/**
 	 * Computes output of gate for next step of the simulation and saves it into
@@ -217,28 +224,7 @@ public class LogicGate {
 		output = outputDelta;
 	}
 
-	/**
-	 * Adds a new parent to the {@link #parents} list, on the condition that
-	 * {@link #maxInputs} is not already exceeded.
-	 * 
-	 * @param _new
-	 *            {@link #LogicGate} Handle of gate to add
-	 * @throws LogicGateException
-	 */
-	public void addParent(LogicGate _new) throws LogicGateException {
-		if (this.parents.size() > maxInputs) {
-			this.parents.add(_new);
-		} else {
-			throw new LogicGateException(LogicGateExceptionTypes.MAX_INPUTS_EXEEDED);
-		}
-	}
-
-	public void removeParent(LogicGate remove) {
-		if (this.parents.contains(remove)) {
-			while (this.parents.(remove); ////NOPE
-					//THAT MOMENT YOU REALSE YOU'RE WRITING A RELATIONAL DATABASE.
-		}
-	}
+	// ***CONSTRUCTOR***
 
 	/**
 	 * Standard Constructor.
