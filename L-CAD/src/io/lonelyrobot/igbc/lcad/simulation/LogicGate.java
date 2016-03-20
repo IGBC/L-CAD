@@ -288,6 +288,8 @@ public class LogicGate {
 		this.inputMode = inputMode;
 		this.inputNegate = inputNegate;
 		this.ID = UUID.randomUUID();
+		this.parents = new HashMap<UUID, Connection>();
+		this.children = new HashMap<UUID, Connection>();
 	}
 
 	/**

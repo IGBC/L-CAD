@@ -85,7 +85,9 @@ public class Simulation {
 
 	/**
 	 * Removes {@link #Connection} between two gates from the simulation by ID.
-	 * @param ID {@link #UUID} of the connection to be destroyed. 
+	 * 
+	 * @param ID
+	 *            {@link #UUID} of the connection to be destroyed.
 	 */
 	public void removeConnection(UUID ID) {
 		connectionList.get(ID).dispose();
@@ -112,6 +114,7 @@ public class Simulation {
 	private static Simulation simulation = null;
 
 	private Simulation() {
-		// TODO Auto-generated constructor stub
+		this.gateList = new HashMap<UUID, LogicGate>();
+		this.connectionList = new HashMap<UUID, Connection>();
 	}
 }
