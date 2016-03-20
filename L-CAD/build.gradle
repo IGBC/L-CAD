@@ -9,7 +9,7 @@ sourceCompatibility = 1.8
 
 // Define the source and resource directories
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = ['ui/']
+// sourceSets.main.resources.srcDirs = ["res/"]
 
 // Define our repository sources
 repositories {
@@ -18,7 +18,7 @@ repositories {
 }
 
 /** Information about the application and dependencies */
-ext.appName = 'L-CAD'
+ext.appName = 'L-CAD Main'
 ext.version = '0.1'
 
 project.ext.mainClassName = "io.lonelyrobot.igbc.lcad.ui.Gatesim"
@@ -29,4 +29,5 @@ dependencies {
 
     /** Other dependencies */
     testCompile group: 'junit', name: 'junit', version: '4.+'
+    compile "org.projectlombok:lombok:1.16.8"
 }
