@@ -24,6 +24,12 @@ public class Connection {
 	 */
 	public final UUID ID;
 
+	/**
+	 * Standard Constructor
+	 * @param parent {@link #LogicGate} output gate
+	 * @param child {@link #LogicGate} input gate
+	 * @throws LogicGateException
+	 */
 	public Connection(LogicGate parent, LogicGate child) throws LogicGateException {
 		// Generate UUID to identify this connection.
 		this.ID = UUID.randomUUID();
