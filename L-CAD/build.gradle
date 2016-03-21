@@ -30,4 +30,5 @@ dependencies {
     /** Other dependencies */
     testCompile group: 'junit', name: 'junit', version: '4.+'
     compile "org.projectlombok:lombok:1.16.8"
+    compile "org.eclipse:swt:3.3.0-v3346"
 }
