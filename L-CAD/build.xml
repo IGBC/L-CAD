@@ -27,11 +27,17 @@
 	
 	<target name="jar" depends="build" description="Make Jarfile">
 		<mkdir dir="${dist}/${DSTAMP}-${TSTAMP}/" />
-		<jar jarfile="${dist}/${DSTAMP}-${TSTAMP}/L-CAD.jar" basedir="${build}"/>
+		<jar jarfile="${dist}/${DSTAMP}-${TSTAMP}/L-CAD.jar" basedir="${build}">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<attribute name="Main-Class" value="io.lonelyrobot.igbc.lcad.ui.LCad"/>
+			</manifest>
+		</jar>
 	</target>
 	
 	<target name="clean">
 		<delete dir="${build}"/>
 		<delete dir="${dist}"/>
+		<delete file="MANIFEST.MF"/>
 	</target>
 </project> 
