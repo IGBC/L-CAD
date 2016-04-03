@@ -34,7 +34,8 @@
         <h1>
 <a id="l-cad" class="anchor" href="#l-cad" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>L-CAD</h1>
 
-<p>Java Based Logic Design / Simulation Package.</p>
+<h4>
+<a id="java-based-logic-design--simulation-package" class="anchor" href="#java-based-logic-design--simulation-package" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Java Based Logic Design / Simulation Package.</h4>
 
 <h3>
 <a id="project-goal" class="anchor" href="#project-goal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Goal:</h3>
@@ -46,13 +47,28 @@ This tool should be simple enough to use that it can be used to educate students
 <a id="planned-features" class="anchor" href="#planned-features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Planned Features:</h3>
 
 <ul>
-<li>Qt(?) Based GUI for all program features, including drag and drop interface for creating logic networks, that will visulise the states of all components in the system.</li>
+<li>Qt Based GUI for all program features, including drag and drop interface for creating logic networks, that will visualise the states of all components in the system.</li>
 <li>Composite logic structure blocks. </li>
-<li>Real time, or step based simulation. (Using a massively-multithreaded logic engine)</li>
+<li>Real time, or step based simulation. (Using a massively-multithreaded logic engine) (Research into openCL acceleration is being conducted)</li>
 <li>Interface for Real world input-output to GPIO boards. (Raspberry Pi and similar)</li>
 <li>Support for exporting projects in (V)HDL Format.</li>
-<li>Support for the GUI, Simulation and IO module to all be on seperate devices connected via a network.</li>
+<li>Support for the GUI, Simulation and IO module to all be on separate devices connected via a network.</li>
 </ul>
+
+<h3>
+<a id="building" class="anchor" href="#building" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Building:</h3>
+
+<p>This project uses the ant build system. The default target will build the entire project and generate a jar file automatically. All needed dependencies are included in this repository. </p>
+
+<p>The project is developed using Eclipse, and can be imported with eclipse's ant xml import functionality. To import the project once cloned do:</p>
+
+<ol>
+<li>in the projects pane "new-&gt;project-&gt;Java Project from Existing Ant Buildfile"</li>
+<li>select <code>../L-CAD/build.xml</code> as the buildfile</li>
+<li>click finish.</li>
+</ol>
+
+<p>The clean target will clear the <code>bin/</code> and <code>jar/</code> temporary directories as well as the <code>MANIFEST.MF</code> file</p>
       </section>
     </div>
 
