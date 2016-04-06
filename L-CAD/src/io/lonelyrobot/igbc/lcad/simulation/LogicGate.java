@@ -236,7 +236,7 @@ public class LogicGate {
 			}
 			break;
 		case EXT:
-			// TODO: raise a call to the simulation
+			Simulation.instance().getInput(this.ID);
 			break;
 		case RAND:
 			// For a random input gate (more of an easter egg)
