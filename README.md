@@ -1,5 +1,5 @@
 # L-CAD
-#### Java Based Logic Design / Simulation Package.
+#### Logic Design / Simulation Package.
 
 ### Project Goal:
 Create a Logic IDE for the development of logic systems that can be simulated and tested in software, before being exported in useful formats. (for example to burn an FPGA) 
