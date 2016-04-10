@@ -2,6 +2,7 @@ package io.lonelyrobot.igbc.lcad.simulation;
 
 import java.util.UUID;
 
+import io.lonelyrobot.igbc.lcad.ports.IOPort;
 import lombok.Getter;
 
 /**
@@ -16,8 +17,16 @@ public class SimulationIO {
 	 * Pin mode
 	 */
 	public final boolean input;
-	public final UUID Gate;
-	/* TODO: Store IO address */
+	
+	/**
+	 * Gate port is linked to
+	 */
+	public final UUID gate;
+	
+	/**
+	 * Definition of outside connection.
+	 */
+	public final IOPort address;
 
 	/**
 	 * Local cache of the state of the gate it's attached to
@@ -37,13 +46,15 @@ public class SimulationIO {
 			 */
 		} else {
 			/* else output */
-			Simulation.instance().getGate(Gate).getOutput();
+			state = Simulation.instance().getGate(gate).isOutput();
+			address.write(state);
 		}
 		return state;
 	}
 
-	public SimulationIO(boolean isInput, UUID Gate) {
+	public SimulationIO(boolean isInput, UUID gate, IOPort address) {
 		this.input = isInput;
-		this.Gate = Gate;
+		this.gate = gate;
+		this.address = address;
 	}
 }
