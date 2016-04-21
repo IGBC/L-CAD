@@ -6,9 +6,9 @@ import java.util.List;
  * Base implementation of {@link GenericLogicInterface} containing all the
  * connection management boilerplate.
  */
-public class GenericLogicInterfaceHandler implements GenericLogicInterface {
-	private List<LogicConnection> outputList;
-	private List<LogicConnection> inputList;
+public abstract class GenericLogicInterfaceHandler implements GenericLogicInterface {
+	protected List<LogicConnection> outputList;
+	protected List<LogicConnection> inputList;
 
 	private final int maxInputs;
 
