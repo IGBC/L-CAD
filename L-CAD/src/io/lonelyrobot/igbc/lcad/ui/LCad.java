@@ -2,8 +2,8 @@ package io.lonelyrobot.igbc.lcad.ui;
 
 import java.util.UUID;
 
-import io.lonelyrobot.igbc.lcad.simulation.LogicGate.LogicGateType;
-import io.lonelyrobot.igbc.lcad.simulation.Simulation;
+import io.lonelyrobot.igbc.lcad.simulation.redundant.Simulation;
+import io.lonelyrobot.igbc.lcad.simulation.redundant.LogicGate.LogicGateType;
 import lombok.Getter;
 
 public class LCad {

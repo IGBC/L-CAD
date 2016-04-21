@@ -1,4 +1,4 @@
-package io.lonelyrobot.igbc.lcad.simulation;
+package io.lonelyrobot.igbc.lcad.simulation.redundant;
 
 /** 
  * Exception Class for Logic Gate, offering types for many common exceptions, allowing easier handling. 
