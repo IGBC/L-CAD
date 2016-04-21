@@ -29,16 +29,12 @@ public class SimulationIO {
 	public final IOPort address;
 
 	/**
-	 * Local cache of the state of the gate it's attached to
-	 */
-	private @Getter boolean state;
-
-	/**
 	 * Syncs virtual IO port with logic gate.
 	 * 
 	 * @return
 	 */
 	public boolean update() {
+		boolean state = false; // or something, fuck this I'm about to branch and delete all this
 		if (input) {
 			/*
 			 * Input gates call to the Virtual Port for their state so we just
