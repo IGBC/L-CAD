@@ -23,18 +23,7 @@ public abstract class GenericLogicInterfaceHandler implements GenericLogicInterf
 	}
 
 	@Override
-	public void connect(GenericLogicInterface outEP) {
-		LogicConnection connection;
-		try {
-			connection = new LogicConnection(this, outEP);
-		}
-		catch (ConnectionfailedException e){
-			//TODO: Log something or something, either way we failed
-			
-			//Stop here so we don't register the connection
-			throw e;
-		}
-		
+	public void connect(LogicConnection connection) {
 		// register this as a new output
 		outputList.add(connection);		
 	}
@@ -53,9 +42,8 @@ public abstract class GenericLogicInterfaceHandler implements GenericLogicInterf
 
 	@Override
 	public void destroyConnection(LogicConnection connection) {
-		if (inputList.contains(connection) || outputList.contains(connection)) {
-			connection.destroy();
-		}
+		inputList.remove(connection);
+		outputList.remove(connection);
 		
 	}
 }

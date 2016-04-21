@@ -38,6 +38,7 @@ public class LogicConnection {
 	}
 
 	public void destroy() {
-		//TODO, work out how the hell to dereference these things.		
+		INEP.destroyConnection(this);
+		OUTEP.destroyConnection(this);
 	}	
 }

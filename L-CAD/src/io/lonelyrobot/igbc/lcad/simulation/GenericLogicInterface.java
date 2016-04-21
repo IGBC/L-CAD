@@ -27,7 +27,7 @@ public interface GenericLogicInterface {
 	 * Initiate a connection from this node's output to another node's input
 	 * @param outEP Node to connect to.
 	 */
-	public void connect(GenericLogicInterface outEP);
+	public void connect(LogicConnection connection);
 	/**
 	 * attempts to accept connection started with {@link GenericLogicInterface.connect}  
 	 * @param connection to accept
