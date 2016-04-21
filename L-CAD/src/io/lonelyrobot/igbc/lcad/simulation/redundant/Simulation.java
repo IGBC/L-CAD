@@ -16,7 +16,7 @@ public class Simulation {
 	 */
 	private HashMap<UUID, Connection> connectionList;
 
-	private HashMap<UUID, SimulationIO> IOList;
+	//private HashMap<UUID, SimulationIO> IOList;
 	
 	/**
 	 * proceeds to next step of simulation. Current implementation does not use
@@ -118,11 +118,12 @@ public class Simulation {
 	private Simulation() {
 		this.gateList = new HashMap<UUID, LogicGate>();
 		this.connectionList = new HashMap<UUID, Connection>();
-		this.IOList = new HashMap<UUID, SimulationIO>();
+		//this.IOList = new HashMap<UUID, SimulationIO>();
 	}
 
 	public boolean getInput(UUID ID) {
-		return IOList.get(ID).isState();
+		return false;
+		//return IOList.get(ID).isState();
 	}
 
 	public LogicGate getGate(UUID gate) {

@@ -2,9 +2,6 @@ package io.lonelyrobot.igbc.lcad.simulation.redundant;
 
 import java.util.UUID;
 
-import io.lonelyrobot.igbc.lcad.ports.IOPort;
-import lombok.Getter;
-
 /**
  * Simulation virtual IO port, Attached to a gate, it offers an external hook
  * into the simulation.
@@ -26,7 +23,7 @@ public class SimulationIO {
 	/**
 	 * Definition of outside connection.
 	 */
-	public final IOPort address;
+	//public final IOPort address;
 
 	/**
 	 * Syncs virtual IO port with logic gate.
@@ -43,14 +40,14 @@ public class SimulationIO {
 		} else {
 			/* else output */
 			state = Simulation.instance().getGate(gate).isOutput();
-			address.write(state);
+			//address.write(state);
 		}
 		return state;
 	}
 
-	public SimulationIO(boolean isInput, UUID gate, IOPort address) {
+	public SimulationIO(boolean isInput, UUID gate /*, IOPort address */ ) {
 		this.input = isInput;
 		this.gate = gate;
-		this.address = address;
+		//this.address = address;
 	}
 }
