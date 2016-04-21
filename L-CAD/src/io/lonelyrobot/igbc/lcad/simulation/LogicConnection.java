@@ -36,4 +36,8 @@ public class LogicConnection {
 			throw e;
 		}
 	}
+
+	public void destroy() {
+		//TODO, work out how the hell to dereference these things.		
+	}	
 }
