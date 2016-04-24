@@ -23,7 +23,7 @@ public class Simulation {
 	/**
 	 * Controller that handles update jobs.
 	 */
-	private WorkDispatcherInterface dispatcher = new WorkDispatcher();
+	private final WorkDispatcherInterface dispatcher = new WorkDispatcher();
 	
 	
 	

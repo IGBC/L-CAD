@@ -34,7 +34,7 @@ public class LogicGateFactory {
 	 * @return new {@link #LogicGate}
 	 * @throws Exception
 	 */
-	public LogicGate buildGate(LogicGateType type){
+	public LogicGate build(LogicGateType type){
 		// Sane defaults
 		int maxInputs = -1;
 		LogicGateInputMode inputMode;
