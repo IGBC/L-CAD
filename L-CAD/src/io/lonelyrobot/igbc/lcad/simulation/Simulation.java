@@ -3,118 +3,48 @@ package io.lonelyrobot.igbc.lcad.simulation;
 import java.util.HashMap;
 import java.util.UUID;
 
+import io.lonelyrobot.igbc.lcad.simulation.GenericLogicInterface.ConnectionfailedException;
+import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcher;
+import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcherInterface;
+
+
 public class Simulation {
-
 	/**
-	 * stores all the gates in the simulation by UUID so they can be found
-	 * Efficiently.
+	 * Storage spot for all objects in the graph that implement a GLI (nodes).
 	 */
-	private HashMap<UUID, LogicGate> gateList;
-
+	private HashMap<UUID,GenericLogicInterface> nodeList = new HashMap<>();
+	
 	/**
-	 * stores all of the connections in the simulation by UUID
+	 * Storage spot for all connections (edges) in the graph.
 	 */
-	private HashMap<UUID, Connection> connectionList;
-
+	private HashMap<UUID,LogicConnection> edgeList = new HashMap<>();
+	
+	
 	/**
-	 * proceeds to next step of simulation. Current implementation does not use
-	 * multi-threading.
+	 * Controller that handles update jobs.
 	 */
-	public void nextStep() {
-		// For each gate compute the next state
-		for (LogicGate gate : gateList.values()) {
-			gate.compute();
-		}
-		// After Computation has finished all gates are ready to update
-
-		// Update all the gates
-		for (LogicGate gate : gateList.values()) {
-			gate.update();
-		}
-	}
-
-	/**
-	 * Creates a new {@link #LogicGate} and adds it to the simulation from a
-	 * {@link LogicGate#LogicGateType}. The function returns the gate's
-	 * {@link #UUID}
-	 * 
-	 * @param type
-	 *            {@link LogicGate#LogicGateType} Type of gate to generate.
-	 * @return {@link UUID} of the gate created.
-	 */
-	public UUID addGate(LogicGate.LogicGateType type) {
-		// create a new gate based on type (auto-factory call)
-		LogicGate gate = LogicGate.build(type);
-		gateList.put(gate.ID, gate);
-		return gate.ID;
-	}
-
-	/**
-	 * Removes {@link #LogicGate} from the simulation
-	 * 
-	 * @param ID
-	 *            {@link #UUID} Identifier of gate to remove
-	 */
-	public void removeGate(UUID ID) {
-		// Find the gate with the required ID and dispose of it
-		gateList.get(ID).dispose();
-		// Remove the gate from the gateList;
-		gateList.remove(ID);
-		// The gate should now have no references and be cleaned up.
-	}
-
-	/**
-	 * Adds a new {@link #Connection} between two gates to the simulation.
-	 * 
-	 * @param output
-	 *            {@link #UUID} of the output gate for the new connection.
-	 * @param input
-	 *            {@link #UUID} of the input gate for the new connection.
-	 * @return {@link #UUID} of the connection created.
-	 */
-	public UUID addConnection(UUID output, UUID input) {
-		Connection connection;
+	private final WorkDispatcherInterface dispatcher = new WorkDispatcher();
+	
+	
+	
+	public UUID newConnection(GenericLogicInterface inEP, GenericLogicInterface outEP){
+		LogicConnection connection;
 		try {
-			connection = new Connection(gateList.get(output), gateList.get(input));
-		} catch (LogicGateException e) {
-			return null;
+			connection = new LogicConnection(inEP, outEP);
 		}
-		connectionList.put(connection.ID, connection);
-		return connection.ID;
-	}
-
-	/**
-	 * Removes {@link #Connection} between two gates from the simulation by ID.
-	 * 
-	 * @param ID
-	 *            {@link #UUID} of the connection to be destroyed.
-	 */
-	public void removeConnection(UUID ID) {
-		connectionList.get(ID).dispose();
-		connectionList.remove(ID);
-	}
-
-	/**
-	 * Singleton Pattern
-	 */
-
-	/**
-	 * Erm... Singleton instance getter for {@link #Simulation} <br/>
-	 * #ForeverAlone :(
-	 * 
-	 * @return instance of {@link #Simulation}
-	 */
-	public static Simulation instance() {
-		if (simulation == null) {
-			simulation = new Simulation();
+		catch (ConnectionfailedException e){
+			//TODO: Log something or something, either way we failed
+			
+			//Stop here so we don't register the connection
+			throw e;
 		}
-		return simulation;
+		inEP.connect(connection);
+		UUID ID = UUID.randomUUID();
+		edgeList.put(ID, connection);
+		return ID;
 	}
-
-	private static Simulation simulation = null;
-
-	private Simulation() {
-		this.gateList = new HashMap<UUID, LogicGate>();
-		this.connectionList = new HashMap<UUID, Connection>();
+	
+	public Simulation() {
+		//// TODO Auto-generated constructor stub
 	}
 }
