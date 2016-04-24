@@ -1,18 +1,17 @@
 package io.lonelyrobot.igbc.lcad.simulation;
 
 import io.lonelyrobot.igbc.lcad.simulation.GenericLogicInterface.ConnectionfailedException;
-import lombok.Getter;
 
 public class LogicConnection {
 	/**
 	 * in point of connection (transmitter)
 	 */
-	private final @Getter GenericLogicInterface INEP;
+	public final GenericLogicInterface INEP;
 	
 	/**
 	 * out point of connection (receiver)
 	 */
-	private final @Getter GenericLogicInterface OUTEP;
+	public final GenericLogicInterface OUTEP;
 
 	/**
 	 * Constructor - Makes a connection between INEP and OUTEP
