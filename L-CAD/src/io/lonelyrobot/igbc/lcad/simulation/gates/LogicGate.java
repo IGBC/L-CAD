@@ -1,11 +1,12 @@
 package io.lonelyrobot.igbc.lcad.simulation.gates;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Random;
 
 import io.lonelyrobot.igbc.lcad.simulation.GenericLogicInterfaceHandler;
 import io.lonelyrobot.igbc.lcad.simulation.LogicConnection;
-import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcher;
+import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcherInterface;
 import lombok.Getter;
 
 public class LogicGate extends GenericLogicInterfaceHandler {
@@ -41,7 +42,7 @@ public class LogicGate extends GenericLogicInterfaceHandler {
 	 */
 	private @Getter boolean state;	
 	
-	public LogicGate(int maxInputs, WorkDispatcher dispatcher, LogicGateInputMode inputMode, boolean inputNegate) {
+	public LogicGate(int maxInputs, WorkDispatcherInterface dispatcher, LogicGateInputMode inputMode, boolean inputNegate) {
 		super(maxInputs, dispatcher);
 		this.inputMode = inputMode;
 		this.inputNegate = inputNegate;
@@ -86,6 +87,10 @@ public class LogicGate extends GenericLogicInterfaceHandler {
 		case RAND:
 			// For a random input gate (more of an easter egg)
 			a = new Random().nextBoolean();
+			if (maxInputs == 0) {
+				//TODO: Make this account for propagation delay
+				dispatcher.addJob(this, new Date());
+			}
 			break;
 		case UNITY:
 			// For single input buffer / not gates
@@ -101,8 +106,16 @@ public class LogicGate extends GenericLogicInterfaceHandler {
 			a = !a;
 		}
 
+		// Buffer old state
+		boolean oldstate = state;
+		
 		// write a into the state
 		state = a;
-		//TODO, write the next update into the work queue
+		
+		//if state has changed update downstream gates
+		if (state != oldstate) {
+			//This calls the handler which handles queueing other updates
+			super.update();
+		}
 	}
 }

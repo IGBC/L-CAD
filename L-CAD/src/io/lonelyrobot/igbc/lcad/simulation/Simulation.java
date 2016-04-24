@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import io.lonelyrobot.igbc.lcad.simulation.GenericLogicInterface.ConnectionfailedException;
 import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcher;
+import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcherInterface;
 
 
 public class Simulation {
@@ -22,7 +23,7 @@ public class Simulation {
 	/**
 	 * Controller that handles update jobs.
 	 */
-	private WorkDispatcher dispatcher = new WorkDispatcher();
+	private WorkDispatcherInterface dispatcher = new WorkDispatcher();
 	
 	
 	

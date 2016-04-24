@@ -1,8 +1,9 @@
 package io.lonelyrobot.igbc.lcad.simulation;
 
+import java.util.Date;
 import java.util.List;
 
-import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcher;
+import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcherInterface;
 
 /**
  * Base implementation of {@link GenericLogicInterface} containing all the
@@ -12,11 +13,11 @@ public abstract class GenericLogicInterfaceHandler implements GenericLogicInterf
 	protected List<LogicConnection> outputList;
 	protected List<LogicConnection> inputList;
 
-	private final int maxInputs;
+	protected final int maxInputs;
 	
-	private final WorkDispatcher dispatcher;
+	protected final WorkDispatcherInterface dispatcher;
 
-	public GenericLogicInterfaceHandler(int maxInputs, WorkDispatcher dispatcher) {
+	public GenericLogicInterfaceHandler(int maxInputs, WorkDispatcherInterface dispatcher) {
 		// set final fields in the class so the compiler stops shouting at us
 		this.maxInputs = maxInputs;
 		this.dispatcher = dispatcher;
@@ -56,7 +57,10 @@ public abstract class GenericLogicInterfaceHandler implements GenericLogicInterf
 	@Override
 	public void update() {
 		for (LogicConnection output: outputList) {
-			//TODO: Add output updates to worklist
+			//TODO: add propagation delays
+			
+			//Add job to update outputs now
+			dispatcher.addJob(output.OUTEP, new Date());
 		}
 	}
 }
