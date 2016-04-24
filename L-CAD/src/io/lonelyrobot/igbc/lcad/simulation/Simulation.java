@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import io.lonelyrobot.igbc.lcad.simulation.GenericLogicInterface.ConnectionfailedException;
+import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcher;
 
 
 public class Simulation {
@@ -16,6 +17,14 @@ public class Simulation {
 	 * Storage spot for all connections (edges) in the graph.
 	 */
 	private HashMap<UUID,LogicConnection> edgeList = new HashMap<>();
+	
+	
+	/**
+	 * Controller that handles update jobs.
+	 */
+	private WorkDispatcher dispatcher = new WorkDispatcher();
+	
+	
 	
 	public UUID newConnection(GenericLogicInterface inEP, GenericLogicInterface outEP){
 		LogicConnection connection;

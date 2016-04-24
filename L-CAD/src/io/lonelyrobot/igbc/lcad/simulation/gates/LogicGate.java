@@ -5,6 +5,7 @@ import java.util.Random;
 
 import io.lonelyrobot.igbc.lcad.simulation.GenericLogicInterfaceHandler;
 import io.lonelyrobot.igbc.lcad.simulation.LogicConnection;
+import io.lonelyrobot.igbc.lcad.simulation.workers.WorkDispatcher;
 import lombok.Getter;
 
 public class LogicGate extends GenericLogicInterfaceHandler {
@@ -40,12 +41,14 @@ public class LogicGate extends GenericLogicInterfaceHandler {
 	 */
 	private @Getter boolean state;	
 	
-	public LogicGate(int maxInputs, LogicGateInputMode inputMode, boolean inputNegate) {
-		super(maxInputs);
+	public LogicGate(int maxInputs, WorkDispatcher dispatcher, LogicGateInputMode inputMode, boolean inputNegate) {
+		super(maxInputs, dispatcher);
 		this.inputMode = inputMode;
 		this.inputNegate = inputNegate;
+		update();
 	}
 
+	//TODO: Not make this behave really weird
 	@Override
 	public void update() {
 		// Default output case
