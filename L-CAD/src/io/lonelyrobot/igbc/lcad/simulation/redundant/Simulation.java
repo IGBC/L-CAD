@@ -3,6 +3,7 @@ package io.lonelyrobot.igbc.lcad.simulation.redundant;
 import java.util.HashMap;
 import java.util.UUID;
 
+@Deprecated
 public class Simulation {
 
 	/**

@@ -5,6 +5,7 @@ package io.lonelyrobot.igbc.lcad.simulation.redundant;
  * */
 
 @SuppressWarnings("serial")
+@Deprecated
 public class LogicGateException extends Exception {
 	
 	/**

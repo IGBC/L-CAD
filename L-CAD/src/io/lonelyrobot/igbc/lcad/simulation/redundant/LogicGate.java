@@ -13,6 +13,7 @@ import lombok.Getter;
  * @author IGBC
  *
  */
+@Deprecated
 public class LogicGate {
 	/*
 	 * Definitions of all the logic gate types and input modes, There is some

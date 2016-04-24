@@ -8,6 +8,7 @@ import java.util.UUID;
  * @author IGBC
  *
  */
+@Deprecated
 public class Connection {
 	/**
 	 * Output Gate

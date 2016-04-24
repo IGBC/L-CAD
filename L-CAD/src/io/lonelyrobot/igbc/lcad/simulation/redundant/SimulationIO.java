@@ -9,6 +9,8 @@ import java.util.UUID;
  * @author IGBC
  *
  */
+
+@Deprecated
 public class SimulationIO {
 	/**
 	 * Pin mode
