@@ -1,2 +1,5 @@
 IGBC 
 spacekookie
+
+Thanks to Micha Mettke (https://github.com/vurtun)
+for maintaining the "nuklear" UI library used by this software
