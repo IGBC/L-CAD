@@ -1,4 +1,5 @@
 LibLCADEngine
+-------------
 This folder contains the L-CAD Engine Library.
 
  - `./include`: Library headers
