@@ -1,4 +1,4 @@
-package io.lonelyrobot.igbc.lcad.simulation;
+package io.lonelyrobot.igbc.lcad.simulation.redundant;
 
 import java.util.UUID;
 
@@ -8,6 +8,7 @@ import java.util.UUID;
  * @author IGBC
  *
  */
+@Deprecated
 public class Connection {
 	/**
 	 * Output Gate

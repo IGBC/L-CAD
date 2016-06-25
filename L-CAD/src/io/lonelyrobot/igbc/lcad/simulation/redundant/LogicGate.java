@@ -1,10 +1,10 @@
-package io.lonelyrobot.igbc.lcad.simulation;
+package io.lonelyrobot.igbc.lcad.simulation.redundant;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 
-import io.lonelyrobot.igbc.lcad.simulation.LogicGateException.LogicGateExceptionTypes;
+import io.lonelyrobot.igbc.lcad.simulation.redundant.LogicGateException.LogicGateExceptionTypes;
 import lombok.Getter;
 
 /**
@@ -13,6 +13,7 @@ import lombok.Getter;
  * @author IGBC
  *
  */
+@Deprecated
 public class LogicGate {
 	/*
 	 * Definitions of all the logic gate types and input modes, There is some
