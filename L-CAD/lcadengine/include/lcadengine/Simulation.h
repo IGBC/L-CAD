@@ -1,24 +1,24 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
+#include <map>
 
 #include "./GenericLogicInterface.h"
 #include "./LogicConnection.h"
-#include "./Workers/WorkDispatcherInterface"
+#include "./workers/WorkDispatcherInterface.h"
 
 class Simulation {
 public:
-	Simulation() {};
-	~Simulation() {};
-	boost::uuids::uuid newConnection(GenericLogicInterface inEP, GenericLogicInterface outEP);
+	Simulation();
+	~Simulation();
+	uint64_t newConnection(GenericLogicInterface *inEP, GenericLogicInterface *outEP);
 
 private:
-	std::map<boost::uuids::uuid, GenericLogicInterface> nodelist = {};
-	std::map<boost::uuids::uuid, LogicConnection> nodelist = {};
-	WorkDispatcherInterface dispatcher;
+	std::map<uint64_t, GenericLogicInterface> nodelist = {};
+	std::map<uint64_t, LogicConnection> edgelist = {};
+	WorkDispatcherInterface *dispatcher;
 
+	uint64_t nextID = 0;
 };
 
 #endif // SIMULATION_H
