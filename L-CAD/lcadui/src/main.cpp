@@ -1,19 +1,23 @@
 #include <NK_Wrapper.hpp>
 #include <cstdio>
+	
+static NK_WRAPPER NKW;
 		
 void GUI(struct nk_context *ctx, char *name) {
 	struct nk_panel layout;
-    if (nk_begin(ctx, &layout, name, nk_rect(200, 200, 210, 250),
-        NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
-        NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE))
+    if (nk_begin(ctx, &layout, name, nk_rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
+        0/*NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_SCALABLE|
+        NK_WINDOW_MINIMIZABLE|NK_WINDOW_TITLE*/))
     {
         enum {EASY, HARD};
         static int op = EASY;
         static int property = 20;
         
         nk_layout_row_static(ctx, 30, 80, 1);
-        if (nk_button_label(ctx, "button", NK_BUTTON_DEFAULT))
+        if (nk_button_label(ctx, "button", NK_BUTTON_DEFAULT)) {
             fprintf(stdout, "button pressed\n");
+            NKW.running = false;
+        }
         nk_layout_row_dynamic(ctx, 30, 2);
         if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
         if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
@@ -44,7 +48,6 @@ void *GUICode(struct nk_context *ctx) {
 }
 
 int main(void) {
-    NK_WRAPPER NKW;
     printf("started NK_SDL\n");
     while (NKW.running) {
         NKW.draw(GUICode);
