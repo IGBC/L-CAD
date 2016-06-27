@@ -1,5 +1,8 @@
-IGBC 
-spacekookie
+IGBC (Main Developer)
+
+spacekookie (Backend code and build scripts)
+spacekookie (Answering annoying C++ Questions)
+spacekookie (Morale Support)
 
 Thanks to Micha Mettke (https://github.com/vurtun)
 for maintaining the "nuklear" UI library used by this software
