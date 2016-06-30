@@ -1,34 +1,38 @@
+#include <stdint.h>
+#include <stdbool.h>
+
 #include <lcadengine/utils/hashmap.h> 
 
 typedef enum {AND, OR, XOR, UNITY, RAND} gateInputType;
 
-struct {
+typedef struct s_genericLogicInterface genericLogicInterface;
+
+struct s_genericLogicInterface {
 	uint64_t ID;
 	bool state;
 	uint8_t delay;
 	gateInputType inputMode;
 	bool inputNegate;
-	gate *outEp;
-	gate *inEp;
-} typedef genericLogicInterface;
-
+	genericLogicInterface *outEp;
+	genericLogicInterface *inEp;
+};
 struct {
 	uint64_t ID;
-	gate *srcEp;
-	gate *snkEp;
+	genericLogicInterface *srcEp;
+	genericLogicInterface *snkEp;
 } typedef connection;
 
-struct context {
+struct{
 	hashmap *IDMap, *inEpMap, *outEpMap;
 	hashmap *connMap;
-}	
+} typedef context; 
 
-struct context *create_context();
+context *create_context();
 void delete_context(context *ctx);
 
 uint64_t add_gli(context *ctx, gateInputType type, bool nin, uint8_t delay);
 void remove_gli(context *ctx, uint64_t ID);
-genricLogicInterface get_gli(context *ctx, uint64_t ID);
+genericLogicInterface get_gli(context *ctx, uint64_t ID);
 
 uint64_t add_conn(context *ctx, uint64_t Src, uint64_t Snk);
 void remove_conn(context *ctx, uint64_t ID);

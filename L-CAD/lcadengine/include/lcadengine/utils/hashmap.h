@@ -23,3 +23,5 @@ extern long hashmapCount(hashmap*);
 /** Removes the hashmap structure. */
 extern void hashmapDelete(hashmap*);
 
+#endif
+
