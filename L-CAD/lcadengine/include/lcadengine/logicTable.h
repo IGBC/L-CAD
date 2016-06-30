@@ -1,3 +1,5 @@
+#include <lcadengine/utils/hashmap.h> 
+
 typedef enum {AND, OR, XOR, UNITY, RAND} gateInputType;
 
 struct {
@@ -14,3 +16,7 @@ struct {
 	gate *srcEp;
 	gate *snkEp;
 } typedef connection;
+
+struct context {
+	
+}	
