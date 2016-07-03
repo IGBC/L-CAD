@@ -5,27 +5,26 @@
 
 typedef enum {AND, OR, XOR, UNITY, RAND} gateInputType;
 
+/* Because Forward Declaration*/
 typedef struct s_genericLogicInterface genericLogicInterface;
 
 struct s_genericLogicInterface {
-	uint64_t ID;
-	bool state;
-	uint8_t delay;
-	gateInputType inputMode;
-	bool inputNegate;
-	genericLogicInterface *outEp;
-	genericLogicInterface *inEp;
+	uint64_t ID; /* Sequential ID of Gate */
+	bool state; /* Current Output state for this GLI */
+	uint8_t delay; /* Propication delay of this gate */
+	gateInputType inputMode; /* AND OR etc.... */
+	bool inputNegate; /* N infront of the mode */
 };
 struct {
-	uint64_t ID;
-	genericLogicInterface *srcEp;
-	genericLogicInterface *snkEp;
+	uint64_t ID; /* ID of this connection */
+	genericLogicInterface *srcEp; /* pointer to the GLI of the source */
+	genericLogicInterface *drnEp; /* pointer to the GLI of the drain */
+	uint64_t srcID; /* ID of the source */
+	uint64_t drnID; /* ID of the drain */
 } typedef connection;
 
-struct{
-	hashmap *IDMap, *inEpMap, *outEpMap;
-	hashmap *connMap;
-} typedef context; 
+struct s_context;
+typedef struct s_context context;
 
 context *create_context();
 void delete_context(context *ctx);
