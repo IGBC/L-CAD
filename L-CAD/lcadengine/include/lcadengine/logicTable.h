@@ -5,16 +5,14 @@
 
 typedef enum {AND, OR, XOR, UNITY, RAND} gateInputType;
 
-/* Because Forward Declaration*/
-typedef struct s_genericLogicInterface genericLogicInterface;
-
-struct s_genericLogicInterface {
+struct {
 	uint64_t ID; /* Sequential ID of Gate */
 	bool state; /* Current Output state for this GLI */
 	uint8_t delay; /* Propication delay of this gate */
 	gateInputType inputMode; /* AND OR etc.... */
 	bool inputNegate; /* N infront of the mode */
-};
+} typedef genericLogicInterface;
+
 struct {
 	uint64_t ID; /* ID of this connection */
 	genericLogicInterface *srcEp; /* pointer to the GLI of the source */

@@ -27,23 +27,40 @@ void delete_context(context *ctx) {
 
 uint64_t add_gli(context *ctx, gateInputType type, bool nin, uint8_t delay) {
     GLI *gli = (GLI*) malloc(sizeof(GLI));
-    
-    gli->ID = (uint64_t) gli // We're using the pointer as a UUID, as we don't have a generator.
+
+    gli->ID = (uint64_t) gli; // We're using the pointer as a UUID, as we don't have a generator.
     // TODO: Generate Better IDs
     gli->state = false; // All GLI's start off
     // Just copy this across.
     gli->delay = delay;
     gli->inputMode = type;
     gli->inputNegate = nin;
-    
+
     // Push gli into the map
     hashmapInsert(ctx->GIDMap, (void*)gli, gli->ID);
     return gli->ID;
     // gli goes out of scope here. (psst, don't tell anyone the ID is a pointer)
-}
+};
 
 void remove_gli(context *ctx, uint64_t ID) {
-     GLI *gli = (GLI*) hashmapRemove(ctx->GIDMap, ID);
-     //TODO Remove connections here.
-     free(gli);
-}
+    GLI *gli = (GLI*) hashmapRemove(ctx->GIDMap, ID);
+    //TODO Remove connections here.
+    free(gli);
+};
+
+uint64_t add_conn(context *ctx, uint64_t src, uint64_t drn) {
+    connection *conn = (connection*) malloc(sizeof(connection));
+    conn->ID = (uint64_t) conn; // We're using the pointer as a UUID, as we don't have a generator.
+    // TODO: Generate Better IDs
+    
+    GLI* srcGli = (GLI*) hashmapGet(ctx->GIDMap, src); 
+    GLI* drnGli = (GLI*) hashmapGet(ctx->GIDMap, drn); 
+    
+    conn->srcEp = srcGli;
+    conn->srcEp = drnGli;
+    conn->srcID = src;
+    conn->drnID = drn;
+    
+    /TODO: Add this to a list and then insert into hashmap
+};
+
