@@ -1,3 +1,4 @@
+#define FASTLIST_FAILED -1
 
 // From spacekookie
 #define CHECK_BUFFER(type, bfr, max_s, curr_s) \
@@ -18,14 +19,36 @@
     
 typedef struct s_fastlist fastlist;
 
+/** 
+ * Create new list
+ * Returns FASTLIST_FAILED on failure
+ * else returns pointer to list */
 fastlist *new_fastlist(unsigned long size);
-void *fastlist-dispose(fastlist *ctx);
 
+/**
+ * Frees resources and deletes list */
+void fastlist_dispose(fastlist *ctx);
+
+/**
+ * Get's <index> element from list 
+ * Returns FASTLIST_FAILED if item outside of accepted range 
+ * else returns pointer to the index */
 void *fastlist_get(fastlist *ctx, unsigned long index);
 
-int fastlist_add(fastlist *ctx, void** item);
+/**
+ * Adds item to the end of the list 
+ * Return FASTLIST_FAILED on failure
+ * else returns new length of the list */
+int fastlist_add(fastlist *ctx, void *item);
+
+/**
+ * Removes item of index from the list
+ * Returns FASTLIST_FAILED if index outside of accepted range
+ * else retuŕns <SOMETHING> TODO: Work out how this works */
 void *fastlist_remove(fastlist *ctx, unsigned long index);
 
-void **fastlist_dma(fastlist *ctx, &unsigned long size);
+/**
+ * NOT IMPLEMENTED */
+void **fastlist_dma(fastlist *ctx, unsigned long size);
 
 

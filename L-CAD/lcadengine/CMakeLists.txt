@@ -7,6 +7,7 @@ set(LCADENGINE_SRC
     src/logicTable.c
     src/dispatcher.c
     
+    src/utils/fastlist.c
     src/utils/hashmap.c
 )
 
