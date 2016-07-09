@@ -92,3 +92,11 @@ uint64_t add_conn(context *ctx, uint64_t src, uint64_t drn) {
     return conn->ID;
 };
 
+void remove_conn(context *ctx, uint64_t ID) {
+    connection *conn = (connection*) hashmapRemove(ctx->CIDMap, ID);
+    fastlist *list = (fastlist*) hashmapGet(ctx->srcMap, conn->srcID);
+    fastlist_remove_by_pointer(list, (void*)conn);
+    list = (fastlist*) hashmapGet(ctx->drnMap, conn->drnID);
+    fastlist_remove_by_pointer(list, (void*)conn);
+}
+

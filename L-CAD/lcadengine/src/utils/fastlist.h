@@ -39,7 +39,7 @@ void *fastlist_get(fastlist *ctx, unsigned long index);
  * Adds item to the end of the list 
  * Return FASTLIST_FAILED on failure
  * else returns new length of the list */
-int fastlist_add(fastlist *ctx, void *item);
+unsigned long fastlist_add(fastlist *ctx, void *item);
 
 /**
  * Removes item of index from the list
@@ -47,8 +47,14 @@ int fastlist_add(fastlist *ctx, void *item);
  * else retuŕns <SOMETHING> TODO: Work out how this works */
 void *fastlist_remove(fastlist *ctx, unsigned long index);
 
+/** 
+ * Removes Item from list with matching pointer
+ * Returns FASTLIST_FAILED if pointer not found,
+ * else returns index removed */
+unsigned long fastlist_remove_by_pointer(fastlist *ctx, void* pointer);
+
 /**
  * NOT IMPLEMENTED */
-void **fastlist_dma(fastlist *ctx, unsigned long size);
+void **fastlist_dma(fastlist *ctx, unsigned long size){};
 
 

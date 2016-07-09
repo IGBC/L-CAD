@@ -49,7 +49,7 @@ void *fastlist_get(fastlist *ctx, unsigned long index) {
  * Adds item to the end of the list 
  * Return FASTLIST_FAILED on failure
  * else returns new length of the list */
-int fastlist_add(fastlist *ctx, void *item) {
+unsigned long fastlist_add(fastlist *ctx, void *item) {
     // Check if full
     if (ctx->numItems == ctx->currentSize) { 
         // New size is number of desired pointers * size of a pointer
@@ -85,6 +85,21 @@ void *fastlist_remove(fastlist *ctx, unsigned long index) {
         ctx->pointer = tmp;
     }
     return dead;
+}
+
+/** 
+ * Removes Item from list with matching pointer
+ * Returns FASTLIST_FAILED if pointer not found,
+ * else returns index removed */
+unsigned long fastlist_remove_by_pointer(fastlist *ctx, void* pointer) {
+    for (unsigned long i = 0; i < ctx->numItems; i++) {
+        if (ctx->pointer[i] == pointer) {
+            // We've found our index
+            fastlist_remove(ctx, i);
+            return i;
+        }
+    }
+    return FASTLIST_FAILED;
 }
 
 /**
