@@ -34,4 +34,3 @@ genericLogicInterface get_gli(context *ctx, uint64_t ID);
 uint64_t add_conn(context *ctx, uint64_t Src, uint64_t Snk);
 void remove_conn(context *ctx, uint64_t ID);
 //TODO: Work out how to get connections.
-

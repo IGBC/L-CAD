@@ -1,7 +1,11 @@
 #include <lcadengine/logicTable.h>
+
 #include <stdlib.h>
 
+#include "utils/fastlist.h"
+
 #define GLI genericLogicInterface
+#define CONN_LIST_SIZE 5
 
 struct s_context {
 	hashmap *GIDMap;
@@ -61,6 +65,29 @@ uint64_t add_conn(context *ctx, uint64_t src, uint64_t drn) {
     conn->srcID = src;
     conn->drnID = drn;
     
-    //TODO: Add this to a list and then insert into hashmap
+    //insert into Connection ID map;
+    hashmapInsert(ctx->CIDMap, (void*)conn, conn->ID);
+    
+    //check to see if a connection already exists with this src
+    fastlist* list = (fastlist*) hashmapGet(ctx->srcMap, src);
+    if (!list) { //if the list doesn't exist
+        list = new_fastlist(CONN_LIST_SIZE);
+        //TODO: safety this;
+        hashmapInsert(ctx->srcMap, (void*)list, src);
+    }
+    //add the Connection to the list;
+    fastlist_add(list, (void*)conn);
+
+    //check to see if a connection already exists with this drn
+    list = (fastlist*) hashmapGet(ctx->drnMap, drn);
+    if (!list) { //if the list doesn't exist
+        list = new_fastlist(CONN_LIST_SIZE);
+        //TODO: safety this;
+        hashmapInsert(ctx->drnMap, (void*)list, drn);
+    }
+    //add the Connection to the list;
+    fastlist_add(list, (void*)conn);
+
+    return conn->ID;
 };
 
