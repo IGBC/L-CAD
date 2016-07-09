@@ -3,13 +3,14 @@
 #include <stdlib.h>
 
 #include "utils/fastlist.h"
+#include "utils/hashmap.h"
 
 #define GLI genericLogicInterface
 #define CONN_LIST_SIZE 5
 
 struct s_context {
-	hashmap *GIDMap;
-	hashmap *CIDMap, *srcMap, *drnMap;
+	hashmap *GIDMap; // Gates
+	hashmap *CIDMap, *srcMap, *drnMap; // Connections
 };
 
 context *create_context() {

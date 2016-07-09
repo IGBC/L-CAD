@@ -1,8 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <lcadengine/utils/hashmap.h> 
-
 typedef enum {AND, OR, XOR, UNITY, RAND} gateInputType;
 
 struct {

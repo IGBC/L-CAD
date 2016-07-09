@@ -1,7 +1,7 @@
-Licence: Unknown
-
 Source hashmap.c: http://www2.informatik.hu-berlin.de/~weber/slipOff/hashmap_c.html
 Source hashmap.h: http://www2.informatik.hu-berlin.de/~weber/slipOff/hashmap_h.html
+
+Licence: Unknown
 
 These are provided from HU university Berlin. We believe the author is Dorian Weber, and this code is from an appliction called slipOff. No licence file was provided with the source for this project, therefore as it is in the puplic domain, we are gonna use it anyway. 
 
