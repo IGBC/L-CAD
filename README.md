@@ -19,4 +19,4 @@ This tool should be simple enough to use that it can be used to educate students
 This project uses CMake to build, however I'm lazy so there is a make file that automates CMake with a clean build by default. to build call `make` that will automatically call CMake then run make on the generated build files. (make -> cmake -> make)
 
 ### Liecence:
-This software is licenced under the GNU Affero General Public License v3.0 (AGPLv3) open source liecence. Additionally the use of this software is restricted by the Non-Military Humane License (NMHL)  
+This software is licenced under the GNU Affero General Public License v3.0 (AGPLv3) open source liecence. Additionally the use of this software is restricted by the Non-Military Humane License (NMHL) https://github.com/infuanfu/NMHL
