@@ -126,4 +126,3 @@ class NK_WRAPPER {
 		/* GUI Context */
 		struct nk_context *ctx;
 };
-
