@@ -25,3 +25,6 @@ target_include_directories(lcadengine PRIVATE "src")
 
 # since the name starts with 'lib' dont add it again
 set_target_properties(lcadengine PROPERTIES PREFIX "lib")
+
+# Add tests subdirectory
+add_subdirectory(tests)
