@@ -1,3 +1,7 @@
+#include "minUnit.h"
+
+#include "test_hashmap.h"
+
 int main(void) {
     int failed = 0;
     
