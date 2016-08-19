@@ -9,6 +9,7 @@ set(LCADENGINE_SRC
     
     src/utils/fastlist.c
     src/utils/hashmap.c
+    src/utils/thpool.c
 )
 
 # Define our library in cmake
@@ -27,4 +28,4 @@ target_include_directories(lcadengine PRIVATE "src")
 set_target_properties(lcadengine PROPERTIES PREFIX "lib")
 
 # Add tests subdirectory
-add_subdirectory(tests)
+# add_subdirectory(tests)
