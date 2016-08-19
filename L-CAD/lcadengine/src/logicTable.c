@@ -8,13 +8,13 @@
 #define GLI genericLogicInterface
 #define CONN_LIST_SIZE 5
 
-struct s_context {
+struct s_graph {
 	hashmap *GIDMap; // Gates
 	hashmap *CIDMap, *srcMap, *drnMap; // Connections
 };
 
-context *create_context() {
-    context *ctx = (context*) malloc(sizeof(context));
+graph *create_graph() {
+    graph *ctx = (graph*) malloc(sizeof(graph));
     ctx->GIDMap = hashmapCreate(0);
     ctx->CIDMap = hashmapCreate(0);
     ctx->srcMap = hashmapCreate(0);
@@ -22,7 +22,7 @@ context *create_context() {
     return ctx;
 };
 
-void delete_context(context *ctx) {
+void delete_graph(graph *ctx) {
     hashmapDelete(ctx->GIDMap);
     hashmapDelete(ctx->CIDMap);
     hashmapDelete(ctx->srcMap);
@@ -30,7 +30,7 @@ void delete_context(context *ctx) {
     free(ctx);
 };
 
-uint64_t add_gli(context *ctx, gateInputType type, bool nin, uint8_t delay) {
+uint64_t add_gli(graph *ctx, gateInputType type, bool nin, uint8_t delay) {
     GLI *gli = (GLI*) malloc(sizeof(GLI));
 
     gli->ID = (uint64_t) gli; // We're using the pointer as a UUID, as we don't have a generator.
@@ -47,13 +47,13 @@ uint64_t add_gli(context *ctx, gateInputType type, bool nin, uint8_t delay) {
     // gli goes out of scope here. (psst, don't tell anyone the ID is a pointer)
 };
 
-void remove_gli(context *ctx, uint64_t ID) {
+void remove_gli(graph *ctx, uint64_t ID) {
     GLI *gli = (GLI*) hashmapRemove(ctx->GIDMap, ID);
     //TODO Remove connections here.
     free(gli);
 };
 
-uint64_t add_conn(context *ctx, uint64_t src, uint64_t drn) {
+uint64_t add_conn(graph *ctx, uint64_t src, uint64_t drn) {
     connection *conn = (connection*) malloc(sizeof(connection));
     conn->ID = (uint64_t) conn; // We're using the pointer as a UUID, as we don't have a generator.
     // TODO: Generate Better IDs
@@ -92,7 +92,7 @@ uint64_t add_conn(context *ctx, uint64_t src, uint64_t drn) {
     return conn->ID;
 };
 
-void remove_conn(context *ctx, uint64_t ID) {
+void remove_conn(graph *ctx, uint64_t ID) {
     connection *conn = (connection*) hashmapRemove(ctx->CIDMap, ID);
     fastlist *list = (fastlist*) hashmapGet(ctx->srcMap, conn->srcID);
     fastlist_remove_by_pointer(list, (void*)conn);

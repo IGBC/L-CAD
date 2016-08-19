@@ -19,16 +19,16 @@ struct {
 	uint64_t drnID; /* ID of the drain */
 } typedef connection;
 
-struct s_context;
-typedef struct s_context context;
+struct s_graph;
+typedef struct s_graph graph;
 
-context *create_context();
-void delete_context(context *ctx);
+graph *create_graph();
+void delete_graph(graph *ctx);
 
-uint64_t add_gli(context *ctx, gateInputType type, bool nin, uint8_t delay);
-void remove_gli(context *ctx, uint64_t ID);
-genericLogicInterface get_gli(context *ctx, uint64_t ID);
+uint64_t add_gli(graph *ctx, gateInputType type, bool nin, uint8_t delay);
+void remove_gli(graph *ctx, uint64_t ID);
+genericLogicInterface get_gli(graph *ctx, uint64_t ID);
 
-uint64_t add_conn(context *ctx, uint64_t Src, uint64_t Snk);
-void remove_conn(context *ctx, uint64_t ID);
+uint64_t add_conn(graph *ctx, uint64_t Src, uint64_t Snk);
+void remove_conn(graph *ctx, uint64_t ID);
 //TODO: Work out how to get connections.
