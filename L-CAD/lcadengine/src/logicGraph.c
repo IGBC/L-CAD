@@ -1,4 +1,4 @@
-#include <lcadengine/logicTable.h>
+#include <lcadengine/logicGraph.h>
 
 #include <stdlib.h>
 
