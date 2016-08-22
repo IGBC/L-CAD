@@ -1,3 +1,5 @@
+#ifndef LOGICGRAPH_H_INCLUDED
+#define LOGICGRAPH_H_INCLUDED
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -40,3 +42,4 @@ fastlist *get_conns_by_src(graph *ctx, uint64_t srcID);
 fastlist *get_conns_by_drn(graph *ctx, uint64_t drnID);
 
 unsigned long get_node_count(graph *ctx);
+#endif

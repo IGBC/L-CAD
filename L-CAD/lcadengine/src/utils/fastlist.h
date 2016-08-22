@@ -1,3 +1,6 @@
+#ifndef FASTLIST_H_INCLUDED
+#define FASTLIST_H_INCLUDED
+
 #define FASTLIST_FAILED -1
 
 // From spacekookie
@@ -61,4 +64,4 @@ unsigned long fastlist_remove_by_pointer(fastlist *ctx, void* pointer);
  * NOT IMPLEMENTED */
 void **fastlist_dma(fastlist *ctx, unsigned long size){};
 
-
+#endif
