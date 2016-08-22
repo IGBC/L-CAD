@@ -46,6 +46,12 @@ void *fastlist_get(fastlist *ctx, unsigned long index) {
 }
 
 /**
+ * Returns size of the list */
+unsigned long fastlist_size(fastlist *ctx) {
+    return ctx->numItems;
+}
+
+/**
  * Adds item to the end of the list 
  * Return FASTLIST_FAILED on failure
  * else returns new length of the list */
