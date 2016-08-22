@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "utils/fastlist.h"
+
 typedef enum {AND, OR, XOR, UNITY, RAND} gateInputType;
 
 struct {
@@ -27,8 +29,14 @@ void delete_graph(graph *ctx);
 
 uint64_t add_gli(graph *ctx, gateInputType type, bool nin, uint8_t delay);
 void remove_gli(graph *ctx, uint64_t ID);
-genericLogicInterface get_gli(graph *ctx, uint64_t ID);
 
 uint64_t add_conn(graph *ctx, uint64_t Src, uint64_t Snk);
 void remove_conn(graph *ctx, uint64_t ID);
-//TODO: Work out how to get connections.
+
+genericLogicInterface get_gli(graph *ctx, uint64_t ID);
+
+connection *get_conn_by_id(graph *ctx, uint64_t ID);
+fastlist *get_conns_by_src(graph *ctx, uint64_t srcID);
+fastlist *get_conns_by_drn(graph *ctx, uint64_t drnID);
+
+unsigned long get_node_count(graph *ctx);
