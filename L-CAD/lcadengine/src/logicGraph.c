@@ -11,6 +11,7 @@
 struct s_graph {
 	hashmap *GIDMap; // Gates
 	hashmap *CIDMap, *srcMap, *drnMap; // Connections
+	unsigned long nodeCount;
 };
 
 graph *create_graph() {
@@ -19,6 +20,7 @@ graph *create_graph() {
     ctx->CIDMap = hashmapCreate(0);
     ctx->srcMap = hashmapCreate(0);
     ctx->drnMap = hashmapCreate(0);
+    ctx->nodeCount = 0;
     return ctx;
 };
 
@@ -43,6 +45,7 @@ uint64_t add_gli(graph *ctx, gateInputType type, bool nin, uint8_t delay) {
 
     // Push gli into the map
     hashmapInsert(ctx->GIDMap, (void*)gli, gli->ID);
+    ctx->nodeCount++;
     return gli->ID;
     // gli goes out of scope here. (psst, don't tell anyone the ID is a pointer)
 };
@@ -51,6 +54,7 @@ void remove_gli(graph *ctx, uint64_t ID) {
     GLI *gli = (GLI*) hashmapRemove(ctx->GIDMap, ID);
     //TODO Remove connections here.
     free(gli);
+    ctx->nodeCount--;
 };
 
 uint64_t add_conn(graph *ctx, uint64_t src, uint64_t drn) {
@@ -114,4 +118,8 @@ fastlist *get_conns_by_src(graph *ctx, uint64_t srcID) {
 
 fastlist *get_conns_by_drn(graph *ctx, uint64_t drnID) {
     return (fastlist*) hashmapGet(ctx->srcMap, drnID);
+}
+
+unsigned long get_node_count(graph *ctx){
+    return ctx->nodeCount;
 }
