@@ -100,8 +100,8 @@ void remove_conn(graph *ctx, uint64_t ID) {
     fastlist_remove_by_pointer(list, (void*)conn);
 }
 
-genericLogicInterface get_gli(graph *ctx, uint64_t ID) {
-    return (gli*) hashmapGet(ctx->GIDMap, ID);
+genericLogicInterface *get_gli(graph *ctx, uint64_t ID) {
+    return (GLI*) hashmapGet(ctx->GIDMap, ID);
 }
 
 connection *get_conn_by_id(graph *ctx, uint64_t ID) {
@@ -113,5 +113,5 @@ fastlist *get_conns_by_src(graph *ctx, uint64_t srcID) {
 }
 
 fastlist *get_conns_by_drn(graph *ctx, uint64_t drnID) {
-    return (fastlist*) hashmapGet(ctx->srcMap, srcID);
+    return (fastlist*) hashmapGet(ctx->srcMap, drnID);
 }

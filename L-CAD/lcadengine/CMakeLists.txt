@@ -4,7 +4,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 # Set our source file scope for the library
 set(LCADENGINE_SRC 
-    src/logicTable.c
+    src/logicGraph.c
     src/dispatcher.c
     
     src/utils/fastlist.c

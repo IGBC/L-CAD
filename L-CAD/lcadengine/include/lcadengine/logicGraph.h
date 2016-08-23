@@ -35,7 +35,7 @@ void remove_gli(graph *ctx, uint64_t ID);
 uint64_t add_conn(graph *ctx, uint64_t Src, uint64_t Snk);
 void remove_conn(graph *ctx, uint64_t ID);
 
-genericLogicInterface get_gli(graph *ctx, uint64_t ID);
+genericLogicInterface *get_gli(graph *ctx, uint64_t ID);
 
 connection *get_conn_by_id(graph *ctx, uint64_t ID);
 fastlist *get_conns_by_src(graph *ctx, uint64_t srcID);
