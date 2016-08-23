@@ -34,15 +34,17 @@ dispatcher *create_dispatcher(graph *logicGraph, int threads) {
     ctx->pool = thpool_init(threads);
     ctx->n = get_node_count(logicGraph);
     // make a big thing to store Jobs in.
-    
-    //TODO: Memset both of these to 0;
     ctx->jobpool = (job**) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(job));
-    ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long)); 
+    memset(ctx->jobpool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(job)); 
+    // Make a list of jobs in each timestep.
+    ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long));
+    memset(ctx->jobpoolCount, 0, (MAX_DELAY + 1) * sizeof(unsigned long));
 }
 
 void delete_dispatcher(dispatcher *ctx) {
     thpool_destroy(ctx->pool);
     free(ctx->jobpool);
+    free(ctx->jobpoolCount);
 }
 
 int step_dispatcher(dispatcher *ctx) {
