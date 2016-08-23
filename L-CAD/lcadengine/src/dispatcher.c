@@ -1,17 +1,13 @@
 #define MAX_DELAY 100
 
 #include <lcadengine/dispatcher.h>
+
+#include <stdlib.h>
+
 #include "utils/thpool.h"
 #include "utils/fastlist.h"
 
-#define GLI genericLogicInterface;
-
-struct s_dispatcher {
-    threadpool pool;
-    unsigned long timestep, n;
-    graph *LG;
-    job **jobpool;
-}
+#define GLI genericLogicInterface
 
 struct {
     GLI* unit;
@@ -19,15 +15,29 @@ struct {
     dispatcher *ctx;
 } typedef job;
 
+struct s_dispatcher {
+    threadpool pool;
+    unsigned long timestep, n;
+    graph *LG;
+    job **jobpool;
+    unsigned long *jobpoolCount;
+};
+
+inline void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset);
+void worker_do_work(job j);
+
 dispatcher *create_dispatcher(graph *logicGraph, int threads) {
     dispatcher* ctx = (dispatcher*) malloc(sizeof(dispatcher));
     ctx->LG = logicGraph;
     //TODO: Lock Graph for editing;
     ctx->timestep = 0;
     ctx->pool = thpool_init(threads);
-    ctx->n = get_node_count(graph);
+    ctx->n = get_node_count(logicGraph);
     // make a big thing to store Jobs in.
-    ctx->jobpool = (job**) malloc((n + 1) * (MAX_DELAY + 1) * sizeof(job)); 
+    
+    //TODO: Memset both of these to 0;
+    ctx->jobpool = (job**) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(job));
+    ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long)); 
 }
 
 void delete_dispatcher(dispatcher *ctx) {
@@ -87,10 +97,10 @@ inline void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset) {
         //TODO: Error.
     }
     unsigned long time = ctx->timestep + offset;
-    unsigned long i = time % MAX_timestep;
-    j = ++((unsigned long)ctx->jobpool[i]);
-    ctx->jobpool[i][j]->unit = unit;
-    ctx->jobpool[i][j]->ctx = ctx;
-    ctx->jobpool[i][j]->timestep = time;
+    unsigned long i = time % MAX_DELAY;
+    unsigned long j = ctx->jobpoolCount[i]++;
+    ctx->jobpool[i][j].unit = unit;
+    ctx->jobpool[i][j].ctx = ctx;
+    ctx->jobpool[i][j].timestep = time;
 }
 
