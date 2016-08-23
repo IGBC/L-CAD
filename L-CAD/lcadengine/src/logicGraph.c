@@ -32,10 +32,10 @@ void delete_graph(graph *ctx) {
     free(ctx);
 };
 
-uint64_t add_gli(graph *ctx, gateInputType type, bool nin, uint8_t delay) {
+unsigned long add_gli(graph *ctx, gateInputType type, bool nin, unsigned int delay) {
     GLI *gli = (GLI*) malloc(sizeof(GLI));
 
-    gli->ID = (uint64_t) gli; // We're using the pointer as a UUID, as we don't have a generator.
+    gli->ID = (unsigned long) gli; // We're using the pointer as a UUID, as we don't have a generator.
     // TODO: Generate Better IDs
     gli->state = false; // All GLI's start off
     // Just copy this across.
@@ -50,16 +50,16 @@ uint64_t add_gli(graph *ctx, gateInputType type, bool nin, uint8_t delay) {
     // gli goes out of scope here. (psst, don't tell anyone the ID is a pointer)
 };
 
-void remove_gli(graph *ctx, uint64_t ID) {
+void remove_gli(graph *ctx, unsigned long ID) {
     GLI *gli = (GLI*) hashmapRemove(ctx->GIDMap, ID);
     //TODO Remove connections here.
     free(gli);
     ctx->nodeCount--;
 };
 
-uint64_t add_conn(graph *ctx, uint64_t src, uint64_t drn) {
+unsigned long add_conn(graph *ctx, unsigned long src, unsigned long drn) {
     connection *conn = (connection*) malloc(sizeof(connection));
-    conn->ID = (uint64_t) conn; // We're using the pointer as a UUID, as we don't have a generator.
+    conn->ID = (unsigned long) conn; // We're using the pointer as a UUID, as we don't have a generator.
     // TODO: Generate Better IDs
     
     GLI* srcGli = (GLI*) hashmapGet(ctx->GIDMap, src); 
@@ -96,7 +96,7 @@ uint64_t add_conn(graph *ctx, uint64_t src, uint64_t drn) {
     return conn->ID;
 };
 
-void remove_conn(graph *ctx, uint64_t ID) {
+void remove_conn(graph *ctx, unsigned long ID) {
     connection *conn = (connection*) hashmapRemove(ctx->CIDMap, ID);
     fastlist *list = (fastlist*) hashmapGet(ctx->srcMap, conn->srcID);
     fastlist_remove_by_pointer(list, (void*)conn);
@@ -104,19 +104,19 @@ void remove_conn(graph *ctx, uint64_t ID) {
     fastlist_remove_by_pointer(list, (void*)conn);
 }
 
-genericLogicInterface *get_gli(graph *ctx, uint64_t ID) {
+genericLogicInterface *get_gli(graph *ctx, unsigned long ID) {
     return (GLI*) hashmapGet(ctx->GIDMap, ID);
 }
 
-connection *get_conn_by_id(graph *ctx, uint64_t ID) {
+connection *get_conn_by_id(graph *ctx, unsigned long ID) {
     return (connection*) hashmapGet(ctx->CIDMap, ID);
 }
 
-fastlist *get_conns_by_src(graph *ctx, uint64_t srcID) {
+fastlist *get_conns_by_src(graph *ctx, unsigned long srcID) {
     return (fastlist*) hashmapGet(ctx->srcMap, srcID);
 }
 
-fastlist *get_conns_by_drn(graph *ctx, uint64_t drnID) {
+fastlist *get_conns_by_drn(graph *ctx, unsigned long drnID) {
     return (fastlist*) hashmapGet(ctx->srcMap, drnID);
 }
 
