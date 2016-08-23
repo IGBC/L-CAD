@@ -3,6 +3,7 @@
 #include <lcadengine/dispatcher.h>
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "utils/thpool.h"
 #include "utils/fastlist.h"
