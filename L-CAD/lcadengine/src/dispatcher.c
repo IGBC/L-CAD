@@ -1,5 +1,3 @@
-#define MAX_DELAY 100
-
 #include <lcadengine/dispatcher.h>
 
 #include <stdlib.h>
@@ -7,6 +5,10 @@
 
 #include "utils/thpool.h"
 #include "utils/fastlist.h"
+
+#ifndef MAX_DELAY
+    #define MAX_DELAY 100
+#endif
 
 #define GLI genericLogicInterface
 
@@ -16,16 +18,25 @@ struct {
     dispatcher *ctx;
 } typedef job;
 
+struct {
+    unsigned long ID;
+    bool newState;
+} typedef diff;
+
 struct s_dispatcher {
     threadpool pool;
     unsigned long timestep, n;
     graph *LG;
+    // Array containing all jobs for all upcoming timesteps.
     job **jobpool;
-    unsigned long *jobpoolCount;
+    // Array containing number of used slots in each given timestep.
+    unsigned long *jobpoolCount; // size = (MAX_DELAY + 1)
+    diff *diffBuffer;
+    unsigned long diffBufferCount;
 };
 
 inline void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset);
-void worker_do_work(job j);
+void worker_do_work(job *j);
 
 dispatcher *create_dispatcher(graph *logicGraph, int threads) {
     dispatcher* ctx = (dispatcher*) malloc(sizeof(dispatcher));
@@ -40,21 +51,41 @@ dispatcher *create_dispatcher(graph *logicGraph, int threads) {
     // Make a list of jobs in each timestep.
     ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long));
     memset(ctx->jobpoolCount, 0, (MAX_DELAY + 1) * sizeof(unsigned long));
+    // make a buffer to store the differance in the graph from a timestep.
+    ctx->diffBuffer = (diff*) malloc(ctx->n * sizeof(job));
+    memset(ctx->diffBuffer, 0, ctx->n * sizeof(job));
+    ctx->diffBufferCount = 0;
 }
 
 void delete_dispatcher(dispatcher *ctx) {
     thpool_destroy(ctx->pool);
     free(ctx->jobpool);
     free(ctx->jobpoolCount);
+    free(ctx->diffBuffer);
+    free(ctx);
 }
 
 int step_dispatcher(dispatcher *ctx) {
     ctx->timestep++;
+    unsigned long i;
+    unsigned long time = ctx->timestep % (MAX_DELAY + 1);
+    for (i = 0; i < ctx->jobpoolCount[time]; i++) {
+        job *j = &ctx->jobpool[time][i];
+        thpool_add_work(ctx->pool, (void*) worker_do_work, (void*) j);
+    }
+    
+    thpool_wait(ctx->pool);
+    
+    for (i = 0; i < ctx->diffBufferCount; i++) {
+        diff *d = &ctx->diffBuffer[i];
+        GLI *g = get_gli(ctx->LG, d->ID);
+        g->state = d->newState;
+    }
 }
 
-void worker_do_work(job j) {
+void worker_do_work(job *j) {
     // Get Inputs;
-    fastlist *inputs = get_conns_by_drn(j.ctx->LG, j.unit->ID);  
+    fastlist *inputs = get_conns_by_drn(j->ctx->LG, j->unit->ID);  
     unsigned long count = fastlist_size(inputs);
     unsigned long i;
     unsigned long sum = 0;
@@ -68,7 +99,7 @@ void worker_do_work(job j) {
     
     // Compare state;
     bool output = false;
-    switch (j.unit->inputMode) {
+    switch (j->unit->inputMode) {
         case AND:   if (sum == count) output = true; break; 
         case UNITY: // Behaves like a 1 input OR
         case OR:    if (sum > 0)      output = true; break;
@@ -76,21 +107,23 @@ void worker_do_work(job j) {
         case RAND: 
         default: break;
     }
-    if (j.unit->inputNegate) output != output;
+    if (j->unit->inputNegate) output != output;
     
     // If state has changed:
-    if (output != j.unit->state) {
-        //TODO: Save output to buffer;
+    if (output != j->unit->state) {
+        // Register change with diff buffer;
+        j->ctx->diffBuffer[j->ctx->diffBufferCount++].ID = j->unit->ID;
+        j->ctx->diffBuffer[j->ctx->diffBufferCount++].newState = output;
         
         // Get Outputs;
-        fastlist *outputs = get_conns_by_src(j.ctx->LG, j.unit->ID);
+        fastlist *outputs = get_conns_by_src(j->ctx->LG, j->unit->ID);
         count = fastlist_size(outputs);
         for (i = 0; i < count; i++) {
             // get The source gate for the connection.
             connection *conn = (connection*) fastlist_get(outputs, i);
             GLI *out = conn->drnEp;
             // Generate Job;
-            generate_job(j.ctx, out, 1); // TODO: include delay.
+            generate_job(j->ctx, out, 1); // TODO: include delay.
         }
     }
 }
@@ -100,7 +133,7 @@ inline void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset) {
         //TODO: Error.
     }
     unsigned long time = ctx->timestep + offset;
-    unsigned long i = time % MAX_DELAY;
+    unsigned long i = time % (MAX_DELAY + 1);
     unsigned long j = ctx->jobpoolCount[i]++;
     ctx->jobpool[i][j].unit = unit;
     ctx->jobpool[i][j].ctx = ctx;
