@@ -10,6 +10,7 @@ set(LCADENGINE_SRC
     src/utils/fastlist.c
     src/utils/hashmap.c
     src/utils/thpool.c
+    main.c
 )
 
 # Define our library in cmake
