@@ -18,7 +18,7 @@ fastlist *new_fastlist(unsigned long size) {
     if (!fl) return (fastlist*) FASTLIST_FAILED;
     // assign initial values
     fl->originalSize = size;
-    fl->originalSize = size;
+    fl->currentSize = size;
     fl->numItems = 0;
     fl->pointer = malloc(size * sizeof(void *));
     if (!fl->pointer) {
