@@ -66,21 +66,44 @@ void delete_dispatcher(dispatcher *ctx) {
 }
 
 int step_dispatcher(dispatcher *ctx) {
+    // Move context into the next step.
     ctx->timestep++;
+    
+    // Loopy Stuff
     unsigned long i;
+    
+    // Constanty stuff
     unsigned long time = ctx->timestep % (MAX_DELAY + 1);
+    
+    // Adds each job to the threadpool's queue for execution.
     for (i = 0; i < ctx->jobpoolCount[time]; i++) {
         job *j = &ctx->jobpool[time][i];
         thpool_add_work(ctx->pool, (void*) worker_do_work, (void*) j);
     }
     
+    // Wait for the step execution to complete.
     thpool_wait(ctx->pool);
     
+    // here the diff buffer is populated. 
+    
+    // apply the diff pactches to the graph. 
     for (i = 0; i < ctx->diffBufferCount; i++) {
         diff *d = &ctx->diffBuffer[i];
         GLI *g = get_gli(ctx->LG, d->ID);
         g->state = d->newState;
     }
+    
+    // In both of these memset commands only the used memory is cleared, 
+    // so as to not to waste time clearing blank memory. 
+    
+    // Clear the Job pool for this step;
+    memset(ctx->jobpool[time], 0, ctx->jobpoolCount[time] * sizeof(job));
+    ctx->jobpoolCount[time] = 0;
+    
+    // Clear the diffBuffer now that the patches are applied.
+    memset(ctx->diffBuffer, 0, ctx->diffBufferCount * sizeof(diff));
+    ctx->diffBufferCount = 0;
+    return 0;
 }
 
 void worker_do_work(job *j) {
