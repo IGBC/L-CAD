@@ -10,7 +10,6 @@ set(LCADENGINE_SRC
     src/utils/fastlist.c
     src/utils/hashmap.c
     src/utils/thpool.c
-    main.c
 )
 
 # Define our library in cmake
@@ -27,6 +26,9 @@ target_include_directories(lcadengine PRIVATE "src")
 
 # since the name starts with 'lib' dont add it again
 set_target_properties(lcadengine PROPERTIES PREFIX "lib")
+
+add_executable(testmain src/main.c)
+target_link_libraries(testmain lcadengine)
 
 # Add tests subdirectory
 # add_subdirectory(tests)

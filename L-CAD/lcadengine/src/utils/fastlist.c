@@ -1,4 +1,4 @@
-#include "fastlist.h"
+#include <lcadengine/fastlist.h>
 #include <stdlib.h>
 
 struct s_fastlist {

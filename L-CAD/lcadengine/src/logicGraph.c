@@ -2,7 +2,6 @@
 
 #include <stdlib.h>
 
-#include "utils/fastlist.h"
 #include "utils/hashmap.h"
 
 #define GLI genericLogicInterface

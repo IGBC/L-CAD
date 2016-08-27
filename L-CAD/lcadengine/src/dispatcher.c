@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include "utils/thpool.h"
-#include "utils/fastlist.h"
 
 #ifndef MAX_DELAY
     #define MAX_DELAY 100

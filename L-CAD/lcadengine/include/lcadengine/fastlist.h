@@ -62,6 +62,6 @@ unsigned long fastlist_remove_by_pointer(fastlist *ctx, void* pointer);
 
 /**
  * NOT IMPLEMENTED */
-void **fastlist_dma(fastlist *ctx, unsigned long size){};
+void **fastlist_dma(fastlist *ctx, unsigned long size);
 
 #endif

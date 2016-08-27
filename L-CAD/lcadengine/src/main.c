@@ -1,5 +1,6 @@
-#include <logicGraph.h>
-#include <dispatcher.h>
+
+#include <lcadengine/logicGraph.h>
+#include <lcadengine/dispatcher.h>
 
 int main() {
     // populate graph with one nor gate.

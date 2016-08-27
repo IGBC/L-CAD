@@ -2,8 +2,7 @@
 #define LOGICGRAPH_H_INCLUDED
 
 #include <stdbool.h>
-
-#include "utils/fastlist.h"
+#include <lcadengine/fastlist.h>
 
 typedef enum {AND, OR, XOR, UNITY, RAND} gateInputType;
 
