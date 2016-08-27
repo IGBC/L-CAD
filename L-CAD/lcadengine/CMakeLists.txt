@@ -23,6 +23,7 @@ target_include_directories(lcadengine PUBLIC "include")
 target_include_directories(lcadengine PRIVATE "include-private")
 target_include_directories(lcadengine PRIVATE "src")
 
+target_link_libraries(lcadengine pthread)
 
 # since the name starts with 'lib' dont add it again
 set_target_properties(lcadengine PROPERTIES PREFIX "lib")

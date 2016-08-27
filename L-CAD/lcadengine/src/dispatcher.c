@@ -34,8 +34,19 @@ struct s_dispatcher {
     unsigned long diffBufferCount;
 };
 
-inline void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset);
 void worker_do_work(job *j);
+
+void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset) {
+    if (offset > MAX_DELAY) {
+        //TODO: Error.
+    }
+    unsigned long time = ctx->timestep + offset;
+    unsigned long i = time % (MAX_DELAY + 1);
+    unsigned long j = ctx->jobpoolCount[i]++;
+    ctx->jobpool[i][j].unit = unit;
+    ctx->jobpool[i][j].ctx = ctx;
+    ctx->jobpool[i][j].timestep = time;
+}
 
 dispatcher *create_dispatcher(graph *logicGraph, int threads) {
     dispatcher* ctx = (dispatcher*) malloc(sizeof(dispatcher));
@@ -54,6 +65,8 @@ dispatcher *create_dispatcher(graph *logicGraph, int threads) {
     ctx->diffBuffer = (diff*) malloc(ctx->n * sizeof(job));
     memset(ctx->diffBuffer, 0, ctx->n * sizeof(job));
     ctx->diffBufferCount = 0;
+    // Set up complete
+    
 }
 
 void delete_dispatcher(dispatcher *ctx) {
@@ -148,17 +161,5 @@ void worker_do_work(job *j) {
             generate_job(j->ctx, out, 1); // TODO: include delay.
         }
     }
-}
-
-inline void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset) {
-    if (offset > MAX_DELAY) {
-        //TODO: Error.
-    }
-    unsigned long time = ctx->timestep + offset;
-    unsigned long i = time % (MAX_DELAY + 1);
-    unsigned long j = ctx->jobpoolCount[i]++;
-    ctx->jobpool[i][j].unit = unit;
-    ctx->jobpool[i][j].ctx = ctx;
-    ctx->jobpool[i][j].timestep = time;
 }
 
