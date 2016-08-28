@@ -90,7 +90,7 @@ unsigned long add_conn(graph *ctx, unsigned long src, unsigned long drn) {
     GLI* drnGli = (GLI*) hashmapGet(ctx->GIDMap, drn); 
     
     conn->srcEp = srcGli;
-    conn->srcEp = drnGli;
+    conn->drnEp = drnGli;
     conn->srcID = src;
     conn->drnID = drn;
     
