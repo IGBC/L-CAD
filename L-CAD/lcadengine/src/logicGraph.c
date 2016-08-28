@@ -152,7 +152,7 @@ fastlist *get_conns_by_src(graph *ctx, unsigned long srcID) {
 }
 
 fastlist *get_conns_by_drn(graph *ctx, unsigned long drnID) {
-    return (fastlist*) hashmapGet(ctx->srcMap, drnID);
+    return (fastlist*) hashmapGet(ctx->drnMap, drnID);
 }
 
 unsigned long get_node_count(graph *ctx){
