@@ -43,8 +43,8 @@ void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset) {
     if (offset > MAX_DELAY) {
         //TODO: Error.
     }
-    unsigned long time = ctx->timestep % (MAX_DELAY + 1); 
-    unsigned long j = ctx->jobpoolCount[time ]++;
+    unsigned long time = (ctx->timestep + offset) % (MAX_DELAY + 1);
+    unsigned long j = ctx->jobpoolCount[time]++;
     ctx->jobpool[JPadr(ctx, offset, j)].unit = unit;
     ctx->jobpool[JPadr(ctx, offset, j)].ctx = ctx;
     ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
@@ -100,7 +100,7 @@ int step_dispatcher(dispatcher *ctx) {
     
     // here the diff buffer is populated. 
     
-    // apply the diff pactches to the graph. 
+    // apply the diff patches to the graph.
     for (i = 0; i < ctx->diffBufferCount; i++) {
         diff *d = &ctx->diffBuffer[i];
         GLI *g = get_gli(ctx->LG, d->ID);
@@ -152,23 +152,27 @@ void worker_do_work(job *j) {
         case RAND: 
         default: break;
     }
-    if (j->unit->inputNegate) output != output;
+    if (j->unit->inputNegate) output = !output;
     
     // If state has changed:
     if (output != j->unit->state) {
         // Register change with diff buffer;
-        j->ctx->diffBuffer[j->ctx->diffBufferCount++].ID = j->unit->ID;
-        j->ctx->diffBuffer[j->ctx->diffBufferCount++].newState = output;
-        
+        j->ctx->diffBuffer[j->ctx->diffBufferCount].ID = j->unit->ID;
+        j->ctx->diffBuffer[j->ctx->diffBufferCount].newState = output;
+        // Only fiddle with this when we're done playing with it.
+        j->ctx->diffBufferCount++;
+
         // Get Outputs;
         fastlist *outputs = get_conns_by_src(j->ctx->LG, j->unit->ID);
-        count = fastlist_size(outputs);
-        for (i = 0; i < count; i++) {
-            // get The source gate for the connection.
-            connection *conn = (connection*) fastlist_get(outputs, i);
-            GLI *out = conn->drnEp;
-            // Generate Job;
-            generate_job(j->ctx, out, 1); // TODO: include delay.
+        if (outputs) {
+            count = fastlist_size(outputs);
+            for (i = 0; i < count; i++) {
+                // get The source gate for the connection.
+                connection *conn = (connection *) fastlist_get(outputs, i);
+                GLI *out = conn->drnEp;
+                // Generate Job;
+                generate_job(j->ctx, out, 1); // TODO: include delay.
+            }
         }
     }
 }
