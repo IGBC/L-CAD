@@ -11,8 +11,11 @@
 
 #define GLI genericLogicInterface
 
+/* Macro Generates the address of a thing for the stuff */
+#define JPadr(ctx, offset, slot) ((((ctx->timestep + offset) % (MAX_DELAY + 1)) * ctx->n) + slot)
+
 struct {
-    GLI* unit;
+    GLI *unit;
     long timestep;
     dispatcher *ctx;
 } typedef job;
@@ -27,7 +30,7 @@ struct s_dispatcher {
     unsigned long timestep, n;
     graph *LG;
     // Array containing all jobs for all upcoming timesteps.
-    job **jobpool;
+    job *jobpool;
     // Array containing number of used slots in each given timestep.
     unsigned long *jobpoolCount; // size = (MAX_DELAY + 1)
     diff *diffBuffer;
@@ -40,12 +43,11 @@ void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset) {
     if (offset > MAX_DELAY) {
         //TODO: Error.
     }
-    unsigned long time = ctx->timestep + offset;
-    unsigned long i = time % (MAX_DELAY + 1);
-    unsigned long j = ctx->jobpoolCount[i]++;
-    ctx->jobpool[i][j].unit = unit;
-    ctx->jobpool[i][j].ctx = ctx;
-    ctx->jobpool[i][j].timestep = time;
+    unsigned long time = ctx->timestep % (MAX_DELAY + 1); 
+    unsigned long j = ctx->jobpoolCount[time ]++;
+    ctx->jobpool[JPadr(ctx, offset, j)].unit = unit;
+    ctx->jobpool[JPadr(ctx, offset, j)].ctx = ctx;
+    ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
 }
 
 dispatcher *create_dispatcher(graph *logicGraph, int threads) {
@@ -55,15 +57,15 @@ dispatcher *create_dispatcher(graph *logicGraph, int threads) {
     ctx->timestep = 0;
     ctx->pool = thpool_init(threads);
     ctx->n = get_node_count(logicGraph);
-    // make a big thing to store Jobs in.
-    ctx->jobpool = (job**) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(job));
-    memset(ctx->jobpool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(job)); 
+    // make a big thing to store Jobs in. (n * MD drid)
+    ctx->jobpool = (job*) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(job));
+    memset((void*)ctx->jobpool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(job)); 
     // Make a list of jobs in each timestep.
     ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long));
-    memset(ctx->jobpoolCount, 0, (MAX_DELAY + 1) * sizeof(unsigned long));
+    memset((void*)ctx->jobpoolCount, 0, (MAX_DELAY + 1) * sizeof(unsigned long));
     // make a buffer to store the differance in the graph from a timestep.
     ctx->diffBuffer = (diff*) malloc(ctx->n * sizeof(job));
-    memset(ctx->diffBuffer, 0, ctx->n * sizeof(job));
+    memset((void*)ctx->diffBuffer, 0, ctx->n * sizeof(job));
     ctx->diffBufferCount = 0;
     // Set up complete
     
@@ -89,7 +91,7 @@ int step_dispatcher(dispatcher *ctx) {
     
     // Adds each job to the threadpool's queue for execution.
     for (i = 0; i < ctx->jobpoolCount[time]; i++) {
-        job *j = &ctx->jobpool[time][i];
+        job *j = &ctx->jobpool[JPadr(ctx, 0, i)];
         thpool_add_work(ctx->pool, (void*) worker_do_work, (void*) j);
     }
     
@@ -109,7 +111,7 @@ int step_dispatcher(dispatcher *ctx) {
     // so as to not to waste time clearing blank memory. 
     
     // Clear the Job pool for this step;
-    memset(ctx->jobpool[time], 0, ctx->jobpoolCount[time] * sizeof(job));
+    // memset((void*)ctx->jobpool[JPadr(ctx, 0, 0)], 0, ctx->jobpoolCount[time] * sizeof(job));
     ctx->jobpoolCount[time] = 0;
     
     // Clear the diffBuffer now that the patches are applied.
@@ -117,6 +119,14 @@ int step_dispatcher(dispatcher *ctx) {
     ctx->diffBufferCount = 0;
     return 0;
 }
+
+int dispatcher_add_job(dispatcher *ctx, unsigned long ID, unsigned int delay) {
+    if (delay == 0) return -1;
+    if (delay > MAX_DELAY) return -2;
+    GLI *gli = get_gli(ctx->LG, ID); 
+    generate_job(ctx, gli, delay);
+    return 0;
+};
 
 void worker_do_work(job *j) {
     // Get Inputs;
@@ -162,4 +172,3 @@ void worker_do_work(job *j) {
         }
     }
 }
-

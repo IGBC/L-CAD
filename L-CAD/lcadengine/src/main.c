@@ -7,7 +7,9 @@ int main() {
     graph *g = create_graph();
     unsigned long ID = add_gli(g, OR, true, 0);
     dispatcher *d = create_dispatcher(g, 4);
+    dispatcher_add_job(d, ID, 1);
     step_dispatcher(d);
     delete_dispatcher(d);
-    delete_graph(g);    
+    delete_graph(g);
+    return 0;    
 }
