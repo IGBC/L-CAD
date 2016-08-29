@@ -1,5 +1,5 @@
 # L-CAD
-#### Logic Design / Simulation Package.
+Logic Design / Simulation Package.
 
 ### Project Goal:
 Create a Logic IDE for the development of logic systems that can be simulated and tested in software, before being exported in useful formats. (for example to burn an FPGA) 
@@ -14,11 +14,9 @@ This tool should be simple enough to use that it can be used to educate students
 * Support for the GUI, Simulation and IO module to all be on seperate devices connected via a network.
 
 ### Building:
-This project uses the ant build system. The default target will build the entire project and generate a jar file automatically. All needed dependancies are included in this repository. 
+**Please remember to pull the submodules before attempting to build.**
 
-The project is developed using Eclipse, and can be imported with eclipse's ant xml import functionality. To import the project once cloned do:
- 1. in the projects pane "new->project->Java Project from Existing Ant Buildfile"
- 2. select `../L-CAD/build.xml` as the buildfile
- 3. click finish.
+This project uses CMake to build, however I'm lazy so there is a make file that automates CMake with a clean build by default. to build call `make` that will automatically call CMake then run make on the generated build files. (make -> cmake -> make)
 
-The clean target will clear the `bin/` and `jar/` temporary directories as well as the `MANIFEST.MF` file
+### Liecence:
+This software is licenced under the GNU Affero General Public License v3.0 (AGPLv3) open source liecence. Additionally the use of this software is restricted by the Non-Military Humane License (NMHL) https://github.com/infuanfu/NMHL
