@@ -6,3 +6,5 @@ spacekookie (Morale Support)
 
 Thanks to Micha Mettke (https://github.com/vurtun)
 for maintaining the "nuklear" UI library used by this software
+Thanks to Johan Hanssen Seferidis (https://github.com/Pithikos)
+for creating the "C-Thead-Pool" library this project depends on.
