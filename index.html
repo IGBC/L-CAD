@@ -31,38 +31,48 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>
+        <h1>
+<a id="l-cad" class="anchor" href="#l-cad" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>L-CAD</h1>
+
+<h3>
 <a id="project-goal" class="anchor" href="#project-goal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Project Goal:</h3>
 
-<p>Create a Logic IDE for the development of logic systems that can be simulated and tested in software, before being exported in useful formats. (for example to burn an FPGA) 
-This tool should be simple enough to use that it can be used to educate students on the basics of boolean logic, but powerful enough that an advanced user can use it to develop an application for a multi thousand gate FPGA.</p>
+<p>L-CAD is a Logic Design / Simulation Package, for aiding the design of logic Systems. Ultimatly the goals for this project are for it to function as a stand in replacement for propetory solutions provided by companies like Xilinx and Altera, providing everything neccercary for designing a HDL system right up to the point where the system must be compiled and uploaded to a chip. </p>
+
+<p>The targeted end users for this project are students. This project aims to help their studies with a free (as in speech) comprehensive toolset for examining logic systems and understanding their behaviour. This project will likely also be useful for engineers or programmers looking to debug their systems, however the higher levels of polish typical in professional development environments are not currently a high priority for this project.</p>
+
+<p>Several of the planned features are designed to make this software beginer freindly, namely the project will use visual simulation to clearly explain what is happening inside the logic structure, and the ability to interface the software with GPIO controllers, enabling the use of real electronics as inputs or outputs from the system.</p>
 
 <h3>
 <a id="planned-features" class="anchor" href="#planned-features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Planned Features:</h3>
 
 <ul>
-<li>Qt Based GUI for all program features, including drag and drop interface for creating logic networks, that will visulise the states of all components in the system.</li>
+<li>GUI for all program features, including drag and drop interface for creating logic networks, that will visulise the states of all components in the system.</li>
 <li>Composite logic structure blocks. </li>
-<li>Real time, or step based simulation. (Using a massively-multithreaded logic engine) (Research into openCL acceleration is being conducted)</li>
+<li>Real time, or step based simulation. (Using a massively-multithreaded logic engine)</li>
 <li>Interface for Real world input-output to GPIO boards. (Raspberry Pi and similar)</li>
 <li>Support for exporting projects in (V)HDL Format.</li>
 <li>Support for the GUI, Simulation and IO module to all be on seperate devices connected via a network.</li>
 </ul>
 
 <h3>
+<a id="current-project-status" class="anchor" href="#current-project-status" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Current Project status:</h3>
+
+<p>As of updating this file (30/08/16) currently the base simulation code works, including threading, with some early optimisation. The next steps are to provide a clean API to work with then begin adding analisys algorithms to the sim, meanwhile beginning development on a usable user interface. (Probably just a CLI to begin with; sorry guys and girls.) A current side goal is to make logic graph serialisation possible, allowing graph loading and unloading. </p>
+
+<h3>
 <a id="building" class="anchor" href="#building" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Building:</h3>
 
-<p>This project uses the ant build system. The default target will build the entire project and generate a jar file automatically. All needed dependancies are included in this repository. </p>
+<p><strong>Please remember to pull the submodules before attempting to build.</strong></p>
 
-<p>The project is developed using Eclipse, and can be imported with eclipse's ant xml import functionality. To import the project once cloned do:</p>
+<p>This project uses CMake to build, however I'm lazy so there is a make file that automates CMake with a clean build by default. to build call <code>make</code> that will automatically call CMake then run make on the generated build files. (make -&gt; cmake -&gt; make)</p>
 
-<ol>
-<li>in the projects pane "new-&gt;project-&gt;Java Project from Existing Ant Buildfile"</li>
-<li>select <code>../L-CAD/build.xml</code> as the buildfile</li>
-<li>click finish.</li>
-</ol>
+<p>There are demos in <code>.../L-CAD/lcadengine/src/main.c</code>, which compiles to <code>.../L-CAD/build/lcadengine/testmain</code>. Have fun.</p>
 
-<p>The clean target will clear the <code>bin/</code> and <code>jar/</code> temporary directories as well as the <code>MANIFEST.MF</code> file</p>
+<h3>
+<a id="licence" class="anchor" href="#licence" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Licence:</h3>
+
+<p>This software is licenced under the GNU Affero General Public License v3.0 (AGPLv3) open source liecence. Additionally the use of this software is restricted by the Non-Military Humane License (NMHL) <a href="https://github.com/infuanfu/NMHL">https://github.com/infuanfu/NMHL</a></p>
       </section>
     </div>
 
