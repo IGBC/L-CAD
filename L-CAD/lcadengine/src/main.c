@@ -1,6 +1,7 @@
 
 #include <lcadengine/logicGraph.h>
 #include <lcadengine/dispatcher.h>
+#include <stdio.h>
 
 int boobs = 0;
 
@@ -82,18 +83,18 @@ void simulate_adder() {
 }
 
 
-void calculate_truth_table() {
+void calculate_truth_table(gateInputType t, bool n) {
     graph *g = create_graph();
     unsigned long in1 = add_gli(g, UNITY, false, 0);
     unsigned long in2 = add_gli(g, UNITY, false, 0);
     unsigned long in3 = add_gli(g, UNITY, false, 0);
-    unsigned long ID = add_gli(g, AND, false, 0);
+    unsigned long ID = add_gli(g, t, n, 0);
     add_conn(g, in1, ID);
     add_conn(g, in2, ID);
     add_conn(g, in3, ID);
     get_gli(g, ID)->state = true;
     dispatcher *d = create_dispatcher(g, 4);
-    printf("output values are: %i, %i, %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, ID)->state);
+    //printf("output values are: %i, %i, %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, ID)->state);
 
     get_gli(g, in1)->state = false;
     get_gli(g, in2)->state = false;
@@ -169,12 +170,25 @@ void calculate_truth_table() {
 
 
 int main() {
-    simulate_adder();
+    //simulate_adder();
 
-    printf("\n\n=== Truth Table ===\n");
+    printf("\n\n=== AND ===\n");
+    calculate_truth_table(AND, false);
 
-    calculate_truth_table();
+    printf("\n\n=== NAND ===\n");
+    calculate_truth_table(AND, true);
 
+    printf("\n\n=== OR ===\n");
+    calculate_truth_table(OR, false);
+    
+    printf("\n\n=== NOR ===\n");
+    calculate_truth_table(OR, true);
+
+    printf("\n\n=== XOR ===\n");
+    calculate_truth_table(XOR, false);
+    
+    printf("\n\n=== NXOR ===\n");
+    calculate_truth_table(XOR, true);
 
     return 0;    
 }
