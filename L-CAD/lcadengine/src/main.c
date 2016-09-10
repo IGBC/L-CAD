@@ -6,14 +6,14 @@
 int boobs = 0;
 
 #define PRINT_STATE \
-    {int stateA = (int) get_gli(g, a)->state; \
-    int stateB = (int) get_gli(g, b)->state; \
-    int stateC = (int) get_gli(g, c)->state; \
-    int stateCOut = (int) get_gli(g, cOut)->state; \
-    int stateOut = (int) get_gli(g, out)->state; \
-    int stateAnd1c = (int) get_gli(g, and1C)->state; \
-    int stateAndAB = (int) get_gli(g, andAB)->state; \
-    int stateXor1 = (int) get_gli(g, xor1)->state; \
+    {int stateA = (int) graphGetGLI(g, a)->state; \
+    int stateB = (int) graphGetGLI(g, b)->state; \
+    int stateC = (int) graphGetGLI(g, c)->state; \
+    int stateCOut = (int) graphGetGLI(g, cOut)->state; \
+    int stateOut = (int) graphGetGLI(g, out)->state; \
+    int stateAnd1c = (int) graphGetGLI(g, and1C)->state; \
+    int stateAndAB = (int) graphGetGLI(g, andAB)->state; \
+    int stateXor1 = (int) graphGetGLI(g, xor1)->state; \
     printf("=== Current State %i ===\n", boobs++); \
     printf("stateA: %i\n", stateA); \
     printf("stateB: %i\n", stateB); \
@@ -26,48 +26,48 @@ int boobs = 0;
 
 
 void simulate_adder() {
-    graph *g = create_graph();
+    graph *g = graphCreate();
 
-    unsigned long A = add_gli(g, UNITY, false, 0);
-    unsigned long B = add_gli(g, UNITY, false, 0);
-    unsigned long C = add_gli(g, UNITY, false, 0);
+    unsigned long A = graphAddGLI(g, UNITY, false, 0);
+    unsigned long B = graphAddGLI(g, UNITY, false, 0);
+    unsigned long C = graphAddGLI(g, UNITY, false, 0);
 
-    unsigned long a = add_gli(g, UNITY, false, 0);
-    unsigned long b = add_gli(g, UNITY, false, 0);
-    unsigned long c = add_gli(g, UNITY, false, 0);
+    unsigned long a = graphAddGLI(g, UNITY, false, 0);
+    unsigned long b = graphAddGLI(g, UNITY, false, 0);
+    unsigned long c = graphAddGLI(g, UNITY, false, 0);
 
-    add_conn(g, A, a);
-    add_conn(g, B, b);
-    add_conn(g, C, c);
+    graphAddConnection(g, A, a);
+    graphAddConnection(g, B, b);
+    graphAddConnection(g, C, c);
 
-    unsigned long xor1 = add_gli(g, XOR, false, 0);
-    unsigned long andAB = add_gli(g, AND, false, 0);
-    unsigned long and1C = add_gli(g, AND, false, 0);
+    unsigned long xor1 = graphAddGLI(g, XOR, false, 0);
+    unsigned long andAB = graphAddGLI(g, AND, false, 0);
+    unsigned long and1C = graphAddGLI(g, AND, false, 0);
 
-    unsigned long out = add_gli(g, XOR, false, 0);
-    unsigned long cOut = add_gli(g, OR, false, 0);
+    unsigned long out = graphAddGLI(g, XOR, false, 0);
+    unsigned long cOut = graphAddGLI(g, OR, false, 0);
 
     /* Setup connections */
-    add_conn(g, a, xor1);
-    add_conn(g, b, xor1);
+    graphAddConnection(g, a, xor1);
+    graphAddConnection(g, b, xor1);
 
-    add_conn(g, xor1, out);
-    add_conn(g, c, out);
+    graphAddConnection(g, xor1, out);
+    graphAddConnection(g, c, out);
 
-    add_conn(g, xor1, and1C);
-    add_conn(g, c, and1C);
+    graphAddConnection(g, xor1, and1C);
+    graphAddConnection(g, c, and1C);
 
-    add_conn(g, a, andAB);
-    add_conn(g, b, andAB);
+    graphAddConnection(g, a, andAB);
+    graphAddConnection(g, b, andAB);
 
-    add_conn(g, andAB, cOut);
-    add_conn(g, and1C, cOut);
+    graphAddConnection(g, andAB, cOut);
+    graphAddConnection(g, and1C, cOut);
 
     dispatcher *d = create_dispatcher(g, 4);
 
-    get_gli(g, A)->state = false;
-    get_gli(g, B)->state = true;
-    get_gli(g, C)->state = true;
+    graphGetGLI(g, A)->state = false;
+    graphGetGLI(g, B)->state = true;
+    graphGetGLI(g, C)->state = true;
 
     dispatcher_add_job(d, a, 1);
     dispatcher_add_job(d, b, 1);
@@ -79,93 +79,93 @@ void simulate_adder() {
     }
 
     delete_dispatcher(d);
-    delete_graph(g);
+    graphDelete(g);
 }
 
 
 void calculate_truth_table(gateInputType t, bool n) {
-    graph *g = create_graph();
-    unsigned long in1 = add_gli(g, UNITY, false, 0);
-    unsigned long in2 = add_gli(g, UNITY, false, 0);
-    unsigned long in3 = add_gli(g, UNITY, false, 0);
-    unsigned long ID = add_gli(g, t, n, 0);
-    add_conn(g, in1, ID);
-    add_conn(g, in2, ID);
-    add_conn(g, in3, ID);
-    get_gli(g, ID)->state = true;
+    graph *g = graphCreate();
+    unsigned long in1 = graphAddGLI(g, UNITY, false, 0);
+    unsigned long in2 = graphAddGLI(g, UNITY, false, 0);
+    unsigned long in3 = graphAddGLI(g, UNITY, false, 0);
+    unsigned long ID = graphAddGLI(g, t, n, 0);
+    graphAddConnection(g, in1, ID);
+    graphAddConnection(g, in2, ID);
+    graphAddConnection(g, in3, ID);
+    graphGetGLI(g, ID)->state = true;
     dispatcher *d = create_dispatcher(g, 4);
-    //printf("output values are: %i, %i, %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, ID)->state);
+    //printf("output values are: %i, %i, %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, ID)->state);
 
-    get_gli(g, in1)->state = false;
-    get_gli(g, in2)->state = false;
-    get_gli(g, in3)->state = false;
+    graphGetGLI(g, in1)->state = false;
+    graphGetGLI(g, in2)->state = false;
+    graphGetGLI(g, in3)->state = false;
     dispatcher_add_job(d, ID, 1);
     step_dispatcher(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, in3)->state, (int *) get_gli(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
-    get_gli(g, in1)->state = false;
-    get_gli(g, in2)->state = false;
-    get_gli(g, in3)->state = true;
+    graphGetGLI(g, in1)->state = false;
+    graphGetGLI(g, in2)->state = false;
+    graphGetGLI(g, in3)->state = true;
     dispatcher_add_job(d, ID, 1);
     step_dispatcher(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, in3)->state, (int *) get_gli(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
 
-    get_gli(g, in1)->state = false;
-    get_gli(g, in2)->state = true;
-    get_gli(g, in3)->state = false;
+    graphGetGLI(g, in1)->state = false;
+    graphGetGLI(g, in2)->state = true;
+    graphGetGLI(g, in3)->state = false;
     dispatcher_add_job(d, ID, 1);
     step_dispatcher(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, in3)->state, (int *) get_gli(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
 
-    get_gli(g, in1)->state = false;
-    get_gli(g, in2)->state = true;
-    get_gli(g, in3)->state = true;
+    graphGetGLI(g, in1)->state = false;
+    graphGetGLI(g, in2)->state = true;
+    graphGetGLI(g, in3)->state = true;
     dispatcher_add_job(d, ID, 1);
     step_dispatcher(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, in3)->state, (int *) get_gli(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
 
-    get_gli(g, in1)->state = true;
-    get_gli(g, in2)->state = false;
-    get_gli(g, in3)->state = false;
+    graphGetGLI(g, in1)->state = true;
+    graphGetGLI(g, in2)->state = false;
+    graphGetGLI(g, in3)->state = false;
     dispatcher_add_job(d, ID, 1);
     step_dispatcher(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, in3)->state, (int *) get_gli(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
 
-    get_gli(g, in1)->state = true;
-    get_gli(g, in2)->state = false;
-    get_gli(g, in3)->state = true;
+    graphGetGLI(g, in1)->state = true;
+    graphGetGLI(g, in2)->state = false;
+    graphGetGLI(g, in3)->state = true;
     dispatcher_add_job(d, ID, 1);
     step_dispatcher(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, in3)->state, (int *) get_gli(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
 
-    get_gli(g, in1)->state = true;
-    get_gli(g, in2)->state = true;
-    get_gli(g, in3)->state = false;
+    graphGetGLI(g, in1)->state = true;
+    graphGetGLI(g, in2)->state = true;
+    graphGetGLI(g, in3)->state = false;
     dispatcher_add_job(d, ID, 1);
     step_dispatcher(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, in3)->state, (int *) get_gli(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
 
-    get_gli(g, in1)->state = true;
-    get_gli(g, in2)->state = true;
-    get_gli(g, in3)->state = true;
+    graphGetGLI(g, in1)->state = true;
+    graphGetGLI(g, in2)->state = true;
+    graphGetGLI(g, in3)->state = true;
     dispatcher_add_job(d, ID, 1);
     step_dispatcher(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) get_gli(g, in1)->state, (int *) get_gli(g, in2)->state, (int *) get_gli(g, in3)->state, (int *) get_gli(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
     delete_dispatcher(d);
-    delete_graph(g);
+    graphDelete(g);
 }
 
 

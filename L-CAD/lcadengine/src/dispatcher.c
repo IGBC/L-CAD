@@ -56,7 +56,7 @@ dispatcher *create_dispatcher(graph *logicGraph, int threads) {
     //TODO: Lock Graph for editing;
     ctx->timestep = 0;
     ctx->pool = thpool_init(threads);
-    ctx->n = get_node_count(logicGraph);
+    ctx->n = graphGetNodeCount(logicGraph);
     // make a big thing to store Jobs in. (n * MD drid)
     ctx->jobpool = (job*) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(job));
     memset((void*)ctx->jobpool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(job)); 
@@ -103,7 +103,7 @@ int step_dispatcher(dispatcher *ctx) {
     // apply the diff patches to the graph.
     for (i = 0; i < ctx->diffBufferCount; i++) {
         diff *d = &ctx->diffBuffer[i];
-        GLI *g = get_gli(ctx->LG, d->ID);
+        GLI *g = graphGetGLI(ctx->LG, d->ID);
         g->state = d->newState;
     }
     
@@ -123,14 +123,14 @@ int step_dispatcher(dispatcher *ctx) {
 int dispatcher_add_job(dispatcher *ctx, unsigned long ID, unsigned int delay) {
     if (delay == 0) return -1;
     if (delay > MAX_DELAY) return -2;
-    GLI *gli = get_gli(ctx->LG, ID); 
+    GLI *gli = graphGetGLI(ctx->LG, ID); 
     generate_job(ctx, gli, delay);
     return 0;
 };
 
 void worker_do_work(job *j) {
     // Get Inputs;
-    fastlist *inputs = get_conns_by_drn(j->ctx->LG, j->unit->ID);  
+    fastlist *inputs = graphGetConnectionsByDrn(j->ctx->LG, j->unit->ID);  
     unsigned long count = fastlist_size(inputs);
     unsigned long i;
     unsigned long sum = 0;
@@ -163,7 +163,7 @@ void worker_do_work(job *j) {
         j->ctx->diffBufferCount++;
 
         // Get Outputs;
-        fastlist *outputs = get_conns_by_src(j->ctx->LG, j->unit->ID);
+        fastlist *outputs = graphGetConnectionsBySrc(j->ctx->LG, j->unit->ID);
         if (outputs) {
             count = fastlist_size(outputs);
             for (i = 0; i < count; i++) {

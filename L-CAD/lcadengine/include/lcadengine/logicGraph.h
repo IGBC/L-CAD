@@ -25,20 +25,20 @@ struct {
 struct s_graph;
 typedef struct s_graph graph;
 
-graph *create_graph();
-void delete_graph(graph *ctx);
+graph *graphCreate();
+void graphDelete(graph *ctx);
 
-unsigned long add_gli(graph *ctx, gateInputType type, bool nin, unsigned int delay);
-void remove_gli(graph *ctx, unsigned long ID);
+unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned int delay);
+void graphRemoveGLI(graph *ctx, unsigned long ID);
 
-unsigned long add_conn(graph *ctx, unsigned long Src, unsigned long Snk);
-void remove_conn(graph *ctx, unsigned long ID);
+unsigned long graphAddConnection(graph *ctx, unsigned long Src, unsigned long Snk);
+void graphRemoveConnection(graph *ctx, unsigned long ID);
 
-genericLogicInterface *get_gli(graph *ctx, unsigned long ID);
+genericLogicInterface *graphGetGLI(graph *ctx, unsigned long ID);
 
-connection *get_conn_by_id(graph *ctx, unsigned long ID);
-fastlist *get_conns_by_src(graph *ctx, unsigned long srcID);
-fastlist *get_conns_by_drn(graph *ctx, unsigned long drnID);
+connection *graphGetConnectionByID(graph *ctx, unsigned long ID);
+fastlist *graphGetConnectionsBySrc(graph *ctx, unsigned long srcID);
+fastlist *graphGetConnectionsByDrn(graph *ctx, unsigned long drnID);
 
-unsigned long get_node_count(graph *ctx);
+unsigned long graphGetNodeCount(graph *ctx);
 #endif

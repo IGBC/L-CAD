@@ -14,7 +14,7 @@ struct s_graph {
 	unsigned long nodeCount;
 };
 
-graph *create_graph() {
+graph *graphCreate() {
     graph *ctx = (graph*) malloc(sizeof(graph));
     ctx->GIDMap = hashmapCreate(0);
     ctx->CIDMap = hashmapCreate(0);
@@ -26,18 +26,18 @@ graph *create_graph() {
     return ctx;
 };
 
-void delete_graph(graph *ctx) {
+void graphDelete(graph *ctx) {
     unsigned long i;
     // delete Connections
     for (i = 0; i < fastlist_size(ctx->connections); i++) {
         connection *conn = (connection*) fastlist_get(ctx->connections, i);
-        remove_conn(ctx, conn->ID);
+        graphRemoveConnection(ctx, conn->ID);
     }
     
     // delete Nodes
     for (i = 0; i < fastlist_size(ctx->nodes); i++) {
         GLI *gli = (GLI*) fastlist_get(ctx->nodes, i);
-        remove_gli(ctx, gli->ID);
+        graphRemoveGLI(ctx, gli->ID);
     }
     
     // tear down the graph
@@ -50,7 +50,7 @@ void delete_graph(graph *ctx) {
     free(ctx);
 };
 
-unsigned long add_gli(graph *ctx, gateInputType type, bool nin, unsigned int delay) {
+unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned int delay) {
     GLI *gli = (GLI*) malloc(sizeof(GLI));
 
     gli->ID = (unsigned long) gli; // We're using the pointer as a UUID, as we don't have a generator.
@@ -70,7 +70,7 @@ unsigned long add_gli(graph *ctx, gateInputType type, bool nin, unsigned int del
     // gli goes out of scope here. (psst, don't tell anyone the ID is a pointer)
 };
 
-void remove_gli(graph *ctx, unsigned long ID) {
+void graphRemoveGLI(graph *ctx, unsigned long ID) {
     //Unregister this GLI;
     GLI *gli = (GLI*) hashmapRemove(ctx->GIDMap, ID);
     fastlist_remove_by_pointer(ctx->nodes, gli);
@@ -81,7 +81,7 @@ void remove_gli(graph *ctx, unsigned long ID) {
     ctx->nodeCount--;
 };
 
-unsigned long add_conn(graph *ctx, unsigned long src, unsigned long drn) {
+unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long drn) {
     connection *conn = (connection*) malloc(sizeof(connection));
     conn->ID = (unsigned long) conn; // We're using the pointer as a UUID, as we don't have a generator.
     // TODO: Generate Better IDs
@@ -121,7 +121,7 @@ unsigned long add_conn(graph *ctx, unsigned long src, unsigned long drn) {
     return conn->ID;
 };
 
-void remove_conn(graph *ctx, unsigned long ID) {
+void graphRemoveConnection(graph *ctx, unsigned long ID) {
     // Remove Connection from hashmap
     connection *conn = (connection*) hashmapRemove(ctx->CIDMap, ID);
     
@@ -139,22 +139,22 @@ void remove_conn(graph *ctx, unsigned long ID) {
     free(conn);
 }
 
-genericLogicInterface *get_gli(graph *ctx, unsigned long ID) {
+genericLogicInterface *graphGetGLI(graph *ctx, unsigned long ID) {
     return (GLI*) hashmapGet(ctx->GIDMap, ID);
 }
 
-connection *get_conn_by_id(graph *ctx, unsigned long ID) {
+connection *graphGetConnectionByID(graph *ctx, unsigned long ID) {
     return (connection*) hashmapGet(ctx->CIDMap, ID);
 }
 
-fastlist *get_conns_by_src(graph *ctx, unsigned long srcID) {
+fastlist *graphGetConnectionsBySrc(graph *ctx, unsigned long srcID) {
     return (fastlist*) hashmapGet(ctx->srcMap, srcID);
 }
 
-fastlist *get_conns_by_drn(graph *ctx, unsigned long drnID) {
+fastlist *graphGetConnectionsByDrn(graph *ctx, unsigned long drnID) {
     return (fastlist*) hashmapGet(ctx->drnMap, drnID);
 }
 
-unsigned long get_node_count(graph *ctx){
+unsigned long graphGetNodeCount(graph *ctx){
     return ctx->nodeCount;
 }
