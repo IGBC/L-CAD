@@ -63,22 +63,22 @@ void simulate_adder() {
     graphAddConnection(g, andAB, cOut);
     graphAddConnection(g, and1C, cOut);
 
-    dispatcher *d = create_dispatcher(g, 4);
+    dispatcher *d = dispatcherCreate(g, 4);
 
     graphGetGLI(g, A)->state = false;
     graphGetGLI(g, B)->state = true;
     graphGetGLI(g, C)->state = true;
 
-    dispatcher_add_job(d, a, 1);
-    dispatcher_add_job(d, b, 1);
-    dispatcher_add_job(d, c, 1);
+    dispatcherAddJob(d, a, 1);
+    dispatcherAddJob(d, b, 1);
+    dispatcherAddJob(d, c, 1);
 
     for (int i = 0; i < 10; i++) {
         PRINT_STATE
-        step_dispatcher(d);
+        dispatcherStep(d);
     }
 
-    delete_dispatcher(d);
+    dispatcherDelete(d);
     graphDelete(g);
 }
 
@@ -93,21 +93,21 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphAddConnection(g, in2, ID);
     graphAddConnection(g, in3, ID);
     graphGetGLI(g, ID)->state = true;
-    dispatcher *d = create_dispatcher(g, 4);
+    dispatcher *d = dispatcherCreate(g, 4);
     //printf("output values are: %i, %i, %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, ID)->state);
 
     graphGetGLI(g, in1)->state = false;
     graphGetGLI(g, in2)->state = false;
     graphGetGLI(g, in3)->state = false;
-    dispatcher_add_job(d, ID, 1);
-    step_dispatcher(d);
+    dispatcherAddJob(d, ID, 1);
+    dispatcherStep(d);
     printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
     graphGetGLI(g, in1)->state = false;
     graphGetGLI(g, in2)->state = false;
     graphGetGLI(g, in3)->state = true;
-    dispatcher_add_job(d, ID, 1);
-    step_dispatcher(d);
+    dispatcherAddJob(d, ID, 1);
+    dispatcherStep(d);
     printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
@@ -115,8 +115,8 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in1)->state = false;
     graphGetGLI(g, in2)->state = true;
     graphGetGLI(g, in3)->state = false;
-    dispatcher_add_job(d, ID, 1);
-    step_dispatcher(d);
+    dispatcherAddJob(d, ID, 1);
+    dispatcherStep(d);
     printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
@@ -124,8 +124,8 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in1)->state = false;
     graphGetGLI(g, in2)->state = true;
     graphGetGLI(g, in3)->state = true;
-    dispatcher_add_job(d, ID, 1);
-    step_dispatcher(d);
+    dispatcherAddJob(d, ID, 1);
+    dispatcherStep(d);
     printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
@@ -133,8 +133,8 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in1)->state = true;
     graphGetGLI(g, in2)->state = false;
     graphGetGLI(g, in3)->state = false;
-    dispatcher_add_job(d, ID, 1);
-    step_dispatcher(d);
+    dispatcherAddJob(d, ID, 1);
+    dispatcherStep(d);
     printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
@@ -142,8 +142,8 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in1)->state = true;
     graphGetGLI(g, in2)->state = false;
     graphGetGLI(g, in3)->state = true;
-    dispatcher_add_job(d, ID, 1);
-    step_dispatcher(d);
+    dispatcherAddJob(d, ID, 1);
+    dispatcherStep(d);
     printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
@@ -151,8 +151,8 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in1)->state = true;
     graphGetGLI(g, in2)->state = true;
     graphGetGLI(g, in3)->state = false;
-    dispatcher_add_job(d, ID, 1);
-    step_dispatcher(d);
+    dispatcherAddJob(d, ID, 1);
+    dispatcherStep(d);
     printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
 
@@ -160,11 +160,11 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in1)->state = true;
     graphGetGLI(g, in2)->state = true;
     graphGetGLI(g, in3)->state = true;
-    dispatcher_add_job(d, ID, 1);
-    step_dispatcher(d);
+    dispatcherAddJob(d, ID, 1);
+    dispatcherStep(d);
     printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
 
-    delete_dispatcher(d);
+    dispatcherDelete(d);
     graphDelete(g);
 }
 

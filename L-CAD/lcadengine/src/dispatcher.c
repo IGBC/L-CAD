@@ -50,7 +50,7 @@ void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset) {
     ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
 }
 
-dispatcher *create_dispatcher(graph *logicGraph, int threads) {
+dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     dispatcher* ctx = (dispatcher*) malloc(sizeof(dispatcher));
     ctx->LG = logicGraph;
     //TODO: Lock Graph for editing;
@@ -71,7 +71,7 @@ dispatcher *create_dispatcher(graph *logicGraph, int threads) {
     
 }
 
-void delete_dispatcher(dispatcher *ctx) {
+void dispatcherDelete(dispatcher *ctx) {
     thpool_destroy(ctx->pool);
     free(ctx->jobpool);
     free(ctx->jobpoolCount);
@@ -79,7 +79,7 @@ void delete_dispatcher(dispatcher *ctx) {
     free(ctx);
 }
 
-int step_dispatcher(dispatcher *ctx) {
+int dispatcherStep(dispatcher *ctx) {
     // Move context into the next step.
     ctx->timestep++;
     
@@ -120,7 +120,7 @@ int step_dispatcher(dispatcher *ctx) {
     return 0;
 }
 
-int dispatcher_add_job(dispatcher *ctx, unsigned long ID, unsigned int delay) {
+int dispatcherAddJob(dispatcher *ctx, unsigned long ID, unsigned int delay) {
     if (delay == 0) return -1;
     if (delay > MAX_DELAY) return -2;
     GLI *gli = graphGetGLI(ctx->LG, ID); 
