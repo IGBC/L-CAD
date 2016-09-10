@@ -131,12 +131,12 @@ int dispatcherAddJob(dispatcher *ctx, unsigned long ID, unsigned int delay) {
 void worker_do_work(job *j) {
     // Get Inputs;
     fastlist *inputs = graphGetConnectionsByDrn(j->ctx->LG, j->unit->ID);  
-    unsigned long count = fastlist_size(inputs);
+    unsigned long count = fastlistSize(inputs);
     unsigned long i;
     unsigned long sum = 0;
     for (i = 0; i < count; i++) {
         // get The source gate for the connection.
-        connection *conn = (connection*) fastlist_get(inputs, i);
+        connection *conn = (connection*) fastlistGetIndex(inputs, i);
         GLI *in = conn->srcEp;
         // add the gate to the input sum.
         sum += in->state;
@@ -165,10 +165,10 @@ void worker_do_work(job *j) {
         // Get Outputs;
         fastlist *outputs = graphGetConnectionsBySrc(j->ctx->LG, j->unit->ID);
         if (outputs) {
-            count = fastlist_size(outputs);
+            count = fastlistSize(outputs);
             for (i = 0; i < count; i++) {
                 // get The source gate for the connection.
-                connection *conn = (connection *) fastlist_get(outputs, i);
+                connection *conn = (connection *) fastlistGetIndex(outputs, i);
                 GLI *out = conn->drnEp;
                 // Generate Job;
                 generate_job(j->ctx, out, 1); // TODO: include delay.

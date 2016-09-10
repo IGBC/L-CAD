@@ -12,7 +12,7 @@ struct s_fastlist {
  * Create new list
  * Returns FASTLIST_FAILED on failure
  * else returns pointer to list */
-fastlist *new_fastlist(unsigned long size) {
+fastlist *fastlistCreate(unsigned long size) {
     // allocate space for the list
     fastlist *fl = (fastlist*) malloc(sizeof(fastlist));
     if (!fl) return (fastlist*) FASTLIST_FAILED;
@@ -30,7 +30,7 @@ fastlist *new_fastlist(unsigned long size) {
 
 /**
  * Frees resources and deletes list */
-void fastlist_dispose(fastlist *ctx) {
+void fastlistDelete(fastlist *ctx) {
     free(ctx->pointer);
     free(ctx);
 }
@@ -39,7 +39,7 @@ void fastlist_dispose(fastlist *ctx) {
  * Get's <index> element from list 
  * Returns FASTLIST_FAILED if item outside of accepted range 
  * else returns pointer to the index */
-void *fastlist_get(fastlist *ctx, unsigned long index) {
+void *fastlistGetIndex(fastlist *ctx, unsigned long index) {
     if (index > ctx->numItems) 
         return (void*) FASTLIST_FAILED;
     return ctx->pointer[index];
@@ -47,7 +47,7 @@ void *fastlist_get(fastlist *ctx, unsigned long index) {
 
 /**
  * Returns size of the list */
-unsigned long fastlist_size(fastlist *ctx) {
+unsigned long fastlistSize(fastlist *ctx) {
     return ctx->numItems;
 }
 
@@ -55,7 +55,7 @@ unsigned long fastlist_size(fastlist *ctx) {
  * Adds item to the end of the list 
  * Return FASTLIST_FAILED on failure
  * else returns new length of the list */
-unsigned long fastlist_add(fastlist *ctx, void *item) {
+unsigned long fastlistAdd(fastlist *ctx, void *item) {
     // Check if full
     if (ctx->numItems == ctx->currentSize) { 
         // New size is number of desired pointers * size of a pointer
@@ -74,7 +74,7 @@ unsigned long fastlist_add(fastlist *ctx, void *item) {
  * Removes item of index from the list and returns it.
  * Returns FASTLIST_FAILED if index outside of accepted range
  * else retuŕns <SOMETHING> TODO: Work out how this works */
-void *fastlist_remove(fastlist *ctx, unsigned long index) {
+void *fastlistRemoveIndex(fastlist *ctx, unsigned long index) {
     if (index > ctx->numItems) 
         return (void*) FASTLIST_FAILED;
     void *dead = ctx->pointer[index];
@@ -97,11 +97,11 @@ void *fastlist_remove(fastlist *ctx, unsigned long index) {
  * Removes Item from list with matching pointer
  * Returns FASTLIST_FAILED if pointer not found,
  * else returns index removed */
-unsigned long fastlist_remove_by_pointer(fastlist *ctx, void* pointer) {
+unsigned long fastlistRemoveByPointer(fastlist *ctx, void* pointer) {
     for (unsigned long i = 0; i < ctx->numItems; i++) {
         if (ctx->pointer[i] == pointer) {
             // We've found our index
-            fastlist_remove(ctx, i);
+            fastlistRemoveIndex(ctx, i);
             return i;
         }
     }

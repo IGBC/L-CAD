@@ -20,8 +20,8 @@ graph *graphCreate() {
     ctx->CIDMap = hashmapCreate(0);
     ctx->srcMap = hashmapCreate(0);
     ctx->drnMap = hashmapCreate(0);
-    ctx->nodes = new_fastlist(CONN_LIST_SIZE);
-    ctx->connections = new_fastlist(CONN_LIST_SIZE);
+    ctx->nodes = fastlistCreate(CONN_LIST_SIZE);
+    ctx->connections = fastlistCreate(CONN_LIST_SIZE);
     ctx->nodeCount = 0;
     return ctx;
 };
@@ -29,14 +29,14 @@ graph *graphCreate() {
 void graphDelete(graph *ctx) {
     unsigned long i;
     // delete Connections
-    for (i = 0; i < fastlist_size(ctx->connections); i++) {
-        connection *conn = (connection*) fastlist_get(ctx->connections, i);
+    for (i = 0; i < fastlistSize(ctx->connections); i++) {
+        connection *conn = (connection*) fastlistGetIndex(ctx->connections, i);
         graphRemoveConnection(ctx, conn->ID);
     }
     
     // delete Nodes
-    for (i = 0; i < fastlist_size(ctx->nodes); i++) {
-        GLI *gli = (GLI*) fastlist_get(ctx->nodes, i);
+    for (i = 0; i < fastlistSize(ctx->nodes); i++) {
+        GLI *gli = (GLI*) fastlistGetIndex(ctx->nodes, i);
         graphRemoveGLI(ctx, gli->ID);
     }
     
@@ -45,8 +45,8 @@ void graphDelete(graph *ctx) {
     hashmapDelete(ctx->CIDMap);
     hashmapDelete(ctx->srcMap);
     hashmapDelete(ctx->drnMap);
-    fastlist_dispose(ctx->nodes);
-    fastlist_dispose(ctx->connections);
+    fastlistDelete(ctx->nodes);
+    fastlistDelete(ctx->connections);
     free(ctx);
 };
 
@@ -63,7 +63,7 @@ unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned int
 
     // Push gli into the map
     hashmapInsert(ctx->GIDMap, (void*)gli, gli->ID);
-    fastlist_add(ctx->nodes, (void*)gli);
+    fastlistAdd(ctx->nodes, (void*)gli);
     
     ctx->nodeCount++;
     return gli->ID;
@@ -73,7 +73,7 @@ unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned int
 void graphRemoveGLI(graph *ctx, unsigned long ID) {
     //Unregister this GLI;
     GLI *gli = (GLI*) hashmapRemove(ctx->GIDMap, ID);
-    fastlist_remove_by_pointer(ctx->nodes, gli);
+    fastlistRemoveByPointer(ctx->nodes, gli);
     
     //TODO Remove connections here.
     
@@ -96,27 +96,27 @@ unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long dr
     
     //insert into Connection ID map;
     hashmapInsert(ctx->CIDMap, (void*)conn, conn->ID);
-    fastlist_add(ctx->connections, (void*)conn);
+    fastlistAdd(ctx->connections, (void*)conn);
     
     //check to see if a connection already exists with this src
     fastlist* list = (fastlist*) hashmapGet(ctx->srcMap, src);
     if (!list) { //if the list doesn't exist
-        list = new_fastlist(CONN_LIST_SIZE);
+        list = fastlistCreate(CONN_LIST_SIZE);
         //TODO: safety this;
         hashmapInsert(ctx->srcMap, (void*)list, src);
     }
     //add the Connection to the list;
-    fastlist_add(list, (void*)conn);
+    fastlistAdd(list, (void*)conn);
 
     //check to see if a connection already exists with this drn
     list = (fastlist*) hashmapGet(ctx->drnMap, drn);
     if (!list) { //if the list doesn't exist
-        list = new_fastlist(CONN_LIST_SIZE);
+        list = fastlistCreate(CONN_LIST_SIZE);
         //TODO: safety this;
         hashmapInsert(ctx->drnMap, (void*)list, drn);
     }
     //add the Connection to the list;
-    fastlist_add(list, (void*)conn);
+    fastlistAdd(list, (void*)conn);
 
     return conn->ID;
 };
@@ -128,12 +128,12 @@ void graphRemoveConnection(graph *ctx, unsigned long ID) {
     // Remove connection from Source and drain map/lists
     // NOTE: This might leak. if the lists are empty
     fastlist *list = (fastlist*) hashmapGet(ctx->srcMap, conn->srcID);
-    fastlist_remove_by_pointer(list, (void*)conn);
+    fastlistRemoveByPointer(list, (void*)conn);
     list = (fastlist*) hashmapGet(ctx->drnMap, conn->drnID);
-    fastlist_remove_by_pointer(list, (void*)conn);
+    fastlistRemoveByPointer(list, (void*)conn);
     
     // Remove the Connection from main list
-    fastlist_remove_by_pointer(ctx->connections, conn);
+    fastlistRemoveByPointer(ctx->connections, conn);
     
     // Finally free the Connection
     free(conn);
