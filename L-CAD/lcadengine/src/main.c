@@ -74,8 +74,9 @@ void simulate_adder() {
     dispatcherAddJob(d, c, 1);
 
     for (int i = 0; i < 10; i++) {
-        PRINT_STATE
-        dispatcherStep(d);
+        //PRINT_STATE
+        graphPrint(g);
+    	dispatcherStep(d);
     }
 
     dispatcherDelete(d);

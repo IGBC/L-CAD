@@ -195,3 +195,45 @@ fastlist *graphGetConnectionsByDrn(graph *ctx, unsigned long drnID) {
 unsigned long graphGetNodeCount(graph *ctx){
     return ctx->nodeCount;
 }
+
+#include <stdio.h>
+
+void graphPrint(graph* ctx) {
+	printf("===== NODE ===== | Type | State\n");
+	for (unsigned long i = 0; i < fastlistSize(ctx->nodes); i++) {
+		GLI *gli = (GLI*) fastlistGetIndex(ctx->nodes, i);
+		printf("%016X | ", gli->ID);
+		switch (gli->inputMode) {
+		case AND:
+			if (gli->inputNegate) {
+				printf("NAND");
+			} else {
+				printf("AND ");
+			}
+			break;
+		case OR:
+			if (gli->inputNegate) {
+				printf("NOR ");
+			} else {
+				printf("OR  ");
+			}
+			break;
+		case XOR:
+			if (gli->inputNegate) {
+				printf("XNOR");
+			} else {
+				printf("XOR ");
+			}
+			break;
+		case UNITY:
+			if (gli->inputNegate) {
+				printf("NOT ");
+			} else {
+				printf("BUF ");
+			}
+			break;
+		}
+		printf(" |   %i  \n", (int) gli->state);
+	}
+	printf("\n");
+}

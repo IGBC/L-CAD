@@ -9,9 +9,9 @@ typedef enum {AND, OR, XOR, UNITY, RAND} gateInputType;
 struct {
 	unsigned long ID; /* Sequential ID of Gate */
 	bool state; /* Current Output state for this GLI */
-	unsigned int delay; /* Propication delay of this gate */
+	unsigned int delay; /* Propagation delay of this gate */
 	gateInputType inputMode; /* AND OR etc.... */
-	bool inputNegate; /* N infront of the mode */
+	bool inputNegate; /* N in front of the mode */
 } typedef genericLogicInterface;
 
 struct {
@@ -41,4 +41,6 @@ fastlist *graphGetConnectionsBySrc(graph *ctx, unsigned long srcID);
 fastlist *graphGetConnectionsByDrn(graph *ctx, unsigned long drnID);
 
 unsigned long graphGetNodeCount(graph *ctx);
+
+void graphPrint(graph* ctx);
 #endif
