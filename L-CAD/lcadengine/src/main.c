@@ -28,19 +28,19 @@ int boobs = 0;
 void simulate_adder() {
     graph *g = graphCreate();
 
-    unsigned long a = graphAddGLI(g, INPUT, true, 0);
-    unsigned long b = graphAddGLI(g, INPUT, false, 0);
-    unsigned long c = graphAddGLI(g, INPUT, false, 0);
+    unsigned long a = graphAddGLI(g, INPUT, true, 101, 0);
+    unsigned long b = graphAddGLI(g, INPUT, false, 102,  0);
+    unsigned long c = graphAddGLI(g, INPUT, false, 103, 0);
 
-    unsigned long xor1 = graphAddGLI(g, XOR, false, 0);
-    unsigned long andAB = graphAddGLI(g, AND, false, 0);
-    unsigned long and1C = graphAddGLI(g, AND, false, 0);
+    unsigned long xor1 = graphAddGLI(g, XOR, false, 4, 0);
+    unsigned long andAB = graphAddGLI(g, AND, false, 5, 0);
+    unsigned long and1C = graphAddGLI(g, AND, false, 6, 0);
 
-    unsigned long out = graphAddGLI(g, XOR, false, 0);
-    unsigned long cOut = graphAddGLI(g, OR, false, 0);
+    unsigned long out = graphAddGLI(g, XOR, false, 7, 0);
+    unsigned long cOut = graphAddGLI(g, OR, false, 8, 0);
 
-    unsigned long OUT = graphAddGLI(g, OUTPUT, false, 0);
-    unsigned long COUT = graphAddGLI(g, OUTPUT, false, 0);
+    unsigned long OUT = graphAddGLI(g, OUTPUT, false, 200, 0);
+    unsigned long COUT = graphAddGLI(g, OUTPUT, false, 201, 0);
 
     /* Setup connections */
     graphAddConnection(g, a, xor1);
@@ -84,10 +84,10 @@ void simulate_adder() {
 
 void calculate_truth_table(gateInputType t, bool n) {
     graph *g = graphCreate();
-    unsigned long in1 = graphAddGLI(g, UNITY, false, 0);
-    unsigned long in2 = graphAddGLI(g, UNITY, false, 0);
-    unsigned long in3 = graphAddGLI(g, UNITY, false, 0);
-    unsigned long ID = graphAddGLI(g, t, n, 0);
+    unsigned long in1 = graphAddGLI(g, UNITY, false, 101, 0);
+    unsigned long in2 = graphAddGLI(g, UNITY, false, 102, 0);
+    unsigned long in3 = graphAddGLI(g, UNITY, false, 103, 0);
+    unsigned long ID = graphAddGLI(g, t, n, 1, 0);
     graphAddConnection(g, in1, ID);
     graphAddConnection(g, in2, ID);
     graphAddConnection(g, in3, ID);
@@ -192,11 +192,11 @@ int main() {
 
     graph *g = graphCreate();
 
-    unsigned long A = graphAddGLI(g, UNITY, false, 0);
-    unsigned long B = graphAddGLI(g, UNITY, false, 0);
+    unsigned long A = graphAddGLI(g, UNITY, false, 1, 0);
+    unsigned long B = graphAddGLI(g, UNITY, false, 2, 0);
 
-    unsigned long a = graphAddGLI(g, UNITY, false, 0);
-    unsigned long b = graphAddGLI(g, INPUT, false, 0);
+    unsigned long a = graphAddGLI(g, UNITY, false, 3, 0);
+    unsigned long b = graphAddGLI(g, INPUT, false, 4, 0);
 
     printf("connection A-a: %i\n", graphAddConnection(g, A, a));
     printf("connection B-a: %i\n", graphAddConnection(g, B, a));

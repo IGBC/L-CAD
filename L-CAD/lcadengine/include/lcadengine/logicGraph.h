@@ -28,7 +28,7 @@ typedef struct s_graph graph;
 graph *graphCreate();
 void graphDelete(graph *ctx);
 
-unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned int delay);
+unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned long ID, unsigned int delay);
 void graphRemoveGLI(graph *ctx, unsigned long ID);
 
 unsigned long graphAddConnection(graph *ctx, unsigned long Src, unsigned long Snk);

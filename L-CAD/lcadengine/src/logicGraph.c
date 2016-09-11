@@ -50,10 +50,13 @@ void graphDelete(graph *ctx) {
     free(ctx);
 };
 
-unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned int delay) {
-    GLI *gli = (GLI*) malloc(sizeof(GLI));
+unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned long ID, unsigned int delay) {
+    // if hashmapGet does not return null then there is already a gate with the desired ID.
+	if ((GLI*) hashmapGet(ctx->GIDMap, ID)) return -1; //Give up.
 
-    gli->ID = (unsigned long) gli; // We're using the pointer as a UUID, as we don't have a generator.
+	GLI *gli = (GLI*) malloc(sizeof(GLI));
+
+    gli->ID = ID; // set ID.
     // TODO: Generate Better IDs
     gli->state = false; // All GLI's start off
     // Just copy this across.
@@ -213,10 +216,10 @@ unsigned long graphGetNodeCount(graph *ctx){
 #include <stdio.h>
 
 void graphPrint(graph* ctx) {
-	printf("===== NODE ===== | Type  | State\n");
+	printf(" NODE |  Type  | State | Inputs\n");
 	for (unsigned long i = 0; i < fastlistSize(ctx->nodes); i++) {
 		GLI *gli = (GLI*) fastlistGetIndex(ctx->nodes, i);
-		printf("%016X | ", gli->ID);
+		printf(" %4i |  ", gli->ID);
 		switch (gli->inputMode) {
 		case AND:
 			if (gli->inputNegate) {
@@ -261,7 +264,14 @@ void graphPrint(graph* ctx) {
 				}
 				break;
 		}
-		printf(" |   %i  \n", (int) gli->state);
+		printf(" |   %i   |", (int) gli->state);
+
+		fastlist *inputs = (fastlist*)hashmapGet(ctx->drnMap, gli->ID);
+		for (unsigned int i = 0; i < fastlistSize(inputs); i++) {
+			printf(" %4i", ((connection*)fastlistGetIndex(inputs, i))->srcID);
+		}
+
+		printf("\n");
 	}
 	printf("\n");
 }
