@@ -149,13 +149,15 @@ void worker_do_work(job *j) {
         case UNITY: // Behaves like a 1 input OR
         case OR:    if (sum > 0)      output = true; break;
         case XOR:   if (sum == 1)     output = true; break;
+        case INPUT: output = j->unit->state; break;
         case RAND: 
         default: break;
     }
     if (j->unit->inputNegate) output = !output;
     
-    // If state has changed:
-    if (output != j->unit->state) {
+    if ((output != j->unit->state) // If state has changed:
+    	|| (j->unit->inputMode == INPUT) //OR if gate is an input
+    ) {
         // Register change with diff buffer;
         j->ctx->diffBuffer[j->ctx->diffBufferCount].ID = j->unit->ID;
         j->ctx->diffBuffer[j->ctx->diffBufferCount].newState = output;

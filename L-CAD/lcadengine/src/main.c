@@ -28,17 +28,17 @@ int boobs = 0;
 void simulate_adder() {
     graph *g = graphCreate();
 
-    unsigned long A = graphAddGLI(g, UNITY, false, 0);
-    unsigned long B = graphAddGLI(g, UNITY, false, 0);
-    unsigned long C = graphAddGLI(g, UNITY, false, 0);
+//    unsigned long A = graphAddGLI(g, UNITY, false, 0);
+//    unsigned long B = graphAddGLI(g, UNITY, false, 0);
+//    unsigned long C = graphAddGLI(g, UNITY, false, 0);
 
-    unsigned long a = graphAddGLI(g, UNITY, false, 0);
-    unsigned long b = graphAddGLI(g, UNITY, false, 0);
-    unsigned long c = graphAddGLI(g, UNITY, false, 0);
+    unsigned long a = graphAddGLI(g, INPUT, false, 0);
+    unsigned long b = graphAddGLI(g, INPUT, false, 0);
+    unsigned long c = graphAddGLI(g, INPUT, false, 0);
 
-    graphAddConnection(g, A, a);
-    graphAddConnection(g, B, b);
-    graphAddConnection(g, C, c);
+//    graphAddConnection(g, A, a);
+//    graphAddConnection(g, B, b);
+//    graphAddConnection(g, C, c);
 
     unsigned long xor1 = graphAddGLI(g, XOR, false, 0);
     unsigned long andAB = graphAddGLI(g, AND, false, 0);
@@ -65,9 +65,9 @@ void simulate_adder() {
 
     dispatcher *d = dispatcherCreate(g, 4);
 
-    graphGetGLI(g, A)->state = false;
-    graphGetGLI(g, B)->state = true;
-    graphGetGLI(g, C)->state = true;
+    graphGetGLI(g, a)->state = false;
+    graphGetGLI(g, b)->state = true;
+    graphGetGLI(g, c)->state = true;
 
     dispatcherAddJob(d, a, 1);
     dispatcherAddJob(d, b, 1);
