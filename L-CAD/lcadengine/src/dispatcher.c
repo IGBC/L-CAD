@@ -50,28 +50,28 @@ void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset) {
     ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
 }
 
-dispatcher *create_dispatcher(graph *logicGraph, int threads) {
+dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     dispatcher* ctx = (dispatcher*) malloc(sizeof(dispatcher));
     ctx->LG = logicGraph;
     //TODO: Lock Graph for editing;
     ctx->timestep = 0;
     ctx->pool = thpool_init(threads);
-    ctx->n = get_node_count(logicGraph);
+    ctx->n = graphGetNodeCount(logicGraph);
     // make a big thing to store Jobs in. (n * MD drid)
     ctx->jobpool = (job*) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(job));
     memset((void*)ctx->jobpool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(job)); 
     // Make a list of jobs in each timestep.
     ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long));
     memset((void*)ctx->jobpoolCount, 0, (MAX_DELAY + 1) * sizeof(unsigned long));
-    // make a buffer to store the differance in the graph from a timestep.
+    // make a buffer to store the difference in the graph from a timestep.
     ctx->diffBuffer = (diff*) malloc(ctx->n * sizeof(job));
     memset((void*)ctx->diffBuffer, 0, ctx->n * sizeof(job));
     ctx->diffBufferCount = 0;
     // Set up complete
-    
+    return ctx;
 }
 
-void delete_dispatcher(dispatcher *ctx) {
+void dispatcherDelete(dispatcher *ctx) {
     thpool_destroy(ctx->pool);
     free(ctx->jobpool);
     free(ctx->jobpoolCount);
@@ -79,7 +79,7 @@ void delete_dispatcher(dispatcher *ctx) {
     free(ctx);
 }
 
-int step_dispatcher(dispatcher *ctx) {
+int dispatcherStep(dispatcher *ctx) {
     // Move context into the next step.
     ctx->timestep++;
     
@@ -103,7 +103,7 @@ int step_dispatcher(dispatcher *ctx) {
     // apply the diff patches to the graph.
     for (i = 0; i < ctx->diffBufferCount; i++) {
         diff *d = &ctx->diffBuffer[i];
-        GLI *g = get_gli(ctx->LG, d->ID);
+        GLI *g = graphGetGLI(ctx->LG, d->ID);
         g->state = d->newState;
     }
     
@@ -120,23 +120,23 @@ int step_dispatcher(dispatcher *ctx) {
     return 0;
 }
 
-int dispatcher_add_job(dispatcher *ctx, unsigned long ID, unsigned int delay) {
+int dispatcherAddJob(dispatcher *ctx, unsigned long ID, unsigned int delay) {
     if (delay == 0) return -1;
     if (delay > MAX_DELAY) return -2;
-    GLI *gli = get_gli(ctx->LG, ID); 
+    GLI *gli = graphGetGLI(ctx->LG, ID); 
     generate_job(ctx, gli, delay);
     return 0;
 };
 
 void worker_do_work(job *j) {
     // Get Inputs;
-    fastlist *inputs = get_conns_by_drn(j->ctx->LG, j->unit->ID);  
-    unsigned long count = fastlist_size(inputs);
+    fastlist *inputs = graphGetConnectionsByDrn(j->ctx->LG, j->unit->ID);  
+    unsigned long count = fastlistSize(inputs);
     unsigned long i;
     unsigned long sum = 0;
     for (i = 0; i < count; i++) {
         // get The source gate for the connection.
-        connection *conn = (connection*) fastlist_get(inputs, i);
+        connection *conn = (connection*) fastlistGetIndex(inputs, i);
         GLI *in = conn->srcEp;
         // add the gate to the input sum.
         sum += in->state;
@@ -147,28 +147,33 @@ void worker_do_work(job *j) {
     switch (j->unit->inputMode) {
         case AND:   if (sum == count) output = true; break; 
         case UNITY: // Behaves like a 1 input OR
+        case OUTPUT: // Behaves like a 1 input OR
         case OR:    if (sum > 0)      output = true; break;
         case XOR:   if (sum == 1)     output = true; break;
+        case INPUT: output = j->unit->state; break;
         case RAND: 
         default: break;
     }
     if (j->unit->inputNegate) output = !output;
     
-    // If state has changed:
-    if (output != j->unit->state) {
-        // Register change with diff buffer;
-        j->ctx->diffBuffer[j->ctx->diffBufferCount].ID = j->unit->ID;
-        j->ctx->diffBuffer[j->ctx->diffBufferCount].newState = output;
-        // Only fiddle with this when we're done playing with it.
-        j->ctx->diffBufferCount++;
+    if ((output != j->unit->state) // If state has changed:
+    	|| (j->unit->inputMode == INPUT) //OR if gate is an input
+    ) {
+		if (j->unit->inputMode != INPUT) {
+			// Register change with diff buffer;
+			j->ctx->diffBuffer[j->ctx->diffBufferCount].ID = j->unit->ID;
+			j->ctx->diffBuffer[j->ctx->diffBufferCount].newState = output;
+			// Only fiddle with this when we're done playing with it.
+			j->ctx->diffBufferCount++;
+		}
 
         // Get Outputs;
-        fastlist *outputs = get_conns_by_src(j->ctx->LG, j->unit->ID);
+        fastlist *outputs = graphGetConnectionsBySrc(j->ctx->LG, j->unit->ID);
         if (outputs) {
-            count = fastlist_size(outputs);
+            count = fastlistSize(outputs);
             for (i = 0; i < count; i++) {
                 // get The source gate for the connection.
-                connection *conn = (connection *) fastlist_get(outputs, i);
+                connection *conn = (connection *) fastlistGetIndex(outputs, i);
                 GLI *out = conn->drnEp;
                 // Generate Job;
                 generate_job(j->ctx, out, 1); // TODO: include delay.
