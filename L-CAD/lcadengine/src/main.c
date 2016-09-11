@@ -74,7 +74,7 @@ void simulate_adder() {
     dispatcherAddJob(d, c, 1);
 
     for (int i = 0; i < 10; i++) {
-        //PRINT_STATE
+        PRINT_STATE
         dispatcherStep(d);
     }
 
@@ -170,6 +170,7 @@ void calculate_truth_table(gateInputType t, bool n) {
 
 
 int main() {
+    printf("+= Sizeof =+\n| char:  %i |\n| short: %i |\n| int:   %i |\n| long:  %i |\n| void*: %i |\n+----------+\n",sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(void*)); 
     simulate_adder();
     
     printf("\n\n=== AND ===\n");
