@@ -134,8 +134,11 @@ unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long dr
     //if the drn of this connection is an input gate no dice.
     if (drnGli->inputMode == INPUT) return -1; //fail
 
-    // if the drn of this connection is in UNITY mode it can only accept 1 input
-    if ((drnGli->inputMode == UNITY)  ) {
+    //if the src of this connection is an output no dice.
+    if (srcGli->inputMode == OUTPUT) return -1;
+
+    // if the drn of this connection is in UNITY or output mode it can only accept 1 input
+    if ((drnGli->inputMode == UNITY) || (drnGli->inputMode == OUTPUT) ) {
     	// get the list of inputs to the drn.
     	fastlist *drnInputs = (fastlist*) hashmapGet(ctx->drnMap, drn);
     	// if the list is not currently empty then fail.
@@ -210,46 +213,53 @@ unsigned long graphGetNodeCount(graph *ctx){
 #include <stdio.h>
 
 void graphPrint(graph* ctx) {
-	printf("===== NODE ===== | Type | State\n");
+	printf("===== NODE ===== | Type  | State\n");
 	for (unsigned long i = 0; i < fastlistSize(ctx->nodes); i++) {
 		GLI *gli = (GLI*) fastlistGetIndex(ctx->nodes, i);
 		printf("%016X | ", gli->ID);
 		switch (gli->inputMode) {
 		case AND:
 			if (gli->inputNegate) {
-				printf("NAND");
+				printf("NAND ");
 			} else {
-				printf("AND ");
+				printf("AND  ");
 			}
 			break;
 		case OR:
 			if (gli->inputNegate) {
-				printf("NOR ");
+				printf("NOR  ");
 			} else {
-				printf("OR  ");
+				printf("OR   ");
 			}
 			break;
 		case XOR:
 			if (gli->inputNegate) {
-				printf("XNOR");
+				printf("XNOR ");
 			} else {
-				printf("XOR ");
+				printf("XOR  ");
 			}
 			break;
 		case UNITY:
 			if (gli->inputNegate) {
-				printf("NOT ");
+				printf("NOT  ");
 			} else {
-				printf("BUF ");
+				printf("BUF  ");
 			}
 			break;
 		case INPUT:
 			if (gli->inputNegate) {
-				printf("IN-N");
+				printf("IN-N ");
 			} else {
-				printf("IN  ");
+				printf("IN   ");
 			}
 			break;
+		case OUTPUT:
+				if (gli->inputNegate) {
+					printf("N-OUT");
+				} else {
+					printf("OUT  ");
+				}
+				break;
 		}
 		printf(" |   %i  \n", (int) gli->state);
 	}

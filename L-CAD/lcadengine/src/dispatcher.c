@@ -147,6 +147,7 @@ void worker_do_work(job *j) {
     switch (j->unit->inputMode) {
         case AND:   if (sum == count) output = true; break; 
         case UNITY: // Behaves like a 1 input OR
+        case OUTPUT: // Behaves like a 1 input OR
         case OR:    if (sum > 0)      output = true; break;
         case XOR:   if (sum == 1)     output = true; break;
         case INPUT: output = j->unit->state; break;
@@ -158,11 +159,13 @@ void worker_do_work(job *j) {
     if ((output != j->unit->state) // If state has changed:
     	|| (j->unit->inputMode == INPUT) //OR if gate is an input
     ) {
-        // Register change with diff buffer;
-        j->ctx->diffBuffer[j->ctx->diffBufferCount].ID = j->unit->ID;
-        j->ctx->diffBuffer[j->ctx->diffBufferCount].newState = output;
-        // Only fiddle with this when we're done playing with it.
-        j->ctx->diffBufferCount++;
+		if (j->unit->inputMode != INPUT) {
+			// Register change with diff buffer;
+			j->ctx->diffBuffer[j->ctx->diffBufferCount].ID = j->unit->ID;
+			j->ctx->diffBuffer[j->ctx->diffBufferCount].newState = output;
+			// Only fiddle with this when we're done playing with it.
+			j->ctx->diffBufferCount++;
+		}
 
         // Get Outputs;
         fastlist *outputs = graphGetConnectionsBySrc(j->ctx->LG, j->unit->ID);

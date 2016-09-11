@@ -28,17 +28,9 @@ int boobs = 0;
 void simulate_adder() {
     graph *g = graphCreate();
 
-//    unsigned long A = graphAddGLI(g, UNITY, false, 0);
-//    unsigned long B = graphAddGLI(g, UNITY, false, 0);
-//    unsigned long C = graphAddGLI(g, UNITY, false, 0);
-
-    unsigned long a = graphAddGLI(g, INPUT, false, 0);
+    unsigned long a = graphAddGLI(g, INPUT, true, 0);
     unsigned long b = graphAddGLI(g, INPUT, false, 0);
     unsigned long c = graphAddGLI(g, INPUT, false, 0);
-
-//    graphAddConnection(g, A, a);
-//    graphAddConnection(g, B, b);
-//    graphAddConnection(g, C, c);
 
     unsigned long xor1 = graphAddGLI(g, XOR, false, 0);
     unsigned long andAB = graphAddGLI(g, AND, false, 0);
@@ -46,6 +38,9 @@ void simulate_adder() {
 
     unsigned long out = graphAddGLI(g, XOR, false, 0);
     unsigned long cOut = graphAddGLI(g, OR, false, 0);
+
+    unsigned long OUT = graphAddGLI(g, OUTPUT, false, 0);
+    unsigned long COUT = graphAddGLI(g, OUTPUT, false, 0);
 
     /* Setup connections */
     graphAddConnection(g, a, xor1);
@@ -63,9 +58,12 @@ void simulate_adder() {
     graphAddConnection(g, andAB, cOut);
     graphAddConnection(g, and1C, cOut);
 
+    graphAddConnection(g, out, OUT);
+    graphAddConnection(g, cOut, COUT);
+
     dispatcher *d = dispatcherCreate(g, 4);
 
-    graphGetGLI(g, a)->state = false;
+    graphGetGLI(g, a)->state = true;
     graphGetGLI(g, b)->state = true;
     graphGetGLI(g, c)->state = true;
 
@@ -174,23 +172,23 @@ int main() {
     printf("+= Sizeof =+\n| char:  %i |\n| short: %i |\n| int:   %i |\n| long:  %i |\n| void*: %i |\n+----------+\n",sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(void*)); 
     simulate_adder();
     
-    printf("\n\n=== AND ===\n");
-    calculate_truth_table(AND, false);
-
-    printf("\n\n=== NAND ===\n");
-    calculate_truth_table(AND, true);
-
-    printf("\n\n=== OR ===\n");
-    calculate_truth_table(OR, false);
-    
-    printf("\n\n=== NOR ===\n");
-    calculate_truth_table(OR, true);
-
-    printf("\n\n=== XOR ===\n");
-    calculate_truth_table(XOR, false);
-    
-    printf("\n\n=== NXOR ===\n");
-    calculate_truth_table(XOR, true);
+//    printf("\n\n=== AND ===\n");
+//    calculate_truth_table(AND, false);
+//
+//    printf("\n\n=== NAND ===\n");
+//    calculate_truth_table(AND, true);
+//
+//    printf("\n\n=== OR ===\n");
+//    calculate_truth_table(OR, false);
+//
+//    printf("\n\n=== NOR ===\n");
+//    calculate_truth_table(OR, true);
+//
+//    printf("\n\n=== XOR ===\n");
+//    calculate_truth_table(XOR, false);
+//
+//    printf("\n\n=== NXOR ===\n");
+//    calculate_truth_table(XOR, true);
 
     graph *g = graphCreate();
 
