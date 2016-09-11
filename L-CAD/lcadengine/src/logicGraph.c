@@ -1,6 +1,7 @@
 #include <lcadengine/logicGraph.h>
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "utils/hashmap.h"
 
@@ -212,8 +213,6 @@ fastlist *graphGetConnectionsByDrn(graph *ctx, unsigned long drnID) {
 unsigned long graphGetNodeCount(graph *ctx){
     return ctx->nodeCount;
 }
-
-#include <stdio.h>
 
 void graphPrint(graph* ctx) {
 	printf(" NODE |  Type  | State | Inputs\n");

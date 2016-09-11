@@ -137,9 +137,8 @@ void worker_do_work(job *j) {
     for (i = 0; i < count; i++) {
         // get The source gate for the connection.
         connection *conn = (connection*) fastlistGetIndex(inputs, i);
-        GLI *in = conn->srcEp;
         // add the gate to the input sum.
-        sum += in->state;
+        sum += conn->srcEp->state;
     }
     
     // Compare state;
@@ -151,7 +150,6 @@ void worker_do_work(job *j) {
         case OR:    if (sum > 0)      output = true; break;
         case XOR:   if (sum == 1)     output = true; break;
         case INPUT: output = j->unit->state; break;
-        case RAND: 
         default: break;
     }
     if (j->unit->inputNegate) output = !output;
@@ -169,15 +167,12 @@ void worker_do_work(job *j) {
 
         // Get Outputs;
         fastlist *outputs = graphGetConnectionsBySrc(j->ctx->LG, j->unit->ID);
-        if (outputs) {
-            count = fastlistSize(outputs);
-            for (i = 0; i < count; i++) {
-                // get The source gate for the connection.
-                connection *conn = (connection *) fastlistGetIndex(outputs, i);
-                GLI *out = conn->drnEp;
-                // Generate Job;
-                generate_job(j->ctx, out, 1); // TODO: include delay.
-            }
-        }
+		count = fastlistSize(outputs);
+		for (i = 0; i < count; i++) {
+			// get The source gate for the connection.
+			connection *conn = (connection *) fastlistGetIndex(outputs, i);
+			// Generate Job;
+			generate_job(j->ctx, conn->drnEp, 1); // TODO: include delay.
+		}
     }
 }

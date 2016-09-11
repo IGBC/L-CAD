@@ -2,23 +2,6 @@
 #define FASTLIST_H_INCLUDED
 
 #define FASTLIST_FAILED -1
-
-// From spacekookie
-#define CHECK_BUFFER(type, bfr, max_s, curr_s) \
-    { if(curr_s >= max_s) { \
-        max_s *= 2; type *tmp = calloc(sizeof(type), max_s); \
-        if(!tmp) return QCRY_STATUS_MALLOC_FAIL; \
-        memcpy(tmp, bfr, sizeof(type) * curr_s); \
-        free(bfr); \
-        bfr = tmp; \
-    } else if(curr_s * 3<= max_s) { max_s /= 2 ; \
-    if(max_s < MIN_BFR_S) max_s = MIN_BFR_S; \
-        type *tmp = calloc(sizeof(type), max_s); \
-        if(!tmp) return QCRY_STATUS_MALLOC_FAIL; \
-        memcpy(tmp, bfr, sizeof(type) * curr_s); \
-        free(bfr); \
-        bfr = tmp; } \
-    }
     
 typedef struct s_fastlist fastlist;
 

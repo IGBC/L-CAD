@@ -3,28 +3,6 @@
 #include <lcadengine/dispatcher.h>
 #include <stdio.h>
 
-int boobs = 0;
-
-#define PRINT_STATE \
-    {int stateA = (int) graphGetGLI(g, a)->state; \
-    int stateB = (int) graphGetGLI(g, b)->state; \
-    int stateC = (int) graphGetGLI(g, c)->state; \
-    int stateCOut = (int) graphGetGLI(g, cOut)->state; \
-    int stateOut = (int) graphGetGLI(g, out)->state; \
-    int stateAnd1c = (int) graphGetGLI(g, and1C)->state; \
-    int stateAndAB = (int) graphGetGLI(g, andAB)->state; \
-    int stateXor1 = (int) graphGetGLI(g, xor1)->state; \
-    printf("=== Current State %i ===\n", boobs++); \
-    printf("stateA: %i\n", stateA); \
-    printf("stateB: %i\n", stateB); \
-    printf("stateC: %i\n", stateC); \
-    printf("stateCOut: %i\n", stateCOut); \
-    printf("stateOut: %i\n", stateOut); \
-    printf("stateAnd1c: %i\n", stateAnd1c); \
-    printf("stateAndAB: %i\n", stateAndAB); \
-    printf("stateXor1: %i\n", stateXor1);}
-
-
 void simulate_adder() {
     graph *g = graphCreate();
 
@@ -72,7 +50,6 @@ void simulate_adder() {
     dispatcherAddJob(d, c, 1);
 
     for (int i = 0; i < 10; i++) {
-        //PRINT_STATE
         graphPrint(g);
     	dispatcherStep(d);
     }

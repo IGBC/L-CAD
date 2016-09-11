@@ -107,7 +107,3 @@ unsigned long fastlistRemoveByPointer(fastlist *ctx, void* pointer) {
     }
     return FASTLIST_FAILED;
 }
-
-/**
- * NOT IMPLEMENTED */
-//void **fastlist_dma(fastlist *ctx, unsigned long size);

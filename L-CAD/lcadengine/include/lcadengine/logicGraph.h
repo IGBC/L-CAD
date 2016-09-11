@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <lcadengine/fastlist.h>
 
-typedef enum {AND, OR, XOR, UNITY, INPUT, OUTPUT, RAND} gateInputType;
+typedef enum {AND, OR, XOR, UNITY, INPUT, OUTPUT} gateInputType;
 
 struct {
 	unsigned long ID; /* Sequential ID of Gate */
