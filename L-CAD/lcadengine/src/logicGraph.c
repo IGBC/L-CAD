@@ -127,15 +127,26 @@ void graphRemoveGLI(graph *ctx, unsigned long ID) {
 };
 
 unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long drn) {
-    // TODO: safety this
-    connection *conn = (connection*) malloc(sizeof(connection));
+    // get src and drn
+	GLI* srcGli = (GLI*) hashmapGet(ctx->GIDMap, src);
+    GLI* drnGli = (GLI*) hashmapGet(ctx->GIDMap, drn);
 
+    //if the drn of this connection is an input gate no dice.
+    if (drnGli->inputMode == INPUT) return -1; //fail
+
+    // if the drn of this connection is in UNITY mode it can only accept 1 input
+    if ((drnGli->inputMode == UNITY)  ) {
+    	// get the list of inputs to the drn.
+    	fastlist *drnInputs = (fastlist*) hashmapGet(ctx->drnMap, drn);
+    	// if the list is not currently empty then fail.
+    	if (fastlistSize(drnInputs)) return -1;
+    }
+
+	// TODO: safety this
+    connection *conn = (connection*) malloc(sizeof(connection));
 
     conn->ID = (unsigned long) conn; // We're using the pointer as a UUID, as we don't have a generator.
     // TODO: Generate Better IDs
-
-    GLI* srcGli = (GLI*) hashmapGet(ctx->GIDMap, src);
-    GLI* drnGli = (GLI*) hashmapGet(ctx->GIDMap, drn);
 
     conn->srcEp = srcGli;
     conn->drnEp = drnGli;
@@ -230,6 +241,13 @@ void graphPrint(graph* ctx) {
 				printf("NOT ");
 			} else {
 				printf("BUF ");
+			}
+			break;
+		case INPUT:
+			if (gli->inputNegate) {
+				printf("IN-N");
+			} else {
+				printf("IN  ");
 			}
 			break;
 		}

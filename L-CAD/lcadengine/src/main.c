@@ -192,5 +192,19 @@ int main() {
     printf("\n\n=== NXOR ===\n");
     calculate_truth_table(XOR, true);
 
+    graph *g = graphCreate();
+
+    unsigned long A = graphAddGLI(g, UNITY, false, 0);
+    unsigned long B = graphAddGLI(g, UNITY, false, 0);
+
+    unsigned long a = graphAddGLI(g, UNITY, false, 0);
+    unsigned long b = graphAddGLI(g, INPUT, false, 0);
+
+    printf("connection A-a: %i\n", graphAddConnection(g, A, a));
+    printf("connection B-a: %i\n", graphAddConnection(g, B, a));
+    printf("connection B-b: %i\n", graphAddConnection(g, B, a));
+
+    graphDelete(g);
+
     return 0;    
 }
