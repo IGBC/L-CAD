@@ -1,6 +1,7 @@
 
 #include <lcadengine/logicGraph.h>
 #include <lcadengine/dispatcher.h>
+#include <lcadengine/graphLoader.h>
 #include <stdio.h>
 
 void simulate_adder() {
@@ -147,7 +148,7 @@ void calculate_truth_table(gateInputType t, bool n) {
 
 int main() {
     printf("+= Sizeof =+\n| char:  %i |\n| short: %i |\n| int:   %i |\n| long:  %i |\n| void*: %i |\n+----------+\n",sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(void*)); 
-    simulate_adder();
+   // simulate_adder();
     
 //    printf("\n\n=== AND ===\n");
 //    calculate_truth_table(AND, false);
@@ -167,19 +168,11 @@ int main() {
 //    printf("\n\n=== NXOR ===\n");
 //    calculate_truth_table(XOR, true);
 
-    graph *g = graphCreate();
-
-    unsigned long A = graphAddGLI(g, UNITY, false, 1, 0);
-    unsigned long B = graphAddGLI(g, UNITY, false, 2, 0);
-
-    unsigned long a = graphAddGLI(g, UNITY, false, 3, 0);
-    unsigned long b = graphAddGLI(g, INPUT, false, 4, 0);
-
-    printf("connection A-a: %i\n", graphAddConnection(g, A, a));
-    printf("connection B-a: %i\n", graphAddConnection(g, B, a));
-    printf("connection B-b: %i\n", graphAddConnection(g, B, a));
-
+    graph *g = loaderLoad("#inputs\n101 IN\n 102 IN\n 1 NOR 2 3\n2 !OR 1 4\n3 NAND 101 102\n4 !AND 102 5\n5 NOT 101\n 201 OUT 1");
+    graphPrint(g);
     graphDelete(g);
+
+
 
     return 0;    
 }
