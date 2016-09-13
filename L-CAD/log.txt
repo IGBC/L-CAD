@@ -1,0 +1,313 @@
++= Sizeof =+
+| char:  1 |
+| short: 2 |
+| int:   4 |
+| long:  8 |
+| void*: 8 |
++----------+
+line: 0 NOT 0
+token: 0
+token: NOT
+token: 0
+line:  1 NAND 0 1
+token: 1
+token: NAND
+token: 0
+token: 1
+line:  2 IN
+token: 2
+token: IN
+rec: 3
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   0   |    0
+    1 |  NAND  |   0   |    1    0
+    2 |  IN    |   0   |
+
+ctx->jobpoolCount[0] = 0
+ctx->jobpoolCount[1] = 0
+ctx->jobpoolCount[2] = 0
+ctx->jobpoolCount[3] = 0
+ctx->jobpoolCount[4] = 0
+ctx->jobpoolCount[5] = 0
+ctx->jobpoolCount[6] = 0
+ctx->jobpoolCount[7] = 0
+ctx->jobpoolCount[8] = 0
+ctx->jobpoolCount[9] = 0
+ctx->jobpoolCount[10] = 0
+ctx->jobpoolCount[11] = 0
+ctx->jobpoolCount[12] = 0
+ctx->jobpoolCount[13] = 0
+ctx->jobpoolCount[14] = 0
+ctx->jobpoolCount[15] = 0
+ctx->jobpoolCount[16] = 0
+ctx->jobpoolCount[17] = 0
+ctx->jobpoolCount[18] = 0
+ctx->jobpoolCount[19] = 0
+ctx->jobpoolCount[20] = 0
+ctx->jobpoolCount[21] = 0
+ctx->jobpoolCount[22] = 0
+ctx->jobpoolCount[23] = 0
+ctx->jobpoolCount[24] = 0
+ctx->jobpoolCount[25] = 0
+ctx->jobpoolCount[26] = 0
+ctx->jobpoolCount[27] = 0
+ctx->jobpoolCount[28] = 0
+ctx->jobpoolCount[29] = 0
+ctx->jobpoolCount[30] = 0
+ctx->jobpoolCount[31] = 0
+ctx->jobpoolCount[32] = 0
+ctx->jobpoolCount[33] = 0
+ctx->jobpoolCount[34] = 0
+ctx->jobpoolCount[35] = 0
+ctx->jobpoolCount[36] = 0
+ctx->jobpoolCount[37] = 0
+ctx->jobpoolCount[38] = 0
+ctx->jobpoolCount[39] = 0
+ctx->jobpoolCount[40] = 0
+ctx->jobpoolCount[41] = 0
+ctx->jobpoolCount[42] = 0
+ctx->jobpoolCount[43] = 0
+ctx->jobpoolCount[44] = 0
+ctx->jobpoolCount[45] = 0
+ctx->jobpoolCount[46] = 0
+ctx->jobpoolCount[47] = 0
+ctx->jobpoolCount[48] = 0
+ctx->jobpoolCount[49] = 0
+ctx->jobpoolCount[50] = 0
+ctx->jobpoolCount[51] = 0
+ctx->jobpoolCount[52] = 0
+ctx->jobpoolCount[53] = 0
+ctx->jobpoolCount[54] = 0
+ctx->jobpoolCount[55] = 0
+ctx->jobpoolCount[56] = 0
+ctx->jobpoolCount[57] = 0
+ctx->jobpoolCount[58] = 0
+ctx->jobpoolCount[59] = 0
+ctx->jobpoolCount[60] = 0
+ctx->jobpoolCount[61] = 0
+ctx->jobpoolCount[62] = 0
+ctx->jobpoolCount[63] = 0
+ctx->jobpoolCount[64] = 0
+ctx->jobpoolCount[65] = 0
+ctx->jobpoolCount[66] = 0
+ctx->jobpoolCount[67] = 0
+ctx->jobpoolCount[68] = 0
+ctx->jobpoolCount[69] = 0
+ctx->jobpoolCount[70] = 0
+ctx->jobpoolCount[71] = 0
+ctx->jobpoolCount[72] = 0
+ctx->jobpoolCount[73] = 0
+ctx->jobpoolCount[74] = 0
+ctx->jobpoolCount[75] = 0
+ctx->jobpoolCount[76] = 0
+ctx->jobpoolCount[77] = 0
+ctx->jobpoolCount[78] = 0
+ctx->jobpoolCount[79] = 0
+ctx->jobpoolCount[80] = 0
+ctx->jobpoolCount[81] = 0
+ctx->jobpoolCount[82] = 0
+ctx->jobpoolCount[83] = 0
+ctx->jobpoolCount[84] = 0
+ctx->jobpoolCount[85] = 0
+ctx->jobpoolCount[86] = 0
+ctx->jobpoolCount[87] = 0
+ctx->jobpoolCount[88] = 0
+ctx->jobpoolCount[89] = 0
+ctx->jobpoolCount[90] = 0
+ctx->jobpoolCount[91] = 0
+ctx->jobpoolCount[92] = 0
+ctx->jobpoolCount[93] = 0
+ctx->jobpoolCount[94] = 0
+ctx->jobpoolCount[95] = 0
+ctx->jobpoolCount[96] = 0
+ctx->jobpoolCount[97] = 0
+ctx->jobpoolCount[98] = 0
+ctx->jobpoolCount[99] = 0
+ctx->jobpoolCount[100] = 0
+Generating_job@0+1: time=1, from=-1, unit=0, ctx=0xfce3d0 total_jobs=0
+0 :
+Step 1: ctx->jobpoolCount[1] = 1
+Generating_job@1+1: time=2, from=0, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@1+1: time=2, from=0, unit=0, ctx=0xfce3d0 total_jobs=1
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   0   |    1    0
+    2 |  IN    |   0   |
+
+1 :
+Step 2: ctx->jobpoolCount[2] = 2
+Generating_job@2+1: time=3, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@2+1: time=3, from=0, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@2+1: time=3, from=0, unit=0, ctx=0xfce3d0 total_jobs=2
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   0   |    0
+    1 |  NAND  |   1   |    1    0
+    2 |  IN    |   0   |
+
+2 :
+Step 3: ctx->jobpoolCount[3] = 3
+Generating_job@3+1: time=4, from=0, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@3+1: time=4, from=0, unit=0, ctx=0xfce3d0 total_jobs=1
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   1   |    1    0
+    2 |  IN    |   0   |
+
+3 :
+Step 4: ctx->jobpoolCount[4] = 2
+Generating_job@4+1: time=5, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@4+1: time=5, from=0, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@4+1: time=5, from=0, unit=0, ctx=0xfce3d0 total_jobs=2
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   0   |    0
+    1 |  NAND  |   0   |    1    0
+    2 |  IN    |   0   |
+
+4 :
+Step 5: ctx->jobpoolCount[5] = 3
+Generating_job@5+1: time=6, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@5+1: time=6, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@5+1: time=6, from=0, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@5+1: time=6, from=0, unit=0, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   1   |    1    0
+    2 |  IN    |   0   |
+
+5 :
+Step 6: ctx->jobpoolCount[6] = 4
+Generating_job@6+1: time=7, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@6+1: time=7, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@6+1: time=7, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@6+1: time=7, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   0   |    1    0
+    2 |  IN    |   0   |
+
+6 :
+Step 7: ctx->jobpoolCount[7] = 4
+Generating_job@7+1: time=8, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@7+1: time=8, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@7+1: time=8, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@7+1: time=8, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   1   |    1    0
+    2 |  IN    |   0   |
+
+7 :
+Step 8: ctx->jobpoolCount[8] = 4
+Generating_job@8+1: time=9, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@8+1: time=9, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@8+1: time=9, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@8+1: time=9, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   0   |    1    0
+    2 |  IN    |   0   |
+
+8 :
+Step 9: ctx->jobpoolCount[9] = 4
+Generating_job@9+1: time=10, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@9+1: time=10, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@9+1: time=10, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@9+1: time=10, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   1   |    1    0
+    2 |  IN    |   0   |
+
+9 :
+Step 10: ctx->jobpoolCount[10] = 4
+Generating_job@10+1: time=11, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@10+1: time=11, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@10+1: time=11, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@10+1: time=11, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   0   |    1    0
+    2 |  IN    |   0   |
+
+10 :
+Step 11: ctx->jobpoolCount[11] = 4
+Generating_job@11+1: time=12, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@11+1: time=12, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@11+1: time=12, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@11+1: time=12, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   1   |    1    0
+    2 |  IN    |   0   |
+
+11 :
+Step 12: ctx->jobpoolCount[12] = 4
+Generating_job@12+1: time=13, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@12+1: time=13, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@12+1: time=13, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@12+1: time=13, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   0   |    1    0
+    2 |  IN    |   0   |
+
+12 :
+Step 13: ctx->jobpoolCount[13] = 4
+Generating_job@13+1: time=14, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@13+1: time=14, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@13+1: time=14, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@13+1: time=14, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   1   |    1    0
+    2 |  IN    |   0   |
+
+13 :
+Step 14: ctx->jobpoolCount[14] = 4
+Generating_job@14+1: time=15, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@14+1: time=15, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@14+1: time=15, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@14+1: time=15, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   0   |    1    0
+    2 |  IN    |   0   |
+
+14 :
+Step 15: ctx->jobpoolCount[15] = 4
+Generating_job@15+1: time=16, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@15+1: time=16, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@15+1: time=16, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@15+1: time=16, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   1   |    1    0
+    2 |  IN    |   0   |
+
+15 :
+Step 16: ctx->jobpoolCount[16] = 4
+Generating_job@16+1: time=17, from=1, unit=1, ctx=0xfce3d0 total_jobs=0
+Generating_job@16+1: time=17, from=1, unit=1, ctx=0xfce3d0 total_jobs=1
+Generating_job@16+1: time=17, from=1, unit=1, ctx=0xfce3d0 total_jobs=2
+Generating_job@16+1: time=17, from=1, unit=1, ctx=0xfce3d0 total_jobs=3
+
+ NODE |  Type  | State | Inputs
+    0 |  NOT   |   1   |    0
+    1 |  NAND  |   0   |    1    0
+    2 |  IN    |   0   |
+

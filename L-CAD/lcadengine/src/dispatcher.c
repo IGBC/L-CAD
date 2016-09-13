@@ -39,12 +39,13 @@ struct s_dispatcher {
 
 void worker_do_work(job *j);
 
-void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset) {
+void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
     if (offset > MAX_DELAY) {
         //TODO: Error.
     }
     unsigned long time = (ctx->timestep + offset) % (MAX_DELAY + 1);
     unsigned long j = ctx->jobpoolCount[time]++;
+	printf("Generating_job@%i+%i: time=%i, from=%i, unit=%i, ctx=%p total_jobs=%i\n",ctx->timestep, offset, time, src, unit->ID, ctx, j);
     ctx->jobpool[JPadr(ctx, offset, j)].unit = unit;
     ctx->jobpool[JPadr(ctx, offset, j)].ctx = ctx;
     ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
@@ -63,6 +64,11 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     // Make a list of jobs in each timestep.
     ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long));
     memset((void*)ctx->jobpoolCount, 0, (MAX_DELAY + 1) * sizeof(unsigned long));
+
+	for (int i = 0; i < MAX_DELAY + 1; i++) {
+		printf("ctx->jobpoolCount[%i] = %li\n", i, ctx->jobpoolCount[i]); 
+	}
+
     // make a buffer to store the difference in the graph from a timestep.
     ctx->diffBuffer = (diff*) malloc(ctx->n * sizeof(job));
     memset((void*)ctx->diffBuffer, 0, ctx->n * sizeof(job));
@@ -89,14 +95,18 @@ int dispatcherStep(dispatcher *ctx) {
     // Constanty stuff
     unsigned long time = ctx->timestep % (MAX_DELAY + 1);
     
+	printf("Step %i: ctx->jobpoolCount[%i] = %li\n", ctx->timestep, time, ctx->jobpoolCount[time]); 
+
+	
     // Adds each job to the threadpool's queue for execution.
     for (i = 0; i < ctx->jobpoolCount[time]; i++) {
         job *j = &ctx->jobpool[JPadr(ctx, 0, i)];
-        thpool_add_work(ctx->pool, (void*) worker_do_work, (void*) j);
+		 worker_do_work(j);
+		// thpool_add_work(ctx->pool, (void*) worker_do_work, (void*) j);
     }
     
     // Wait for the step execution to complete.
-    thpool_wait(ctx->pool);
+    // thpool_wait(ctx->pool);
     
     // here the diff buffer is populated. 
     
@@ -124,7 +134,7 @@ int dispatcherAddJob(dispatcher *ctx, unsigned long ID, unsigned int delay) {
     if (delay == 0) return -1;
     if (delay > MAX_DELAY) return -2;
     GLI *gli = graphGetGLI(ctx->LG, ID); 
-    generate_job(ctx, gli, delay);
+    generate_job(ctx, gli, delay, -1);
     return 0;
 };
 
@@ -172,7 +182,7 @@ void worker_do_work(job *j) {
 			// get The source gate for the connection.
 			connection *conn = (connection *) fastlistGetIndex(outputs, i);
 			// Generate Job;
-			generate_job(j->ctx, conn->drnEp, 1); // TODO: include delay.
+			generate_job(j->ctx, conn->drnEp, 1, j->unit->ID); // TODO: include delay.
 		}
     }
 }

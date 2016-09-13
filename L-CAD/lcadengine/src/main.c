@@ -168,11 +168,61 @@ int main() {
 //    printf("\n\n=== NXOR ===\n");
 //    calculate_truth_table(XOR, true);
 
-    graph *g = loaderLoad("#inputs\n101 IN\n 102 IN\n 1 NOR 2 3\n2 !OR 1 4\n3 NAND 101 102\n4 !AND 102 5\n5 NOT 101\n 201 OUT 1");
+    graph *g = loaderLoad("0 NOT 0\n 1 NAND 0 1\n 2 IN");
+
+//"0 IN \n \
+#100 NOT 0 \n \
+1 OUT 14 #Q1\n \
+#2 OUT 24 #Q2\n \
+#3 OUT 34 #Q2\n \
+#4 OUT 44 #Q4\n \
+\n \
+11 NAND 15 0\n \
+12 NOT 15\n \
+13 NAND 12 0\n \
+14 NAND 11 15 #Q\n \
+15 NAND 13 14 #!Q\n \
+\n \
+#21 NAND 25 0\n \
+#22 NOT 25\n \
+#23 NAND 22 0\n \
+#24 NAND 21 25 #Q\n \
+#25 NAND 23 24 #!Q\n \
+\n \
+#31 NAND 35 0\n \
+#32 NOT 35\n \
+#33 NAND 32 0\n \
+#34 NAND 31 35 #Q\n \
+#35 NAND 33 34 #!Q\n \
+\n \
+#41 NAND 45 0\n \
+#42 NOT 45\n \
+#43 NAND 42 0\n \
+#44 NAND 41 45 #Q\n \
+#45 NAND 43 44 #!Q");
     graphPrint(g);
-    graphDelete(g);
 
+	dispatcher *d = dispatcherCreate(g, 4);
+	int v = 0;	
 
+	graphGetGLI(g, 0)->state = (bool)v;
+	dispatcherAddJob(d, 0, 1);
+
+	for(int i = 0; i < 16; i++) {
+		printf("%i :\n", i);
+		//v = 1 - v;
+		//graphGetGLI(g, 0)->state = (bool)v;
+		//dispatcherAddJob(d, 0, 1);
+
+		for(int j = 0; j < 1; j++) {
+			//printf(" %i,", j);
+			dispatcherStep(d);
+		}
+		printf("\n");
+		graphPrint(g);
+	}
+	    
+	//graphDelete(g);
 
     return 0;    
 }
