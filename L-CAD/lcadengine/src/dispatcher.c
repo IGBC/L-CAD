@@ -35,6 +35,9 @@ struct s_dispatcher {
     unsigned long *jobpoolCount; // size = (MAX_DELAY + 1)
     diff *diffBuffer;
     unsigned long diffBufferCount;
+
+    //pool containing update locks.
+    bool *lockPool;
 };
 
 void worker_do_work(job *j);
@@ -42,13 +45,21 @@ void worker_do_work(job *j);
 void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
     if (offset > MAX_DELAY) {
         //TODO: Error.
+    	return;
     }
+
+    if (ctx->lockPool[JPadr(ctx, offset, unit->ID)])
+    	return;
+
     unsigned long time = (ctx->timestep + offset) % (MAX_DELAY + 1);
     unsigned long j = ctx->jobpoolCount[time]++;
-	printf("Generating_job@%i+%i: time=%i, from=%i, unit=%i, ctx=%p total_jobs=%i\n",ctx->timestep, offset, time, src, unit->ID, ctx, j);
+	//printf("Generating_job@%i+%i: time=%i, from=%i, unit=%i, ctx=%p total_jobs=%i\n",ctx->timestep, offset, time, src, unit->ID, ctx, j);
     ctx->jobpool[JPadr(ctx, offset, j)].unit = unit;
     ctx->jobpool[JPadr(ctx, offset, j)].ctx = ctx;
     ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
+
+    ctx->lockPool[JPadr(ctx, offset, unit->ID)] = true;
+    return;
 }
 
 dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
@@ -60,7 +71,7 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     ctx->n = graphGetNodeCount(logicGraph);
     // make a big thing to store Jobs in. (n * MD drid)
     ctx->jobpool = (job*) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(job));
-    memset((void*)ctx->jobpool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(job)); 
+    memset((void*)ctx->jobpool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(job));
     // Make a list of jobs in each timestep.
     ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long));
     memset((void*)ctx->jobpoolCount, 0, (MAX_DELAY + 1) * sizeof(unsigned long));
@@ -73,6 +84,11 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     ctx->diffBuffer = (diff*) malloc(ctx->n * sizeof(job));
     memset((void*)ctx->diffBuffer, 0, ctx->n * sizeof(job));
     ctx->diffBufferCount = 0;
+
+    // Lock pool prevents creating duplicate jobs.
+    ctx->lockPool = (bool*) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(bool));
+    memset((void*)ctx->lockPool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(bool));
+
     // Set up complete
     return ctx;
 }
@@ -95,13 +111,13 @@ int dispatcherStep(dispatcher *ctx) {
     // Constanty stuff
     unsigned long time = ctx->timestep % (MAX_DELAY + 1);
     
-	printf("Step %i: ctx->jobpoolCount[%i] = %li\n", ctx->timestep, time, ctx->jobpoolCount[time]); 
+	printf("Step %i: ctx->jobpoolCount[%i] = %li\n", ctx->timestep, time, ctx->jobpoolCount[time]);
 
 	
     // Adds each job to the threadpool's queue for execution.
     for (i = 0; i < ctx->jobpoolCount[time]; i++) {
         job *j = &ctx->jobpool[JPadr(ctx, 0, i)];
-		 worker_do_work(j);
+		worker_do_work(j);
 		// thpool_add_work(ctx->pool, (void*) worker_do_work, (void*) j);
     }
     
@@ -127,6 +143,10 @@ int dispatcherStep(dispatcher *ctx) {
     // Clear the diffBuffer now that the patches are applied.
     memset(ctx->diffBuffer, 0, ctx->diffBufferCount * sizeof(diff));
     ctx->diffBufferCount = 0;
+
+    //clear lockPool
+    memset(&ctx->lockPool[JPadr(ctx, 0, 0)], 0, ctx->n * sizeof(bool));
+
     return 0;
 }
 
