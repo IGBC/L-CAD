@@ -84,11 +84,11 @@ unsigned long fastlistRemoveByPointer(fastlist *ctx, void* pointer);
 /**
  * @brief NOT IMPLEMENTED
  *
- * @param graph *ctx            An initialised graph to work on
- * @param unsigned long ID      The ID of a source GLI
+ * @param fastlist *ctx         An initialised fastlist to work on
+ * @param unsigned long size    Some size
  *
- * @returns fastlist            Connections retrieved from the graph.
- *                              NULL on error
+ * @returns void **             Direct pointers to the fastlist
+ *                              FASTLIST_FAILED on error
  */
 void **fastlistDMA(fastlist *ctx, unsigned long size);
 
