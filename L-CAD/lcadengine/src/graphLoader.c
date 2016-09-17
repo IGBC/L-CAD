@@ -17,7 +17,7 @@
  */
 
 
-#include <lcadengine/graphLoader.h>
+#include "graphLoader.h"
 
 #include <stdlib.h>
 #include <string.h>

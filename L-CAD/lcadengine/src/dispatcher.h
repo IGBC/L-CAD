@@ -20,7 +20,7 @@
 #ifndef DISPATCHER_H_INCLUDED
 #define DISPATCHER_H_INCLUDED
 
-#include <lcadengine/logicGraph.h>
+#include "logicGraph.h"
 
 struct s_dispatcher;
 typedef struct s_dispatcher dispatcher;

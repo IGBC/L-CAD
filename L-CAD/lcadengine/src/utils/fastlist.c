@@ -17,7 +17,8 @@
  */
 
 
-#include <lcadengine/fastlist.h>
+#include "fastlist.h"
+
 #include <stdlib.h>
 
 struct s_fastlist {

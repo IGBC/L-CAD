@@ -17,7 +17,7 @@
  */
 
 
-#include <lcadengine/logicGraph.h>
+#include "logicGraph.h"
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -20,7 +20,7 @@
 #ifndef GRAPHLOADER_H_INCLUDED
 #define GRAPHLOADER_H_INCLUDED
 
-#include <lcadengine/logicGraph.h>
+#include "logicGraph.h"
 
 /**
  * @brief Creates a graph from the given string.

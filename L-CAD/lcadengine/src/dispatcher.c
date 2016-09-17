@@ -17,7 +17,7 @@
  */
 
 
-#include <lcadengine/dispatcher.h>
+#include "dispatcher.h"
 
 #include <stdlib.h>
 #include <string.h>

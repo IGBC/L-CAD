@@ -17,10 +17,10 @@
  */
 
 
-#include <lcadengine/logicGraph.h>
-#include <lcadengine/dispatcher.h>
-#include <lcadengine/graphLoader.h>
 #include <stdio.h>
+#include "dispatcher.h"
+#include "graphLoader.h"
+#include "logicGraph.h"
 
 void simulate_adder() {
     graph *g = graphCreate();
