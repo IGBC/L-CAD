@@ -5,46 +5,91 @@
     
 typedef struct s_fastlist fastlist;
 
-/** 
- * Create new list
- * Returns FASTLIST_FAILED on failure
- * else returns pointer to list */
+
+/**
+ * @brief Create new list
+ *
+ * @returns fastlist            Pointer to a new fastlist
+ *                              FASTLIST_FAILED on error
+ */
 fastlist *fastlistCreate(unsigned long size);
 
+
 /**
- * Frees resources and deletes list */
+ * @brief Frees resources and deletes list
+ *
+ * @param fastlist *ctx         An initialised fastlist to work on
+ *
+ */
 void fastlistDelete(fastlist *ctx);
 
+
 /**
- * Get's <index> element from list 
- * Returns FASTLIST_FAILED if item outside of accepted range 
- * else returns pointer to the index */
+ * @brief Get's <index> element from list 
+ *
+ * @param fastlist *ctx         An initialised fastlist to work on
+ * @param unsigned long index   The index of the item
+ *
+ * @returns void*               Item from the fastlist
+ *                              FASTLIST_FAILED on error
+ */
 void *fastlistGetIndex(fastlist *ctx, unsigned long index);
 
+
 /**
- * Returns size of the list */
+ * @brief Returns size of the list
+ *
+ * @param fastlist *ctx         An initialised fastlist to work on
+ *
+ * @returns fastlist            Size of the fastlist
+ */
 unsigned long fastlistSize(fastlist *ctx);
 
+
 /**
- * Adds item to the end of the list 
- * Return FASTLIST_FAILED on failure
- * else returns new length of the list */
+ * @brief Adds item to the end of the list 
+ *
+ * @param fastlist *ctx         An initialised fastlist to work on
+ * @param void *item            Pointer to an item to be added to the list
+ *
+ * @returns unsigned long       New length of the list
+ */
 unsigned long fastlistAdd(fastlist *ctx, void *item);
 
+
 /**
- * Removes item of index from the list
- * Returns FASTLIST_FAILED if index outside of accepted range
- * else returns <SOMETHING> TODO: Work out how this works */
+ * @brief Removes item of index from the list and returns it (pop)
+ *
+ * @param fastlist *ctx         An initialised fastlist to work on
+ * @param unsigned long index   The index of the item in the list
+ *
+ * @returns void*               Item removed from the list (aka POP)
+ *                              FASTLIST_FAILED on error
+ */
 void *fastlistRemoveIndex(fastlist *ctx, unsigned long index);
 
-/** 
- * Removes Item from list with matching pointer
- * Returns FASTLIST_FAILED if pointer not found,
- * else returns index removed */
-unsigned long fastlistRemoveByPointer(fastlist *ctx, void* pointer);
 
 /**
- * NOT IMPLEMENTED */
+ * @brief Removes Item from list with matching pointer
+ *
+ * @param fastlist *ctx         An initialised fastlist to work on
+ * @param void *pointer         Pointer to an object in the fastlist
+ *
+ * @returns unsigned long       Index removed from the fastlist
+ *                              FASTLIST_FAILED on error
+ */
+unsigned long fastlistRemoveByPointer(fastlist *ctx, void* pointer);
+
+
+/**
+ * @brief NOT IMPLEMENTED
+ *
+ * @param graph *ctx            An initialised graph to work on
+ * @param unsigned long ID      The ID of a source GLI
+ *
+ * @returns fastlist            Connections retrieved from the graph.
+ *                              NULL on error
+ */
 void **fastlistDMA(fastlist *ctx, unsigned long size);
 
 #endif
