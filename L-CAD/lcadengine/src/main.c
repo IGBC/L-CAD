@@ -21,6 +21,8 @@
 #include "dispatcher.h"
 #include "graphLoader.h"
 #include "logicGraph.h"
+#define LOGMODULE "MAIN"
+#include "utils/lcadLogger.h"
 
 void simulate_adder() {
     graph *g = graphCreate();
@@ -165,6 +167,16 @@ void calculate_truth_table(gateInputType t, bool n) {
 
 
 int main() {
+	LOG(FATAL, "I crashed");
+	LOG(CRITICAL, "I'm about to crash");
+	LOG(ERROR, "I might Crash");
+	LOG(WARNING, "HUH that's odd");
+	LOG(INFO1, "STATE1");
+	LOG(INFO2, "STATE2");
+	LOG(INFO3, "STATE3");
+	LOG(TRACE, "I think he went through here");
+	LOG(DEBUG, "I = 3")
+	return 0;
     printf("+= Sizeof =+\n| char:  %i |\n| short: %i |\n| int:   %i |\n| long:  %i |\n| void*: %i |\n+----------+\n",sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(void*)); 
    // simulate_adder();
     
