@@ -17,6 +17,8 @@ struct s_graph {
 
 graph *graphCreate() {
     graph *ctx = (graph*) malloc(sizeof(graph));
+    if(!ctx) return NULL;
+
     ctx->GIDMap = hashmapCreate(0);
     ctx->CIDMap = hashmapCreate(0);
     ctx->srcMap = hashmapCreate(0);
