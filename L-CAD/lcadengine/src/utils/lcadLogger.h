@@ -31,7 +31,10 @@
 #define WHT   "\x1B[37m"
 #define RESET "\x1B[0m"
 
-#define DO_LOG(LEVEL, COLOUR, MESSAGE) { \
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+void DO_LOG(auto LEVEL, const char *COLOUR, auto MESSAGE) { \
 	struct timeval curTime; \
 	gettimeofday(&curTime, NULL); \
 	int milli = curTime.tv_usec; \
@@ -41,12 +44,12 @@
 	char currentTime[1000] = ""; \
 	sprintf(currentTime, "%s.%d", buffer, milli); \
 	if(STDOUT) \
-		printf("%s ["COLOUR #LEVEL RESET"] ["LOGMODULE":%i]: "MESSAGE"\n", currentTime, __LINE__);\
+		printf("%s [" COLOUR RESET "] [" LOGMODULE ":" TOSTRING(__LINE__)"]: "MESSAGE"\n", currentTime); \
 	if (LOGFILE) { \
 		FILE * pFile;\
 		pFile = fopen (LOGFILE,"a");\
 		if (pFile!=NULL) {\
-			fprintf (pFile, "%s ["COLOUR #LEVEL RESET"] ["LOGMODULE":%i]: "MESSAGE"\n", currentTime, __LINE__);\
+			fprintf (pFile, "%s ["COLOUR #LEVEL RESET"] ["LOGMODULE ":" TOSTRING(__LINE__)"]: "MESSAGE"\n", currentTime);\
 			fclose (pFile);\
 		} else {\
 			printf("%s ["COLOUR  "LOGGER" RESET"] ["RED "LOGGER" RESET"]: "RED "ERROR LOGGING TO FILE" RESET"\n", currentTime); \
