@@ -34,7 +34,9 @@
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-void DO_LOG(auto LEVEL, const char *COLOUR, auto MESSAGE) { \
+void do_log(int level, char* colour, char* message, ... );
+
+#define DO_LOG(LEVEL, COLOUR, MESSAGE) { \
 	struct timeval curTime; \
 	gettimeofday(&curTime, NULL); \
 	int milli = curTime.tv_usec; \
@@ -52,7 +54,7 @@ void DO_LOG(auto LEVEL, const char *COLOUR, auto MESSAGE) { \
 			fprintf (pFile, "%s ["COLOUR #LEVEL RESET"] ["LOGMODULE ":" TOSTRING(__LINE__)"]: "MESSAGE"\n", currentTime);\
 			fclose (pFile);\
 		} else {\
-			printf("%s ["COLOUR  "LOGGER" RESET"] ["RED "LOGGER" RESET"]: "RED "ERROR LOGGING TO FILE" RESET"\n", currentTime); \
+			printf("%s [" COLOUR "LOGGER" RESET"] ["RED "LOGGER" RESET"]: "RED "ERROR LOGGING TO FILE" RESET"\n", currentTime); \
 		} \
 	} \
 }
@@ -69,15 +71,15 @@ void DO_LOG(auto LEVEL, const char *COLOUR, auto MESSAGE) { \
 
 #if LOGLEVEL >= FATAL
 	#undef LOG_FATAL
-	#define LOG_FATAL(MESSAGE) DO_LOG(FATAL, RED, MESSAGE)
+	#define LOG_FATAL(MESSAGE) { do_log(FATAL, RED, MESSAGE); }
 #endif
 #if LOGLEVEL >= CRITICAL
 	#undef LOG_CRITICAL
-	#define LOG_CRITICAL(MESSAGE) DO_LOG(CRITICAL, RED, MESSAGE)
+	#define LOG_CRITICAL(MESSAGE) do_log(CRITICAL, RED, MESSAGE)
 #endif
 #if LOGLEVEL >= ERROR
 	#undef LOG_ERROR
-	#define LOG_ERROR(MESSAGE) DO_LOG(ERROR, MAG, MESSAGE)
+	#define LOG_ERROR(MESSAGE) do_log(ERROR, MAG, MESSAGE)
 #endif
 #if LOGLEVEL >= WARNING
 	#undef LOG_WARNING

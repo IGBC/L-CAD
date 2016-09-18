@@ -167,7 +167,7 @@ void calculate_truth_table(gateInputType t, bool n) {
 
 
 int main() {
-	LOG(FATAL, "I crashed");
+	LOG(FATAL, "I crashed %s");
 	LOG(CRITICAL, "I'm about to crash");
 	LOG(ERROR, "I might Crash");
 	LOG(WARNING, "HUH that's odd");

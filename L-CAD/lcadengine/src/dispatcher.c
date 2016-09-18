@@ -16,13 +16,15 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-
 #include "dispatcher.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 #include "utils/thpool.h"
+
+#define LOGMODULE "DISPATCHER"
+#include "utils/lcadLogger.h"
 
 #ifndef MAX_DELAY
     #define MAX_DELAY 100
@@ -62,40 +64,56 @@ struct s_dispatcher {
 void worker_do_work(job *j);
 
 void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
-    if (offset > MAX_DELAY) {
-        //TODO: Error.
+    // If job is too far in the future throw it away.
+	if (offset > MAX_DELAY) {
+        LOG(ERROR, "Job submitted that is too far in the future; dropping");
+        LOG(CRITICAL, "Simulation will now be inaccurate");
+        return;
+    }
+
+    // Check if there is already a job for this gate at this time;
+    if (ctx->lockPool[JPadr(ctx, offset, unit->ID)]) {
+    	LOG(INFO3, "Duplicate update job dropped");
     	return;
     }
 
-    if (ctx->lockPool[JPadr(ctx, offset, unit->ID)])
-    	return;
+    // Create Job
 
+    // Find out when this job is
     unsigned long time = (ctx->timestep + offset) % (MAX_DELAY + 1);
+    // Get the address of the job
     unsigned long j = ctx->jobpoolCount[time]++;
-	//printf("Generating_job@%i+%i: time=%i, from=%i, unit=%i, ctx=%p total_jobs=%i\n",ctx->timestep, offset, time, src, unit->ID, ctx, j);
-    ctx->jobpool[JPadr(ctx, offset, j)].unit = unit;
+    // Fill in the details
+	ctx->jobpool[JPadr(ctx, offset, j)].unit = unit;
     ctx->jobpool[JPadr(ctx, offset, j)].ctx = ctx;
     ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
 
+    // Register a job at this time with this gate
     ctx->lockPool[JPadr(ctx, offset, unit->ID)] = true;
     return;
 }
 
 dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     dispatcher* ctx = (dispatcher*) malloc(sizeof(dispatcher));
+
+    // Fill in details;
     ctx->LG = logicGraph;
+
     //TODO: Lock Graph for editing;
+
     ctx->timestep = 0;
     ctx->pool = thpool_init(threads);
     ctx->n = graphGetNodeCount(logicGraph);
-    // make a big thing to store Jobs in. (n * MD drid)
+
+    // Make a big thing to store Jobs in. (n * MD grid)
     ctx->jobpool = (job*) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(job));
     memset((void*)ctx->jobpool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(job));
+
     // Make a list of jobs in each timestep.
     ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long));
     memset((void*)ctx->jobpoolCount, 0, (MAX_DELAY + 1) * sizeof(unsigned long));
 
-    // make a buffer to store the difference in the graph from a timeStep.
+    // Make a buffer to store the difference in the graph from a timeStep.
     ctx->diffBuffer = (diff*) malloc(ctx->n * sizeof(job));
     memset((void*)ctx->diffBuffer, 0, ctx->n * sizeof(job));
     ctx->diffBufferCount = 0;
@@ -109,7 +127,10 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
 }
 
 void dispatcherDelete(dispatcher *ctx) {
-    thpool_destroy(ctx->pool);
+    // Free everything
+	// Graph Should be in a safe state;
+	thpool_destroy(ctx->pool);
+    free(ctx->lockPool);
     free(ctx->jobpool);
     free(ctx->jobpoolCount);
     free(ctx->diffBuffer);
@@ -126,7 +147,8 @@ int dispatcherStep(dispatcher *ctx) {
     // Constanty stuff
     unsigned long time = ctx->timestep % (MAX_DELAY + 1);
     
-	printf("Step %i: ctx->jobpoolCount[%i] = %li\n", ctx->timestep, time, ctx->jobpoolCount[time]);
+	LOG(INFO1, "Stepping Dispatcher %i");
+    printf("Step %i: ctx->jobpoolCount[%i] = %li\n", ctx->timestep, time, ctx->jobpoolCount[time]);
 
 	
     // Adds each job to the threadpool's queue for execution.
