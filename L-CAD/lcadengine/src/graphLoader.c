@@ -23,14 +23,15 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef struct {
+typedef struct connRecord {
 	unsigned long src;
 	unsigned long drn;
+	struct connRecord *prev;
 } connRecord;
 
-void readGate(graph *ctx, char* str, connRecord *rec, int *i) {
+void readGate(graph *ctx, char* str, connRecord **last) {
 	char *end_token;
-	char sstr[1000];
+	char *sstr = malloc(strlen(str)+1);
 	strcpy(sstr, str);
 
 	enum readstate {id, gt, input};
@@ -47,6 +48,7 @@ void readGate(graph *ctx, char* str, connRecord *rec, int *i) {
 
 		if (token[0] == '#') break;
 		char *loc;
+		connRecord *rec;
 		switch(state) {
 		case id:
 			ID = atol(token);
@@ -68,42 +70,48 @@ void readGate(graph *ctx, char* str, connRecord *rec, int *i) {
 			state = input;
 			break;
 		case input:
-			rec[*i].src = atol(token);
-			rec[*i].drn = ID;
-			*i += 1;
+		    rec = (connRecord*) malloc(sizeof(connRecord));
+			rec->src = atol(token);
+			rec->drn = ID;
+			rec->prev = *last;
+			
+			*last = rec;
+			
 			break;
 		}
 		token = strtok_r(NULL, " ", &end_token);
 	}
+	free(sstr);
+	
 	//todo verify data;
 	graphAddGLI(ctx, inputMode, nin, ID, 0);
 };
 
 graph *loaderLoad(char *str){
 	// Create a graph if this fails then give up
-	char * end_token;
-	char sstr[1000*1000];
-	strcpy(sstr, str);
-	connRecord records[1000];
-	memset(records, 0, sizeof(records));
-	int rec = 0;
-
 	graph *ctx = graphCreate();
 	if (!ctx) return NULL;
+	
+	char * end_token;
+	char *sstr = (char*) malloc(strlen(str)+1);
+	strcpy(sstr, str);
+	connRecord *recordList = NULL;
 
 	char *line = strtok_r(sstr, "\n", &end_token);
 	while (line != NULL)
 	{
 		printf("line: %s\n", line);
-		readGate(ctx, line, (connRecord*) records, &rec);
+		readGate(ctx, line, &recordList);
 		line = strtok_r(NULL, "\n", &end_token);
 	}
 
-	printf("rec: %i\n", rec);
-
-	for (int i=rec-1; i>=0; i--){
-		graphAddConnection(ctx, records[i].src, records[i].drn);
+    free(sstr);    
+    
+	while (recordList != NULL) {
+	    connRecord* last = recordList->prev;
+		graphAddConnection(ctx, recordList->src, recordList->drn);
+		free(recordList);
+		recordList = last;
 	}
-
 	return ctx;
 }
