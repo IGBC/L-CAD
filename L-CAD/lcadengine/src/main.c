@@ -175,8 +175,8 @@ int main() {
 	LOG(INFO2, "STATE2");
 	LOG(INFO3, "STATE3");
 	LOG(TRACE, "I think he went through here");
-	LOG(DEBUG, "I = 3")
-	return 0;
+	LOG(DEBUG, "I = 3");
+
     printf("+= Sizeof =+\n| char:  %i |\n| short: %i |\n| int:   %i |\n| long:  %i |\n| void*: %i |\n+----------+\n",sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(void*)); 
    // simulate_adder();
     

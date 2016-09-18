@@ -95,11 +95,7 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     ctx->jobpoolCount = (unsigned long*) malloc((MAX_DELAY + 1) * sizeof(unsigned long));
     memset((void*)ctx->jobpoolCount, 0, (MAX_DELAY + 1) * sizeof(unsigned long));
 
-	for (int i = 0; i < MAX_DELAY + 1; i++) {
-		printf("ctx->jobpoolCount[%i] = %li\n", i, ctx->jobpoolCount[i]); 
-	}
-
-    // make a buffer to store the difference in the graph from a timestep.
+    // make a buffer to store the difference in the graph from a timeStep.
     ctx->diffBuffer = (diff*) malloc(ctx->n * sizeof(job));
     memset((void*)ctx->diffBuffer, 0, ctx->n * sizeof(job));
     ctx->diffBufferCount = 0;
