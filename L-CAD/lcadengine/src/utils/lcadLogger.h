@@ -31,79 +31,55 @@
 #define WHT   "\x1B[37m"
 #define RESET "\x1B[0m"
 
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
+void do_log(char* module, int line, char* level, char* colour, char* message, ... );
 
-void do_log(int level, char* colour, char* message, ... );
-
-#define DO_LOG(LEVEL, COLOUR, MESSAGE) { \
-	struct timeval curTime; \
-	gettimeofday(&curTime, NULL); \
-	int milli = curTime.tv_usec; \
-	char buffer [1000]; \
-	struct tm *local = localtime(&curTime.tv_sec); \
-	strftime(buffer, 80, "%Y-%m-%d %H:%M:%S", local); \
-	char currentTime[1000] = ""; \
-	sprintf(currentTime, "%s.%d", buffer, milli); \
-	if(STDOUT) \
-		printf("%s [" COLOUR RESET "] [" LOGMODULE ":" TOSTRING(__LINE__)"]: "MESSAGE"\n", currentTime); \
-	if (LOGFILE) { \
-		FILE * pFile;\
-		pFile = fopen (LOGFILE,"a");\
-		if (pFile!=NULL) {\
-			fprintf (pFile, "%s ["COLOUR #LEVEL RESET"] ["LOGMODULE ":" TOSTRING(__LINE__)"]: "MESSAGE"\n", currentTime);\
-			fclose (pFile);\
-		} else {\
-			printf("%s [" COLOUR "LOGGER" RESET"] ["RED "LOGGER" RESET"]: "RED "ERROR LOGGING TO FILE" RESET"\n", currentTime); \
-		} \
-	} \
-}
-
-#define LOG_FATAL(MESSAGE) {}
-#define LOG_CRITICAL(MESSAGE) {}
-#define LOG_ERROR(MESSAGE) {}
-#define LOG_WARNING(MESSAGE) {}
-#define LOG_INFO1(MESSAGE) {}
-#define LOG_INFO2(MESSAGE) {}
-#define LOG_INFO3(MESSAGE) {}
-#define LOG_TRACE(MESSAGE) {}
-#define LOG_DEBUG(MESSAGE) {}
+#define LOG_FATAL(LEVEL,  ... ) {}
+#define LOG_CRITICAL(LEVEL,  ... ) {}
+#define LOG_ERROR(LEVEL,  ... ) {}
+#define LOG_WARNING(LEVEL,  ... ) {}
+#define LOG_INFO1(LEVEL,  ... ) {}
+#define LOG_INFO2(LEVEL,  ... ) {}
+#define LOG_INFO3(LEVEL,  ... ) {}
+#define LOG_TRACE(LEVEL,  ... ) {}
+#define LOG_DEBUG(LEVEL,  ... ) {}
 
 #if LOGLEVEL >= FATAL
 	#undef LOG_FATAL
-	#define LOG_FATAL(MESSAGE) { do_log(FATAL, RED, MESSAGE); }
+	#define LOG_FATAL(LEVEL, ... ) { do_log(LOGMODULE, __LINE__, "FATAL", RED, __VA_ARGS__); }
 #endif
 #if LOGLEVEL >= CRITICAL
 	#undef LOG_CRITICAL
-	#define LOG_CRITICAL(MESSAGE) do_log(CRITICAL, RED, MESSAGE)
+	#define LOG_CRITICAL(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "CRITICAL", RED, __VA_ARGS__); }
 #endif
 #if LOGLEVEL >= ERROR
 	#undef LOG_ERROR
-	#define LOG_ERROR(MESSAGE) do_log(ERROR, MAG, MESSAGE)
+	#define LOG_ERROR(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "ERROR", MAG, __VA_ARGS__); }
 #endif
 #if LOGLEVEL >= WARNING
 	#undef LOG_WARNING
-	#define LOG_WARNING(MESSAGE) DO_LOG(WARNING, YEL, MESSAGE)
+	#define LOG_WARNING(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "WARNING", YEL, __VA_ARGS__); }
 #endif
 #if LOGLEVEL >= INFO1
 	#undef LOG_INFO1
-	#define LOG_INFO1(MESSAGE) DO_LOG(INFO1, GRN, MESSAGE)
+	#define LOG_INFO1(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "INFO1", GRN, __VA_ARGS__); }
 #endif
 #if LOGLEVEL >= INFO2
 	#undef LOG_INFO2
-	#define LOG_INFO2(MESSAGE) DO_LOG(INFO2, GRN, MESSAGE)
+	#define LOG_INFO2(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "INFO2", GRN, __VA_ARGS__); }
 #endif
 #if LOGLEVEL >= INFO3
 	#undef LOG_INFO3
-	#define LOG_INFO3(MESSAGE) DO_LOG(INFO3, GRN, MESSAGE)
+	#define LOG_INFO3(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "INFO3", GRN, __VA_ARGS__); }
 #endif
 #if LOGLEVEL >= TRACE
 	#undef LOG_TRACE
-	#define LOG_TRACE(MESSAGE) DO_LOG(TRACE, CYN, MESSAGE)
+	#define LOG_TRACE(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "TRACE", CYN, __VA_ARGS__); }
 #endif
 #if LOGLEVEL >= DEBUG
 	#undef LOG_DEBUG
-	#define LOG_DEBUG(MESSAGE) DO_LOG(DEBUG, CYN, MESSAGE)
-#endif
+	#define LOG_DEBUG(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "DEBUG", CYN, __VA_ARGS__); }
+#endif*/
 
-#define LOG(LEVEL, MESSAGE) LOG_##LEVEL(MESSAGE)
+
+/* formal usage LOG(LEVEL, MESSAGE, ARGS */
+#define LOG(LEVEL, ... ) LOG_##LEVEL(LEVEL, __VA_ARGS__ )
