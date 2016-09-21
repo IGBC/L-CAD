@@ -11,6 +11,7 @@ set(LCADENGINE_SRC
     src/utils/fastlist.c
     src/utils/hashmap.c
     src/utils/thpool.c
+    src/utils/lcadLogger.c
 )
 
 # Define our library in cmake

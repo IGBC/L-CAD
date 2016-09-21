@@ -16,7 +16,6 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-
 #include "graphLoader.h"
 
 #include <stdlib.h>
@@ -44,8 +43,6 @@ void readGate(graph *ctx, char* str, connRecord **last) {
 	//get next token
 	char *token = strtok_r(str, " ", &end_token);
 	while (token != NULL) {
-		printf("token: %s\n", token);
-
 		if (token[0] == '#') break;
 		char *loc;
 		connRecord *rec;
@@ -87,7 +84,7 @@ void readGate(graph *ctx, char* str, connRecord **last) {
 	graphAddGLI(ctx, inputMode, nin, ID, 0);
 };
 
-graph *loaderLoad(char *str){
+graph *loaderLoad(char *str) {
 	// Create a graph if this fails then give up
 	graph *ctx = graphCreate();
 	if (!ctx) return NULL;
@@ -96,11 +93,9 @@ graph *loaderLoad(char *str){
 	char *sstr = (char*) malloc(strlen(str)+1);
 	strcpy(sstr, str);
 	connRecord *recordList = NULL;
-
 	char *line = strtok_r(sstr, "\n", &end_token);
-	while (line != NULL)
-	{
-		printf("line: %s\n", line);
+
+	while (line != NULL) {
 		readGate(ctx, line, &recordList);
 		line = strtok_r(NULL, "\n", &end_token);
 	}

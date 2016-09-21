@@ -65,3 +65,5 @@ local.properties
 # Code Recommenders
 .recommenders/
 
+# Log Files
+*.log
