@@ -73,7 +73,7 @@ void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
 
     // Check if there is already a job for this gate at this time;
     if (ctx->lockPool[JPadr(ctx, offset, unit->ID)]) {
-    	LOG(DEBUG, "T: %i - Duplicate update job dropped for %i", ctx->timestep, unit->ID);
+    	LOG(DEBUG, "T: %i - Duplicate update job dropped for %i from %i", ctx->timestep, unit->ID, src);
     	return;
     }
 
@@ -90,7 +90,7 @@ void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
 
     // Register a job at this time with this gate
     ctx->lockPool[JPadr(ctx, offset, unit->ID)] = true;
-    LOG(DEBUG, "T:%i - Created job @ %i for %i (address: %i)", ctx->timestep, ctx->timestep + offset, unit->ID, JPadr(ctx, offset, unit->ID));
+    LOG(DEBUG, "T:%i - Created job @ %i for %i from %i (address: %i)", ctx->timestep, ctx->timestep + offset, unit->ID, src, JPadr(ctx, offset, unit->ID));
     return;
 }
 
@@ -149,10 +149,8 @@ int dispatcherStep(dispatcher *ctx) {
     
     // Constanty stuff
     unsigned long time = ctx->timestep % (MAX_DELAY + 1);
-    
+    printf("\n");
 	LOG(INFO1, "T:%i Stepping Dispatcher. Jobs: %i, Time: %i", ctx->timestep, ctx->jobpoolCount[time], time);
-    //printf("Step %i: ctx->jobpoolCount[%i] = %li\n", ctx->timestep, time, ctx->jobpoolCount[time]);
-
 	
     // Adds each job to the threadpool's queue for execution.
     for (i = 0; i < ctx->jobpoolCount[time]; i++) {
@@ -224,6 +222,8 @@ void worker_do_work(job *j) {
     }
     if (j->unit->inputNegate) output = !output;
     
+    LOG(TRACE, "T:%i U:%i UPDATE: sum=%i oldstate=%i, newstate=%i", j->ctx->timestep, j->unit->ID, sum, j->unit->state, output);
+
     if ((output != j->unit->state) // If state has changed:
     	|| (j->unit->inputMode == INPUT) //OR if gate is an input
     ) {
