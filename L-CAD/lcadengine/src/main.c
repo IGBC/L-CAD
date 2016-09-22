@@ -167,17 +167,8 @@ void calculate_truth_table(gateInputType t, bool n) {
 
 
 int main() {
-	LOG(FATAL, "I crashed because %s", "macros suck");
-	LOG(CRITICAL, "I'm about to crash");
-	LOG(ERROR, "I might Crash");
-	LOG(WARNING, "HUH that's odd");
-	LOG(INFO1, "STATE1");
-	LOG(INFO2, "STATE2");
-	LOG(INFO3, "STATE3");
-	LOG(TRACE, "pointer is now %p", &simulate_adder);
-	LOG(DEBUG, "I = %i", 3);
 
-    printf("+= Sizeof =+\n| char:  %i |\n| short: %i |\n| int:   %i |\n| long:  %i |\n| void*: %i |\n+----------+\n",sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(void*)); 
+    // printf("+= Sizeof =+\n| char:  %i |\n| short: %i |\n| int:   %i |\n| long:  %i |\n| void*: %i |\n+----------+\n",sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(void*)); 
    // simulate_adder();
     
 //    printf("\n\n=== AND ===\n");
@@ -263,8 +254,10 @@ int main() {
 			printf("\n");
 			graphPrint(g);
 		}
+	
+	dispatcherDelete(d);
 	    
-	//graphDelete(g);
+	graphDelete(g);
 
     return 0;    
 }

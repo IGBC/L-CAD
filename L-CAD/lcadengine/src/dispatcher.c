@@ -66,14 +66,14 @@ void worker_do_work(job *j);
 void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
     // If job is too far in the future throw it away.
 	if (offset > MAX_DELAY) {
-        LOG(ERROR, "Job submitted that is too far in the future; dropping");
+        LOG(ERROR, "T: %i - Job submitted with offset of %i; dropping", ctx->timestep, offset);
         LOG(CRITICAL, "Simulation will now be inaccurate");
         return;
     }
 
     // Check if there is already a job for this gate at this time;
     if (ctx->lockPool[JPadr(ctx, offset, unit->ID)]) {
-    	LOG(INFO3, "Duplicate update job dropped");
+    	LOG(DEBUG, "T: %i - Duplicate update job dropped for %i", ctx->timestep, unit->ID);
     	return;
     }
 
@@ -90,6 +90,7 @@ void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
 
     // Register a job at this time with this gate
     ctx->lockPool[JPadr(ctx, offset, unit->ID)] = true;
+    LOG(DEBUG, "T:%i - Created job @ %i for %i (address: %i)", ctx->timestep, ctx->timestep + offset, unit->ID, JPadr(ctx, offset, unit->ID));
     return;
 }
 
@@ -123,6 +124,7 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     memset((void*)ctx->lockPool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(bool));
 
     // Set up complete
+    LOG(INFO1, "Created Dispatcher %i nodes, %i threads", ctx->n, threads);
     return ctx;
 }
 
@@ -135,6 +137,7 @@ void dispatcherDelete(dispatcher *ctx) {
     free(ctx->jobpoolCount);
     free(ctx->diffBuffer);
     free(ctx);
+    LOG(INFO1, "Destroyed Dispatcher");
 }
 
 int dispatcherStep(dispatcher *ctx) {
@@ -147,8 +150,8 @@ int dispatcherStep(dispatcher *ctx) {
     // Constanty stuff
     unsigned long time = ctx->timestep % (MAX_DELAY + 1);
     
-	LOG(INFO1, "Stepping Dispatcher %i");
-    printf("Step %i: ctx->jobpoolCount[%i] = %li\n", ctx->timestep, time, ctx->jobpoolCount[time]);
+	LOG(INFO1, "T:%i Stepping Dispatcher. Jobs: %i, Time: %i", ctx->timestep, ctx->jobpoolCount[time], time);
+    //printf("Step %i: ctx->jobpoolCount[%i] = %li\n", ctx->timestep, time, ctx->jobpoolCount[time]);
 
 	
     // Adds each job to the threadpool's queue for execution.

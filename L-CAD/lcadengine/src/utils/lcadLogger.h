@@ -18,7 +18,7 @@
 
 #define LOGLEVEL DEBUG
 
-#define LOGFILE "lcad.log"
+#define LOGFILE "/tmp/lcad.log"
 #define STDOUT 1
 
 #define RED   "\x1B[31m"
