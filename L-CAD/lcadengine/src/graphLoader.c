@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#define LOGMODULE "LOADER"
+#include "utils/lcadLogger.h"
 
 typedef struct connRecord {
 	unsigned long src;
@@ -57,6 +59,7 @@ void readGate(graph *ctx, char* str, connRecord **last) {
 				nin = true;
 				loc++;
 			}
+			LOG(TRACE, "ID:%i Read type as %s", ID, loc)
 			if (!strcmp(loc, "AND")) inputMode = AND;
 			if (!strcmp(loc, "OR")) inputMode = OR;
 			if (!strcmp(loc, "XOR")) inputMode = XOR;
@@ -65,6 +68,7 @@ void readGate(graph *ctx, char* str, connRecord **last) {
 			if (!strcmp(loc, "IN")) inputMode = INPUT;
 			if (!strcmp(loc, "OUT")) inputMode = OUTPUT;
 			state = input;
+			graphAddGLI(ctx, inputMode, nin, ID, 0);
 			break;
 		case input:
 		    rec = (connRecord*) malloc(sizeof(connRecord));
@@ -79,12 +83,10 @@ void readGate(graph *ctx, char* str, connRecord **last) {
 		token = strtok_r(NULL, " ", &end_token);
 	}
 	free(sstr);
-	
-	//todo verify data;
-	graphAddGLI(ctx, inputMode, nin, ID, 0);
 };
 
-graph *loaderLoad(char *str) {
+graph *loaderLoadFromStr(char *str) {
+	LOG(INFO1, "Creating Graph from string");
 	// Create a graph if this fails then give up
 	graph *ctx = graphCreate();
 	if (!ctx) return NULL;
@@ -109,4 +111,38 @@ graph *loaderLoad(char *str) {
 		recordList = last;
 	}
 	return ctx;
+}
+
+graph *loaderLoadFromFile(char *filename) {
+	LOG(INFO1, "Loading from file: %s", filename);
+	// Open File;
+	FILE *fp;
+	fp = fopen(filename, "r");
+
+	char *str;
+	size_t length;
+	if (!fp) {
+		LOG(ERROR, "File: %s not found", filename);
+		return NULL;
+	}
+	// Get length of file
+	fseek (fp, 0, SEEK_END);
+	length = ftell (fp);
+	fseek (fp, 0, SEEK_SET);
+	// Allocate buffer;
+	str = malloc (length);
+	if (!str) {
+	  LOG(ERROR, "Malloc Failed during file loading");
+	  return NULL;
+	}
+	// Read into buffer;
+	fread (str, 1, length, fp);
+	fclose (fp);
+
+	LOG(DEBUG, "File Contents: %s", str);
+	//TODO: strip all '/r''s
+
+	graph *g = loaderLoadFromStr(str);
+	free(str);
+	return g;
 }
