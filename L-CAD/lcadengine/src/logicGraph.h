@@ -21,13 +21,14 @@
 #define LOGICGRAPH_H_INCLUDED
 
 #include <stdbool.h>
+#include <stddef.h>
 
 #include "utils/fastlist.h"
 
 typedef enum {AND, OR, XOR, UNITY, INPUT, OUTPUT} gateInputType;
 
 struct {
-	unsigned long ID; /* Sequential ID of Gate */
+	size_t ID; /* Sequential ID of Gate */
 	bool state; /* Current Output state for this GLI */
 	unsigned int delay; /* Propagation delay of this gate */
 	gateInputType inputMode; /* AND OR etc.... */
@@ -35,11 +36,11 @@ struct {
 } typedef genericLogicInterface;
 
 struct {
-	unsigned long ID; /* ID of this connection */
+	size_t ID; /* ID of this connection */
 	genericLogicInterface *srcEp; /* pointer to the GLI of the source */
 	genericLogicInterface *drnEp; /* pointer to the GLI of the drain */
-	unsigned long srcID; /* ID of the source */
-	unsigned long drnID; /* ID of the drain */
+	size_t srcID; /* ID of the source */
+	size_t drnID; /* ID of the drain */
 } typedef connection;
 
 struct s_graph;
@@ -86,7 +87,7 @@ void graphDelete(graph *ctx);
  *
  * @returns ID field provided - identification for the GLI in the graph
  */
-unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned long ID, unsigned int delay);
+unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, size_t ID, unsigned int delay);
 
 
 /**
@@ -99,7 +100,7 @@ unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned lon
  * @param unsigned long ID      The ID of the GLI to be removed
  *
  */
-void graphRemoveGLI(graph *ctx, unsigned long ID);
+void graphRemoveGLI(graph *ctx, size_t ID);
 
 
 /**
@@ -115,7 +116,7 @@ void graphRemoveGLI(graph *ctx, unsigned long ID);
  *
  * @returns ID of the connection for future reference
  */
-unsigned long graphAddConnection(graph *ctx, unsigned long Src, unsigned long Snk);
+unsigned long graphAddConnection(graph *ctx, size_t Src, size_t Snk);
 
 
 /**
@@ -127,7 +128,7 @@ unsigned long graphAddConnection(graph *ctx, unsigned long Src, unsigned long Sn
  * @param unsigned long ID      Connection Id to removed from the graph
  *
  */
-void graphRemoveConnection(graph *ctx, unsigned long ID);
+void graphRemoveConnection(graph *ctx, size_t ID);
 
 
 /**
@@ -139,7 +140,7 @@ void graphRemoveConnection(graph *ctx, unsigned long ID);
  * @returns genericLogicInterface Retrieved from the graph.
  *                                NULL on error
  */
-genericLogicInterface *graphGetGLI(graph *ctx, unsigned long ID);
+genericLogicInterface *graphGetGLI(graph *ctx, size_t ID);
 
 
 /**
@@ -151,7 +152,7 @@ genericLogicInterface *graphGetGLI(graph *ctx, unsigned long ID);
  * @returns connection          Retrieved from the graph.
  *                              NULL on error
  */
-connection *graphGetConnectionByID(graph *ctx, unsigned long ID);
+connection *graphGetConnectionByID(graph *ctx, size_t ID);
 
 
 /**
@@ -163,7 +164,7 @@ connection *graphGetConnectionByID(graph *ctx, unsigned long ID);
  * @returns fastlist            Connections retrieved from the graph.
  *                              NULL on error
  */
-fastlist *graphGetConnectionsBySrc(graph *ctx, unsigned long srcID);
+fastlist *graphGetConnectionsBySrc(graph *ctx, size_t srcID);
 
 
 /**
@@ -175,7 +176,7 @@ fastlist *graphGetConnectionsBySrc(graph *ctx, unsigned long srcID);
  * @returns fastlist              Connections retrieved from the graph.
  *                                NULL on error
  */
-fastlist *graphGetConnectionsByDrn(graph *ctx, unsigned long drnID);
+fastlist *graphGetConnectionsByDrn(graph *ctx, size_t drnID);
 
 
 /**

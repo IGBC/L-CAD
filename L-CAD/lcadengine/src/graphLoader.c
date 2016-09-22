@@ -18,6 +18,7 @@
 
 #include "graphLoader.h"
 
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -25,8 +26,8 @@
 #include "utils/lcadLogger.h"
 
 typedef struct connRecord {
-	unsigned long src;
-	unsigned long drn;
+	size_t src;
+	size_t drn;
 	struct connRecord *prev;
 } connRecord;
 
@@ -38,7 +39,7 @@ void readGate(graph *ctx, char* str, connRecord **last) {
 	enum readstate {id, gt, input};
 	enum readstate state = id;
 
-	unsigned long ID;
+	size_t ID;
 	gateInputType inputMode;
 	bool nin;
 

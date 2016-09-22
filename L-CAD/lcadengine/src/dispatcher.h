@@ -20,6 +20,8 @@
 #ifndef DISPATCHER_H_INCLUDED
 #define DISPATCHER_H_INCLUDED
 
+
+#include <stddef.h>
 #include "logicGraph.h"
 
 struct s_dispatcher;
@@ -77,7 +79,7 @@ int dispatcherStep(dispatcher *ctx);
  *
  * @return int  0 (literally it just returns 0)
  */
-int dispatcherAddJob(dispatcher *ctx, unsigned long ID, unsigned int delay);
+int dispatcherAddJob(dispatcher *ctx, size_t ID, unsigned int delay);
 
 
 #endif

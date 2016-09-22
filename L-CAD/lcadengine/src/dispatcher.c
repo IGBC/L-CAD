@@ -37,25 +37,26 @@
 
 struct {
     GLI *unit;
-    long timestep;
+    unsigned long timestep;
     dispatcher *ctx;
 } typedef job;
 
 struct {
-    unsigned long ID;
+    size_t ID;
     bool newState;
 } typedef diff;
 
 struct s_dispatcher {
     threadpool pool;
-    unsigned long timestep, n;
+    unsigned long timestep;
+	size_t n;
     graph *LG;
     // Array containing all jobs for all upcoming timesteps.
     job *jobpool;
     // Array containing number of used slots in each given timestep.
-    unsigned long *jobpoolCount; // size = (MAX_DELAY + 1)
+    size_t *jobpoolCount; // size = (MAX_DELAY + 1)
     diff *diffBuffer;
-    unsigned long diffBufferCount;
+    size_t diffBufferCount;
 
     //pool containing update locks.
     bool *lockPool;
@@ -145,7 +146,7 @@ int dispatcherStep(dispatcher *ctx) {
     ctx->timestep++;
     
     // Loopy Stuff
-    unsigned long i;
+    size_t i;
     
     // Constanty stuff
     unsigned long time = ctx->timestep % (MAX_DELAY + 1);
@@ -188,7 +189,7 @@ int dispatcherStep(dispatcher *ctx) {
     return 0;
 }
 
-int dispatcherAddJob(dispatcher *ctx, unsigned long ID, unsigned int delay) {
+int dispatcherAddJob(dispatcher *ctx, size_t ID, unsigned int delay) {
     if (delay == 0) return -1;
     if (delay > MAX_DELAY) return -2;
     GLI *gli = graphGetGLI(ctx->LG, ID); 
@@ -199,9 +200,9 @@ int dispatcherAddJob(dispatcher *ctx, unsigned long ID, unsigned int delay) {
 void worker_do_work(job *j) {
     // Get Inputs;
     fastlist *inputs = graphGetConnectionsByDrn(j->ctx->LG, j->unit->ID);  
-    unsigned long count = fastlistSize(inputs);
-    unsigned long i;
-    unsigned long sum = 0;
+    size_t count = fastlistSize(inputs);
+    size_t i;
+    size_t sum = 0;
     for (i = 0; i < count; i++) {
         // get The source gate for the connection.
         connection *conn = (connection*) fastlistGetIndex(inputs, i);

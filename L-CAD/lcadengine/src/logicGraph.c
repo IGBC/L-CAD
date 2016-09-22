@@ -31,7 +31,7 @@ struct s_graph {
 	hashmap *GIDMap; // Gates
 	hashmap *CIDMap, *srcMap, *drnMap; // Connections
 	fastlist *nodes, *connections;
-	unsigned long nodeCount;
+	size_t nodeCount;
 };
 
 graph *graphCreate() {
@@ -72,7 +72,7 @@ void graphDelete(graph *ctx) {
     free(ctx);
 };
 
-unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned long ID, unsigned int delay) {
+unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, size_t ID, unsigned int delay) {
     // if hashmapGet does not return null then there is already a gate with the desired ID.
 	if ((GLI*) hashmapGet(ctx->GIDMap, ID)) return -1; //Give up.
 
@@ -106,7 +106,7 @@ unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned lon
     // gli goes out of scope here. (psst, don't tell anyone the ID is a pointer)
 };
 
-void graphRemoveGLI(graph *ctx, unsigned long ID) {
+void graphRemoveGLI(graph *ctx, size_t ID) {
     //Unregister this GLI;
     GLI *gli = (GLI*) hashmapRemove(ctx->GIDMap, ID);
     fastlistRemoveByPointer(ctx->nodes, gli);
@@ -117,11 +117,11 @@ void graphRemoveGLI(graph *ctx, unsigned long ID) {
 
     // Remove src connections here.
     {
-        unsigned long count = fastlistSize(srcList);
-        for (unsigned long i = 0; i < count; i++) {
+        size_t count = fastlistSize(srcList);
+        for (size_t i = 0; i < count; i++) {
             // Get the connection.
             connection *conn = (connection *) fastlistGetIndex(srcList, i);
-            unsigned long index = conn->ID;
+            size_t index = conn->ID;
             // Remove it
             graphRemoveConnection(ctx, index);
         }
@@ -129,11 +129,11 @@ void graphRemoveGLI(graph *ctx, unsigned long ID) {
 
     // Remove drn connections here.
     {
-        unsigned long count = fastlistSize(drnList);
-        for (unsigned long i = 0; i < count; i++) {
+        size_t count = fastlistSize(drnList);
+        for (size_t i = 0; i < count; i++) {
             // Get the connection.
             connection *conn = (connection *) fastlistGetIndex(drnList, i);
-            unsigned long index = conn->ID;
+            size_t index = conn->ID;
             // Remove it
             graphRemoveConnection(ctx, index);
         }
@@ -151,7 +151,7 @@ void graphRemoveGLI(graph *ctx, unsigned long ID) {
     ctx->nodeCount--;
 };
 
-unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long drn) {
+unsigned long graphAddConnection(graph *ctx, size_t src, size_t drn) {
     // get src and drn
 	GLI* srcGli = (GLI*) hashmapGet(ctx->GIDMap, src);
     GLI* drnGli = (GLI*) hashmapGet(ctx->GIDMap, drn);
@@ -173,7 +173,7 @@ unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long dr
 	// TODO: safety this
     connection *conn = (connection*) malloc(sizeof(connection));
 
-    conn->ID = (unsigned long) conn; // We're using the pointer as a UUID, as we don't have a generator.
+    conn->ID = (size_t) conn; // We're using the pointer as a UUID, as we don't have a generator.
     // TODO: Generate Better IDs
 
     conn->srcEp = srcGli;
@@ -198,7 +198,7 @@ unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long dr
     return conn->ID;
 };
 
-void graphRemoveConnection(graph *ctx, unsigned long ID) {
+void graphRemoveConnection(graph *ctx, size_t ID) {
     // Remove Connection from hashmap
     connection *conn = (connection*) hashmapRemove(ctx->CIDMap, ID);
 
@@ -215,29 +215,29 @@ void graphRemoveConnection(graph *ctx, unsigned long ID) {
     free(conn);
 }
 
-genericLogicInterface *graphGetGLI(graph *ctx, unsigned long ID) {
+genericLogicInterface *graphGetGLI(graph *ctx, size_t ID) {
     return (GLI*) hashmapGet(ctx->GIDMap, ID);
 }
 
-connection *graphGetConnectionByID(graph *ctx, unsigned long ID) {
+connection *graphGetConnectionByID(graph *ctx, size_t ID) {
     return (connection*) hashmapGet(ctx->CIDMap, ID);
 }
 
-fastlist *graphGetConnectionsBySrc(graph *ctx, unsigned long srcID) {
+fastlist *graphGetConnectionsBySrc(graph *ctx, size_t srcID) {
     return (fastlist*) hashmapGet(ctx->srcMap, srcID);
 }
 
-fastlist *graphGetConnectionsByDrn(graph *ctx, unsigned long drnID) {
+fastlist *graphGetConnectionsByDrn(graph *ctx, size_t drnID) {
     return (fastlist*) hashmapGet(ctx->drnMap, drnID);
 }
 
-unsigned long graphGetNodeCount(graph *ctx){
+size_t graphGetNodeCount(graph *ctx){
     return ctx->nodeCount;
 }
 
 void graphPrint(graph* ctx) {
 	printf(" NODE |  Type  | State | Inputs\n");
-	for (unsigned long i = 0; i < fastlistSize(ctx->nodes); i++) {
+	for (size_t i = 0; i < fastlistSize(ctx->nodes); i++) {
 		GLI *gli = (GLI*) fastlistGetIndex(ctx->nodes, i);
 		printf(" %4i |  ", gli->ID);
 		switch (gli->inputMode) {
