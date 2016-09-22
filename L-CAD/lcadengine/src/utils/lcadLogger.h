@@ -78,7 +78,7 @@ void do_log(char* module, int line, char* level, char* colour, char* message, ..
 #if LOGLEVEL >= DEBUG
 	#undef LOG_DEBUG
 	#define LOG_DEBUG(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "DEBUG", CYN, __VA_ARGS__); }
-#endif*/
+#endif
 
 
 /* formal usage LOG(LEVEL, MESSAGE, ARGS */
