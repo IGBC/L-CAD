@@ -219,6 +219,11 @@ genericLogicInterface *graphGetGLI(graph *ctx, size_t ID) {
     return (GLI*) hashmapGet(ctx->GIDMap, ID);
 }
 
+fastlist *graphGetGLIList(graph *ctx) {
+	return ctx->nodes;
+}
+
+
 connection *graphGetConnectionByID(graph *ctx, size_t ID) {
     return (connection*) hashmapGet(ctx->CIDMap, ID);
 }

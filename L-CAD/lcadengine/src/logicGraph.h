@@ -23,25 +23,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+#include "genericlogic.h"
 #include "utils/fastlist.h"
-
-typedef enum {AND, OR, XOR, UNITY, INPUT, OUTPUT} gateInputType;
-
-struct {
-	size_t ID; /* Sequential ID of Gate */
-	bool state; /* Current Output state for this GLI */
-	unsigned int delay; /* Propagation delay of this gate */
-	gateInputType inputMode; /* AND OR etc.... */
-	bool inputNegate; /* N in front of the mode */
-} typedef genericLogicInterface;
-
-struct {
-	size_t ID; /* ID of this connection */
-	genericLogicInterface *srcEp; /* pointer to the GLI of the source */
-	genericLogicInterface *drnEp; /* pointer to the GLI of the drain */
-	size_t srcID; /* ID of the source */
-	size_t drnID; /* ID of the drain */
-} typedef connection;
 
 struct s_graph;
 typedef struct s_graph graph;
@@ -141,6 +124,15 @@ void graphRemoveConnection(graph *ctx, size_t ID);
  *                                NULL on error
  */
 genericLogicInterface *graphGetGLI(graph *ctx, size_t ID);
+
+/*
+ * @brief returns a fastlist of all nodes in the graph
+ *
+ * @param graph *ctx              An initialised graph to work on
+ *
+ * @returns fastlist* containing all nodes in the graph, list is unordered
+ */
+fastlist *graphGetGLIList(graph *ctx);
 
 
 /**

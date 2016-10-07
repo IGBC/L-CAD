@@ -34,6 +34,7 @@
 
 /* Macro Generates the address of a thing for the stuff */
 #define JPadr(ctx, offset, slot) ((((ctx->timestep + offset) % (MAX_DELAY + 1)) * ctx->n) + slot)
+#define TIME(ctx, offset) ((ctx->timestep + offset) % (MAX_DELAY + 1))
 
 struct {
     GLI *unit;
@@ -64,36 +65,7 @@ struct s_dispatcher {
 
 void worker_do_work(job *j);
 
-void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
-    // If job is too far in the future throw it away.
-	if (offset > MAX_DELAY) {
-        LOG(ERROR, "T: %i - Job submitted with offset of %i; dropping", ctx->timestep, offset);
-        LOG(CRITICAL, "Simulation will now be inaccurate");
-        return;
-    }
-
-    // Check if there is already a job for this gate at this time;
-    if (ctx->lockPool[JPadr(ctx, offset, unit->ID)]) {
-    	LOG(DEBUG, "T: %i - Duplicate update job dropped for %i from %i", ctx->timestep, unit->ID, src);
-    	return;
-    }
-
-    // Create Job
-
-    // Find out when this job is
-    unsigned long time = (ctx->timestep + offset) % (MAX_DELAY + 1);
-    // Get the address of the job
-    unsigned long j = ctx->jobpoolCount[time]++;
-    // Fill in the details
-	ctx->jobpool[JPadr(ctx, offset, j)].unit = unit;
-    ctx->jobpool[JPadr(ctx, offset, j)].ctx = ctx;
-    ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
-
-    // Register a job at this time with this gate
-    ctx->lockPool[JPadr(ctx, offset, unit->ID)] = true;
-    LOG(DEBUG, "T:%i - Created job @ %i for %i from %i (address: %i)", ctx->timestep, ctx->timestep + offset, unit->ID, src, JPadr(ctx, offset, unit->ID));
-    return;
-}
+void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src);
 
 dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     dispatcher* ctx = (dispatcher*) malloc(sizeof(dispatcher));
@@ -123,6 +95,15 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     // Lock pool prevents creating duplicate jobs.
     ctx->lockPool = (bool*) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(bool));
     memset((void*)ctx->lockPool, 0, ctx->n * (MAX_DELAY + 1) * sizeof(bool));
+
+    bool* tagPos = ctx->lockPool;
+
+    fastlist* nodelist = graphGetGLIList(logicGraph);
+    for (size_t i = 0; i < fastlistSize(nodelist); i++) {
+    	genericLogicInterface *g = (genericLogicInterface*) fastlistGetIndex(nodelist, i);
+    	g->lockTag = tagPos;
+    	tagPos += (MAX_DELAY + 1);
+    }
 
     // Set up complete
     LOG(INFO1, "Created Dispatcher %i nodes, %i threads", ctx->n, threads);
@@ -246,4 +227,36 @@ void worker_do_work(job *j) {
 			generate_job(j->ctx, conn->drnEp, 1, j->unit->ID); // TODO: include delay.
 		}
     }
+    j->unit->lockTag[TIME(j->ctx, 0)] = 0;
+}
+
+void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
+    // If job is too far in the future throw it away.
+	if (offset > MAX_DELAY) {
+        LOG(ERROR, "T: %i - Job submitted with offset of %i; dropping", ctx->timestep, offset);
+        LOG(CRITICAL, "Simulation will now be inaccurate");
+        return;
+    }
+
+    // Check if there is already a job for this gate at this time;
+    if (unit->lockTag[TIME(ctx, offset)]) {
+    	LOG(DEBUG, "T: %i - Duplicate update job dropped for %i from %i", ctx->timestep, unit->ID, src);
+    	return;
+    }
+
+    // Create Job
+
+    // Find out when this job is
+    unsigned long time = TIME(ctx, offset);
+    // Get the address of the job
+    unsigned long j = ctx->jobpoolCount[time]++;
+    // Fill in the details
+	ctx->jobpool[JPadr(ctx, offset, j)].unit = unit;
+    ctx->jobpool[JPadr(ctx, offset, j)].ctx = ctx;
+    ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
+
+    // Register a job at this time with this gate
+    unit->lockTag[TIME(ctx, offset)] = true;
+    LOG(DEBUG, "T:%i - Created job @ %i for %i from %i (address: %i)", ctx->timestep, ctx->timestep + offset, unit->ID, src, JPadr(ctx, offset, unit->ID));
+    return;
 }
