@@ -98,11 +98,20 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
 
     bool* tagPos = ctx->lockPool;
 
+    // set the tag to point at lock memory for each gate.
     fastlist* nodelist = graphGetGLIList(logicGraph);
     for (size_t i = 0; i < fastlistSize(nodelist); i++) {
     	genericLogicInterface *g = (genericLogicInterface*) fastlistGetIndex(nodelist, i);
     	g->lockTag = tagPos;
     	tagPos += (MAX_DELAY + 1);
+
+    	//// HAKX  ////
+
+    	// Hack init system, alternate gate states
+    	g->state = i % 2;
+
+    	//// /HAKX ////
+
     }
 
     // Set up complete

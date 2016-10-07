@@ -188,7 +188,7 @@ int main() {
 //
 //    printf("\n\n=== NXOR ===\n");
 //    calculate_truth_table(XOR, true);
-	graph *g = loaderLoadFromFile("graphs/counter.graph");
+	graph *g = loaderLoadFromFile("graphs/SR.graph");
     /*graph *g = loaderLoadFromStr(//"0 NOT 0\n 1 NAND 0 1\n 2 IN");
 "0 IN \n \
 #100 NOT 0 \n \
@@ -224,8 +224,8 @@ int main() {
 
     dispatcher *d = dispatcherCreate(g, 1);
 
-    graphGetGLI(g, 0)->state = 1;
-	graphGetGLI(g, 1)->state = 1;
+    graphGetGLI(g, 0)->state = 0;
+	graphGetGLI(g, 1)->state = 0;
 
     for(int j = 0; j < graphGetNodeCount(g); j++) {
     	dispatcherAddJob(d, j, 1);
