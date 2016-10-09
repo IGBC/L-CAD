@@ -253,7 +253,7 @@ int main() {
 	}
 
 	graphPrint(g);
-
+	/*
     return
 
 	graphGetGLI(g, 1)->state = 0;
@@ -265,7 +265,7 @@ int main() {
 		graphPrint(g);
 	}
 
-/*	graphGetGLI(g, 0)->state = 0;
+	graphGetGLI(g, 0)->state = 0;
 	dispatcherAddJob(d, 0, 1);
 
 	for(int i = 0; i < 10; i++) {
