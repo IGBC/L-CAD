@@ -282,12 +282,12 @@ void graphPrint(graph* ctx) {
 			}
 			break;
 		case OUTPUT:
-				if (gli->inputNegate) {
-					printf("N-OUT");
-				} else {
-					printf("OUT  ");
-				}
-				break;
+			if (gli->inputNegate) {
+				printf("N-OUT");
+			} else {
+				printf("OUT  ");
+			}
+			break;
 		}
 		printf(" |   %i   |", (int) gli->state);
 
