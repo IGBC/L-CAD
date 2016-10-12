@@ -7,7 +7,7 @@ struct {
 	IO_Mode mode;
 } typedef IO_Item;
 
-bool readInput(IO_Item input);
-void writeOutput(IO_Item output, bool state);
+IO_Item *setupPin(uint8_t pin, IO_Mode mode);
 
-
+bool readInput(IO_Item *input);
+void writeOutput(IO_Item *output, bool state);
