@@ -2,6 +2,8 @@
 #include <sys/time.h>
 #include <time.h>
 
+#define LOGGING
+
 #ifndef LOGMODULE
 #define LOGMODULE "UNKNOWN @" __FILE__
 #endif
@@ -80,6 +82,9 @@ void do_log(char* module, int line, char* level, char* colour, char* message, ..
 	#define LOG_DEBUG(LEVEL,  ... ) { do_log(LOGMODULE, __LINE__, "DEBUG", CYN, __VA_ARGS__); }
 #endif
 
-
 /* formal usage LOG(LEVEL, MESSAGE, ARGS */
+#ifdef LOGGING
 #define LOG(LEVEL, ... ) LOG_##LEVEL(LEVEL, __VA_ARGS__ )
+#else
+#define LOG(LEVEL, ... ) {}
+#endif

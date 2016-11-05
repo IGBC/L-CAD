@@ -16,13 +16,17 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
+//Comment out the line below to disable threading.
+//#define MULTITHREADING
+
 #include "dispatcher.h"
 
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef MULTITHREADING
 #include "utils/thpool.h"
-
+#endif
 #define LOGMODULE "DISPATCHER"
 #include "utils/lcadLogger.h"
 
@@ -48,7 +52,9 @@ struct {
 } typedef diff;
 
 struct s_dispatcher {
+#ifdef MULTITHREADING
     threadpool pool;
+#endif
     unsigned long timestep;
 	size_t n;
     graph *LG;
@@ -76,8 +82,16 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     //TODO: Lock Graph for editing;
 
     ctx->timestep = 0;
-    ctx->pool = thpool_init(threads);
     ctx->n = graphGetNodeCount(logicGraph);
+
+#ifdef MULTITHREADING
+    ctx->pool = thpool_init(threads);
+
+#else
+    threads = 0;
+    LOG(WARNING, "MULTITHREADING DISABLED IN ENGINE AT COMPILE TIME");
+#endif
+
 
     // Make a big thing to store Jobs in. (n * MD grid)
     ctx->jobpool = (job*) malloc(ctx->n * (MAX_DELAY + 1) * sizeof(job));
@@ -122,7 +136,9 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
 void dispatcherDelete(dispatcher *ctx) {
     // Free everything
 	// Graph Should be in a safe state;
+#ifdef MULTITHREADING
 	thpool_destroy(ctx->pool);
+#endif
     free(ctx->lockPool);
     free(ctx->jobpool);
     free(ctx->jobpoolCount);
@@ -140,19 +156,24 @@ int dispatcherStep(dispatcher *ctx) {
     
     // Constanty stuff
     unsigned long time = ctx->timestep % (MAX_DELAY + 1);
-    printf("\n");
+
 	LOG(INFO1, "T:%i Stepping Dispatcher. Jobs: %i, Time: %i", ctx->timestep, ctx->jobpoolCount[time], time);
 	
     // Adds each job to the threadpool's queue for execution.
     for (i = 0; i < ctx->jobpoolCount[time]; i++) {
         job *j = &ctx->jobpool[JPadr(ctx, 0, i)];
-		worker_do_work(j);
-		// thpool_add_work(ctx->pool, (void*) worker_do_work, (void*) j);
+#ifdef MULTITHREADING
+        // Distribute the work to the thread pool.
+        thpool_add_work(ctx->pool, (void*) worker_do_work, (void*) j);
     }
-    
     // Wait for the step execution to complete.
-    // thpool_wait(ctx->pool);
-    
+    thpool_wait(ctx->pool);
+#else
+        // No threading, have to do the work manually :(
+    	worker_do_work(j);
+	}
+#endif
+
     // here the diff buffer is populated. 
     
     // apply the diff patches to the graph.
