@@ -48,7 +48,7 @@ struct {
 
 struct {
     size_t ID;
-    logicType newState;
+    bool newState;
 } typedef diff;
 
 struct s_dispatcher {
@@ -69,11 +69,9 @@ struct s_dispatcher {
     bool *lockPool;
 };
 
-void workerDoWork(job *j);
-void solveSyncronous(job *j);
-bool solveRecursive(job *j);
-void generateJob(dispatcher *ctx, GLI *unit, unsigned int offset, int src);
-void setUnitState(dispatcher *ctx, GLI *unit, logicType state);
+void worker_do_work(job *j);
+
+void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src);
 
 dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     dispatcher* ctx = (dispatcher*) malloc(sizeof(dispatcher));
@@ -166,13 +164,13 @@ int dispatcherStep(dispatcher *ctx) {
         job *j = &ctx->jobpool[JPadr(ctx, 0, i)];
 #ifdef MULTITHREADING
         // Distribute the work to the thread pool.
-        thpool_add_work(ctx->pool, (void*) workerDoWork, (void*) j);
+        thpool_add_work(ctx->pool, (void*) worker_do_work, (void*) j);
     }
     // Wait for the step execution to complete.
     thpool_wait(ctx->pool);
 #else
         // No threading, have to do the work manually :(
-    	workerDoWork(j);
+    	worker_do_work(j);
 	}
 #endif
 
@@ -206,29 +204,12 @@ int dispatcherAddJob(dispatcher *ctx, size_t ID, unsigned int delay) {
     if (delay == 0) return -1;
     if (delay > MAX_DELAY) return -2;
     GLI *gli = graphGetGLI(ctx->LG, ID); 
-    generateJob(ctx, gli, delay, -1);
+    generate_job(ctx, gli, delay, -1);
     return 0;
 };
 
-void workerDoWork(job *j) {
-	logicType val;
-	// update syncronously or async depending on if we know the value or not.
-	if (logic_isUnknown(j->unit)){
-		val = solveRecursive(j);
-	} else {
-		val = solveSyncronous(j);
-	}
-
-	// Update gate
-    setUnitState(j->ctx, j->unit, val);
-
-    //clear some lock thing???
-    j->unit->lockTag[TIME(j->ctx, 0)] = false;
-
-}
-
-logicType solveSyncronous(job *j) {
-	// Get Inputs;
+void worker_do_work(job *j) {
+    // Get Inputs;
     fastlist *inputs = graphGetConnectionsByDrn(j->ctx->LG, j->unit->ID);  
     size_t count = fastlistSize(inputs);
     size_t i;
@@ -240,39 +221,46 @@ logicType solveSyncronous(job *j) {
         sum += conn->srcEp->state;
     }
     
-    // Return state;
-    return solver_sumComparitor(j.unit, sum, count);
-}
+    // Compare state;
+    bool output = false;
+    switch (j->unit->inputMode) {
+        case AND:   if (sum == count) output = true; break; 
+        case UNITY: // Behaves like a 1 input OR
+        case OUTPUT: // Behaves like a 1 input OR
+        case OR:    if (sum > 0)      output = true; break;
+        case XOR:   if (sum == 1)     output = true; break;
+        case INPUT: output = j->unit->state; break;
+        default: break;
+    }
+    if (j->unit->inputNegate) output = !output;
+    
+    LOG(TRACE, "T:%i U:%i UPDATE: sum=%i oldstate=%i, newstate=%i", j->ctx->timestep, j->unit->ID, sum, j->unit->state, output);
 
-logicType solveRecursive(job *j) {
-	if (logic_isUnknown(j->unit)) {
-		if (j->unit->seen) {
-			// We're going in circles, solution is to assign it a value and work forwards.
-			return FALSE;
+    if ((output != j->unit->state) // If state has changed:
+    	|| (j->unit->inputMode == INPUT) //OR if gate is an input
+    ) {
+		if (j->unit->inputMode != INPUT) {
+			// Register change with diff buffer;
+			j->ctx->diffBuffer[j->ctx->diffBufferCount].ID = j->unit->ID;
+			j->ctx->diffBuffer[j->ctx->diffBufferCount].newState = output;
+			// Only fiddle with this when we're done playing with it.
+			j->ctx->diffBufferCount++;
 		}
-		// Get Inputs;
-		fastlist *inputs = graphGetConnectionsByDrn(j->ctx->LG, j->unit->ID);
-		size_t count = fastlistSize(inputs);
-		size_t i;
-		size_t sum = 0;
+
+        // Get Outputs;
+        fastlist *outputs = graphGetConnectionsBySrc(j->ctx->LG, j->unit->ID);
+		count = fastlistSize(outputs);
 		for (i = 0; i < count; i++) {
-		    // get The source gate for the connection.
-		    connection *conn = (connection*) fastlistGetIndex(inputs, i);
-		    // add the gate to the input sum.
-		    job nextJob = { conn->srcEp, j->timestep, j->ctx };
-		    sum += solveRecursive(&nextJob);
+			// get The source gate for the connection.
+			connection *conn = (connection *) fastlistGetIndex(outputs, i);
+			// Generate Job;
+			generate_job(j->ctx, conn->drnEp, 1, j->unit->ID); // TODO: include delay.
 		}
-
-		// return state;
-		return solver_sumComparitor(j.unit, sum, count);
-
-	} else {
-		// if the state is known the recursion collapses down.
-		return j->unit->state;
-	}
+    }
+    j->unit->lockTag[TIME(j->ctx, 0)] = 0;
 }
 
-void generateJob(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
+void generate_job(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
     // If job is too far in the future throw it away.
 	if (offset > MAX_DELAY) {
         LOG(ERROR, "T: %i - Job submitted with offset of %i; dropping", ctx->timestep, offset);
@@ -301,28 +289,4 @@ void generateJob(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
     unit->lockTag[TIME(ctx, offset)] = true;
     LOG(DEBUG, "T:%i - Created job @ %i for %i from %i (address: %i)", ctx->timestep, ctx->timestep + offset, unit->ID, src, JPadr(ctx, offset, unit->ID));
     return;
-}
-
-void setUnitState(dispatcher *ctx, GLI *unit, logicType state){
-	if ((state != unit->state) // If state has changed:
-	    	|| (unit->inputMode == INPUT) //OR if gate is an input
-	    ) {
-		if (unit->inputMode != INPUT) {
-			// Register change with diff buffer;
-			ctx->diffBuffer[ctx->diffBufferCount].ID = unit->ID;
-			ctx->diffBuffer[ctx->diffBufferCount].newState = state;
-			// Only fiddle with this when we're done playing with it.
-			ctx->diffBufferCount++;
-		}
-
-		// Get and update Outputs;
-		fastlist *outputs = graphGetConnectionsBySrc(ctx->LG, unit->ID);
-		size_t count = fastlistSize(outputs);
-		for (size_t i = 0; i < count; i++) {
-			// Get The source gate for the connection.
-			connection *conn = (connection *) fastlistGetIndex(outputs, i);
-			// Generate Job;
-			generateJob(ctx, conn->drnEp, 1, unit->ID); // TODO: include delay.
-		}
-	}
 }
