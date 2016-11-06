@@ -222,6 +222,8 @@ void workerDoWork(job *j) {
 		val = solveSyncronous(j);
 	}
 
+    LOG(TRACE, "T:%i U:%i UPDATE: oldstate=%i, newstate=%i", j->ctx->timestep, j->unit->ID, j->unit->state, val);
+
 	// Update gate
     setUnitState(j->ctx, j->unit, val);
 
