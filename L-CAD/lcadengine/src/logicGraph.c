@@ -80,7 +80,7 @@ unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, size_t ID, u
 
     gli->ID = ID; // set ID.
     // TODO: Generate Better IDs
-    gli->state = false; // All GLI's start off
+    gli->state = DTKNOW; // Lets be honest about this.
     // Just copy this across.
     gli->delay = delay;
     gli->inputMode = type;

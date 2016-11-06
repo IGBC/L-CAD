@@ -21,25 +21,46 @@
 
 typedef enum {AND, OR, XOR, UNITY, INPUT, OUTPUT} gateInputType;
 
+
+#define VAL_FIELD 0b00000001
+#define UNKNOWN_FIELD 0b00000010
+#define DTCARE_FIELD 0b00000100
+
+typedef enum {FALSE=0b00000000, TRUE=0b00000001, DTKNOW=0b00000010, DTCARE=0b00000110} logicType;
+
 struct {
 	size_t ID; /* Sequential ID of Gate */
-	bool state; /* Current Output state for this GLI */
+	logicType state; /* Current Output state for this GLI */
 	unsigned int delay; /* Propagation delay of this gate */
 	gateInputType inputMode; /* AND OR etc.... */
 	bool inputNegate; /* N in front of the mode */
 
 	// Dispatcher Fields
-	bool *lockTag; /* stores the location of this gate's work locks
+	bool *lockTag; /* Stores the location of this gate's work locks
 	  Memory for the locks must be provided by the dispatcher at creation,
 	  if the dispatcher is not in scope this variable is not valid.*/
+	bool seen = 0; /* Used in recursive functions to detect if we've seen this
+	function MUST MUST MUST reset this to 0 once on returning down the stack. */
 } typedef genericLogicInterface;
 
 struct {
 	size_t ID; /* ID of this connection */
-	genericLogicInterface *srcEp; /* pointer to the GLI of the source */
-	genericLogicInterface *drnEp; /* pointer to the GLI of the drain */
+	genericLogicInterface *srcEp; /* Pointer to the GLI of the source */
+	genericLogicInterface *drnEp; /* Pointer to the GLI of the drain */
 	size_t srcID; /* ID of the source */
 	size_t drnID; /* ID of the drain */
 } typedef connection;
+
+bool logic_isState(genericLogicInterface *val) {
+	return (bool)(val->state & VAL_FIELD);
+}
+
+bool logic_isUnknown(genericLogicInterface *val) {
+	return (bool)(val->state & UNKNOWN_FIELD);
+}
+
+bool logic_isDontCare(genericLogicInterface *val) {
+	return (bool)(val->state & DTCARE_FIELD);
+}
 
 #endif
