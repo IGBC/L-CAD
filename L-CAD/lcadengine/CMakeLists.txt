@@ -7,6 +7,8 @@ set(LCADENGINE_SRC
     src/logicGraph.c
     src/dispatcher.c
     src/graphLoader.c
+    src/logicSolver.c
+    src/genericlogic.c
     
     src/utils/fastlist.c
     src/utils/hashmap.c

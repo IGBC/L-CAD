@@ -24,9 +24,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "logicSolver.h"
+
 #ifdef MULTITHREADING
 #include "utils/thpool.h"
 #endif
+
 #define LOGMODULE "DISPATCHER"
 #include "utils/lcadLogger.h"
 
@@ -70,8 +73,8 @@ struct s_dispatcher {
 };
 
 void workerDoWork(job *j);
-void solveSyncronous(job *j);
-bool solveRecursive(job *j);
+logicType solveSyncronous(job *j);
+logicType solveRecursive(job *j);
 void generateJob(dispatcher *ctx, GLI *unit, unsigned int offset, int src);
 void setUnitState(dispatcher *ctx, GLI *unit, logicType state);
 
@@ -124,7 +127,7 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     	//// HAKX  ////
 
     	// Hack init system, alternate gate states
-    	g->state = i % 2;
+    	//g->state = i % 2;
 
     	//// /HAKX ////
 
@@ -241,7 +244,7 @@ logicType solveSyncronous(job *j) {
     }
     
     // Return state;
-    return solver_sumComparitor(j.unit, sum, count);
+    return solver_sumComparitor(j->unit, sum, count);
 }
 
 logicType solveRecursive(job *j) {
@@ -264,7 +267,7 @@ logicType solveRecursive(job *j) {
 		}
 
 		// return state;
-		return solver_sumComparitor(j.unit, sum, count);
+		return solver_sumComparitor(j->unit, sum, count);
 
 	} else {
 		// if the state is known the recursion collapses down.

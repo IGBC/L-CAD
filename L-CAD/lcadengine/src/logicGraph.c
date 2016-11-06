@@ -85,6 +85,7 @@ unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, size_t ID, u
     gli->delay = delay;
     gli->inputMode = type;
     gli->inputNegate = nin;
+    gli->seen = false;
 
     // Push gli into the map
     hashmapInsert(ctx->GIDMap, (void*)gli, gli->ID);

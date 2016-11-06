@@ -16,19 +16,17 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-#include "logicSolver.h"
+#include "genericlogic.h"
 
-bool solver_sumComparitor(genericLogicInterface *unit, size_t sum, size_t inputCount) {
-	bool output = false;
-	switch (unit->inputMode) {
-		case AND:   if (sum == inputCount) output = true; break;
-		case UNITY: // Behaves like a 1 input OR
-		case OUTPUT: // Behaves like a 1 input OR
-		case OR:    if (sum > 0)      output = true; break;
-		case XOR:   if (sum == 1)     output = true; break;
-		case INPUT: output = unit->state; break;
-		default: break;
-	}
-	if (unit->inputNegate) output = !output;
-	return output;
+bool logic_isState(genericLogicInterface *val) {
+	return (bool)(val->state & VAL_FIELD);
 }
+
+bool logic_isUnknown(genericLogicInterface *val) {
+	return (bool)(val->state & UNKNOWN_FIELD);
+}
+
+bool logic_isDontCare(genericLogicInterface *val) {
+	return (bool)(val->state & DTCARE_FIELD);
+}
+

@@ -21,6 +21,8 @@
 
 typedef enum {AND, OR, XOR, UNITY, INPUT, OUTPUT} gateInputType;
 
+#include "stdlib.h"
+#include "stdbool.h"
 
 #define VAL_FIELD 0b00000001
 #define UNKNOWN_FIELD 0b00000010
@@ -39,7 +41,7 @@ struct {
 	bool *lockTag; /* Stores the location of this gate's work locks
 	  Memory for the locks must be provided by the dispatcher at creation,
 	  if the dispatcher is not in scope this variable is not valid.*/
-	bool seen = 0; /* Used in recursive functions to detect if we've seen this
+	bool seen; /* Used in recursive functions to detect if we've seen this
 	function MUST MUST MUST reset this to 0 once on returning down the stack. */
 } typedef genericLogicInterface;
 
@@ -51,16 +53,10 @@ struct {
 	size_t drnID; /* ID of the drain */
 } typedef connection;
 
-bool logic_isState(genericLogicInterface *val) {
-	return (bool)(val->state & VAL_FIELD);
-}
+bool logic_isState(genericLogicInterface *val);
 
-bool logic_isUnknown(genericLogicInterface *val) {
-	return (bool)(val->state & UNKNOWN_FIELD);
-}
+bool logic_isUnknown(genericLogicInterface *val);
 
-bool logic_isDontCare(genericLogicInterface *val) {
-	return (bool)(val->state & DTCARE_FIELD);
-}
+bool logic_isDontCare(genericLogicInterface *val);
 
 #endif
