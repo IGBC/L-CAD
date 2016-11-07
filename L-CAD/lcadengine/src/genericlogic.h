@@ -43,6 +43,8 @@ struct {
 	  if the dispatcher is not in scope this variable is not valid.*/
 	bool seen; /* Used in recursive functions to detect if we've seen this
 	function MUST MUST MUST reset this to 0 once on returning down the stack. */
+	size_t lastUpdated;
+	size_t updatedBy;
 } typedef genericLogicInterface;
 
 struct {

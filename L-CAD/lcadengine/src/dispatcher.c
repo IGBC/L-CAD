@@ -45,6 +45,7 @@
 
 struct {
     GLI *unit;
+    size_t src;
     unsigned long timestep;
     dispatcher *ctx;
 } typedef job;
@@ -76,7 +77,7 @@ void workerDoWork(job *j);
 logicType solveSyncronous(job *j);
 logicType solveRecursive(job *j);
 void generateJob(dispatcher *ctx, GLI *unit, unsigned int offset, int src);
-void setUnitState(dispatcher *ctx, GLI *unit, logicType state);
+void setUnitState(dispatcher *ctx, GLI *unit, logicType state, size_t src);
 
 dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     dispatcher* ctx = (dispatcher*) malloc(sizeof(dispatcher));
@@ -188,6 +189,8 @@ int dispatcherStep(dispatcher *ctx) {
         g->state = d->newState;
     }
     
+    graphPrint(ctx->LG);
+
     // In both of these memset commands only the used memory is cleared, 
     // so as to not to waste time clearing blank memory. 
     
@@ -225,7 +228,7 @@ void workerDoWork(job *j) {
     LOG(TRACE, "T:%i U:%i UPDATE: oldstate=%i, newstate=%i", j->ctx->timestep, j->unit->ID, j->unit->state, val);
 
 	// Update gate
-    setUnitState(j->ctx, j->unit, val);
+    setUnitState(j->ctx, j->unit, val, j->src);
 
     //clear some lock thing???
     j->unit->lockTag[TIME(j->ctx, 0)] = false;
@@ -266,7 +269,7 @@ logicType solveRecursive(job *j) {
 		    // get The source gate for the connection.
 		    connection *conn = (connection*) fastlistGetIndex(inputs, i);
 		    // add the gate to the input sum.
-		    job nextJob = { conn->srcEp, j->timestep, j->ctx };
+		    job nextJob = { conn->srcEp, j->unit->state, j->timestep, j->ctx };
 		    sum += solveRecursive(&nextJob);
 		}
 
@@ -301,6 +304,7 @@ void generateJob(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
     unsigned long j = ctx->jobpoolCount[time]++;
     // Fill in the details
 	ctx->jobpool[JPadr(ctx, offset, j)].unit = unit;
+	ctx->jobpool[JPadr(ctx, offset, j)].src = src;
     ctx->jobpool[JPadr(ctx, offset, j)].ctx = ctx;
     ctx->jobpool[JPadr(ctx, offset, j)].timestep = time;
 
@@ -310,7 +314,7 @@ void generateJob(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
     return;
 }
 
-void setUnitState(dispatcher *ctx, GLI *unit, logicType state){
+void setUnitState(dispatcher *ctx, GLI *unit, logicType state, size_t src){
 	if ((state != unit->state) // If state has changed:
 	    	|| (unit->inputMode == INPUT) //OR if gate is an input
 	    ) {
@@ -320,7 +324,12 @@ void setUnitState(dispatcher *ctx, GLI *unit, logicType state){
 			ctx->diffBuffer[ctx->diffBufferCount].newState = state;
 			// Only fiddle with this when we're done playing with it.
 			ctx->diffBufferCount++;
+
+			//update rendering fields
 		}
+
+		unit->lastUpdated = ctx->timestep;
+		unit->updatedBy = src;
 
 		// Get and update Outputs;
 		fastlist *outputs = graphGetConnectionsBySrc(ctx->LG, unit->ID);

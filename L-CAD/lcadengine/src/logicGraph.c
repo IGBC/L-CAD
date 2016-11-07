@@ -24,6 +24,8 @@
 
 #include "utils/hashmap.h"
 
+#include "utils/lcadLogger.h"
+
 #define GLI genericLogicInterface
 #define CONN_LIST_SIZE 5
 
@@ -86,6 +88,8 @@ unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, size_t ID, u
     gli->inputMode = type;
     gli->inputNegate = nin;
     gli->seen = false;
+    gli->lastUpdated = -1;
+    gli->updatedBy = -1;
 
     // Push gli into the map
     hashmapInsert(ctx->GIDMap, (void*)gli, gli->ID);
@@ -242,10 +246,16 @@ size_t graphGetNodeCount(graph *ctx){
 }
 
 void graphPrint(graph* ctx) {
-	printf(" NODE |  Type  | State | Inputs\n");
+	printf(" NODE |  Type  | State |  Updated  | Inputs\n");
+	printf("------+--------+-------+-----------+---------\n");
 	for (size_t i = 0; i < fastlistSize(ctx->nodes); i++) {
 		GLI *gli = (GLI*) fastlistGetIndex(ctx->nodes, i);
-		printf(" %4i |  ", gli->ID);
+		switch (gli->state) {
+		case TRUE: printf(RESET "\x1B[1;37m"); break;
+		case FALSE: printf(RESET "\x1B[2;37m"); break;
+		case DTKNOW: printf(RESET "\x1B[0;34m"); break;
+		}
+		printf(" %4li |  ", gli->ID);
 		switch (gli->inputMode) {
 		case AND:
 			if (gli->inputNegate) {
@@ -290,14 +300,22 @@ void graphPrint(graph* ctx) {
 			}
 			break;
 		}
-		printf(" |   %i   |", (int) gli->state);
-
+		if (((long)gli->lastUpdated) < 0) {
+			printf(" |   %i   |           |", (int) gli->state);
+		} else {
+			if (((long)gli->updatedBy) < 0) {
+				printf(" |   %i   |     @%-4i |", (int) gli->state, (int)gli->lastUpdated);
+			} else {
+				printf(" |   %i   | %4i@%-4i |", (int) gli->state, (int)gli->updatedBy, (int)gli->lastUpdated);
+			}
+		}
 		fastlist *inputs = (fastlist*)hashmapGet(ctx->drnMap, gli->ID);
 		for (unsigned int i = 0; i < fastlistSize(inputs); i++) {
-			printf(" %4i", ((connection*)fastlistGetIndex(inputs, i))->srcID);
+			printf(" %4li", ((connection*)fastlistGetIndex(inputs, i))->srcID);
 		}
 
 		printf("\n");
 	}
-	printf("\n");
+
+	printf(RESET "\n");
 }
