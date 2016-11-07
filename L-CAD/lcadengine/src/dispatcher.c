@@ -250,11 +250,13 @@ logicType solveSyncronous(job *j) {
 }
 
 logicType solveRecursive(job *j) {
+	LOG(TRACE, "Recursive Solve ID = %i", j->unit->ID);
 	if (logic_isUnknown(j->unit)) {
 		if (j->unit->seen) {
 			// We're going in circles, solution is to assign it a value and work forwards.
 			return FALSE;
 		}
+		j->unit->seen = true;
 		// Get Inputs;
 		fastlist *inputs = graphGetConnectionsByDrn(j->ctx->LG, j->unit->ID);
 		size_t count = fastlistSize(inputs);
@@ -269,8 +271,8 @@ logicType solveRecursive(job *j) {
 		}
 
 		// return state;
+		j->unit->seen = false;
 		return solver_sumComparitor(j->unit, sum, count);
-
 	} else {
 		// if the state is known the recursion collapses down.
 		return j->unit->state;
