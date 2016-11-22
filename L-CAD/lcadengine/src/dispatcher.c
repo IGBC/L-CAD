@@ -257,7 +257,8 @@ logicType solveRecursive(job *j) {
 	if (logic_isUnknown(j->unit)) {
 		if (j->unit->seen) {
 			// We're going in circles, solution is to assign it a value and work forwards.
-			return FALSE;
+			j->unit->state = false;
+			return j->unit->state;
 		}
 		j->unit->seen = true;
 		// Get Inputs;
@@ -273,13 +274,14 @@ logicType solveRecursive(job *j) {
 		    sum += solveRecursive(&nextJob);
 		}
 
-		// return state;
+		// set state;
+		j->unit->state = solver_sumComparitor(j->unit, sum, count);
+
+		// clear mutex;
 		j->unit->seen = false;
-		return solver_sumComparitor(j->unit, sum, count);
-	} else {
-		// if the state is known the recursion collapses down.
-		return j->unit->state;
 	}
+	// if the state is known the recursion collapses down.
+	return j->unit->state;
 }
 
 void generateJob(dispatcher *ctx, GLI *unit, unsigned int offset, int src) {
