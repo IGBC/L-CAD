@@ -250,12 +250,18 @@ void graphPrint(graph* ctx) {
 	printf("------+--------+-------+-----------+---------\n");
 	for (size_t i = 0; i < fastlistSize(ctx->nodes); i++) {
 		GLI *gli = (GLI*) fastlistGetIndex(ctx->nodes, i);
+
+		// Set colour
 		switch (gli->state) {
-		case TRUE: printf(RESET "\x1B[1;37m"); break;
-		case FALSE: printf(RESET "\x1B[2;37m"); break;
+		case TRUE:   printf(RESET "\x1B[1;37m"); break;
+		case FALSE:  printf(RESET "\x1B[2;37m"); break;
 		case DTKNOW: printf(RESET "\x1B[0;34m"); break;
 		}
+
+		// Print ID
 		printf(" %4li |  ", gli->ID);
+
+		// Print Modestring
 		switch (gli->inputMode) {
 		case AND:
 			if (gli->inputNegate) {
@@ -300,15 +306,26 @@ void graphPrint(graph* ctx) {
 			}
 			break;
 		}
+
+		// print state
+		switch (gli->state) {
+		case TRUE:   printf(" |   T   |"); break;
+		case FALSE:  printf(" |   F   |"); break;
+		case DTKNOW: printf(" |   -   |"); break;
+		}
+
+		// print last updated
 		if (((long)gli->lastUpdated) < 0) {
-			printf(" |   %i   |           |", (int) gli->state);
+			printf("           |");
 		} else {
 			if (((long)gli->updatedBy) < 0) {
-				printf(" |   %i   |     @%-4i |", (int) gli->state, (int)gli->lastUpdated);
+				printf("     @%-4i |", (int)gli->lastUpdated);
 			} else {
-				printf(" |   %i   | %4i@%-4i |", (int) gli->state, (int)gli->updatedBy, (int)gli->lastUpdated);
+				printf(" %4i@%-4i |", (int)gli->updatedBy, (int)gli->lastUpdated);
 			}
 		}
+
+		//print inputs
 		fastlist *inputs = (fastlist*)hashmapGet(ctx->drnMap, gli->ID);
 		for (unsigned int i = 0; i < fastlistSize(inputs); i++) {
 			printf(" %4li", ((connection*)fastlistGetIndex(inputs, i))->srcID);
