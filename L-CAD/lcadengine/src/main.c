@@ -1,29 +1,28 @@
+/*
+ * This file is part of the L-CAD project
+ * Copyright (c) 2016  Ashley Brown, Katharina Sabel
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ */
 
-#include <lcadengine/logicGraph.h>
-#include <lcadengine/dispatcher.h>
+
 #include <stdio.h>
-
-int boobs = 0;
-
-#define PRINT_STATE \
-    {int stateA = (int) graphGetGLI(g, a)->state; \
-    int stateB = (int) graphGetGLI(g, b)->state; \
-    int stateC = (int) graphGetGLI(g, c)->state; \
-    int stateCOut = (int) graphGetGLI(g, cOut)->state; \
-    int stateOut = (int) graphGetGLI(g, out)->state; \
-    int stateAnd1c = (int) graphGetGLI(g, and1C)->state; \
-    int stateAndAB = (int) graphGetGLI(g, andAB)->state; \
-    int stateXor1 = (int) graphGetGLI(g, xor1)->state; \
-    printf("=== Current State %i ===\n", boobs++); \
-    printf("stateA: %i\n", stateA); \
-    printf("stateB: %i\n", stateB); \
-    printf("stateC: %i\n", stateC); \
-    printf("stateCOut: %i\n", stateCOut); \
-    printf("stateOut: %i\n", stateOut); \
-    printf("stateAnd1c: %i\n", stateAnd1c); \
-    printf("stateAndAB: %i\n", stateAndAB); \
-    printf("stateXor1: %i\n", stateXor1);}
-
+#include "dispatcher.h"
+#include "graphLoader.h"
+#include "logicGraph.h"
+#define LOGMODULE "MAIN"
+#include "utils/lcadLogger.h"
 
 void simulate_adder() {
     graph *g = graphCreate();
@@ -72,7 +71,6 @@ void simulate_adder() {
     dispatcherAddJob(d, c, 1);
 
     for (int i = 0; i < 10; i++) {
-        //PRINT_STATE
         graphPrint(g);
     	dispatcherStep(d);
     }
@@ -169,8 +167,9 @@ void calculate_truth_table(gateInputType t, bool n) {
 
 
 int main() {
-    printf("+= Sizeof =+\n| char:  %i |\n| short: %i |\n| int:   %i |\n| long:  %i |\n| void*: %i |\n+----------+\n",sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(void*)); 
-    simulate_adder();
+
+    // printf("+= Sizeof =+\n| char:  %i |\n| short: %i |\n| int:   %i |\n| long:  %i |\n| void*: %i |\n+----------+\n",sizeof(char), sizeof(short), sizeof(int), sizeof(long), sizeof(void*)); 
+   // simulate_adder();
     
 //    printf("\n\n=== AND ===\n");
 //    calculate_truth_table(AND, false);
@@ -189,20 +188,107 @@ int main() {
 //
 //    printf("\n\n=== NXOR ===\n");
 //    calculate_truth_table(XOR, true);
+	graph *g = loaderLoadFromFile("graphs/SR.graph");
+    /*graph *g = loaderLoadFromStr(//"0 NOT 0\n 1 NAND 0 1\n 2 IN");
+"0 IN \n \
+#100 NOT 0 \n \
+#1 OUT 14 #Q1\n \
+#2 OUT 24 #Q2\n \
+#3 OUT 34 #Q2\n \
+#4 OUT 44 #Q4\n \
+\n \
+1 NAND 7 0\n \
+2 NOT 7\n \
+3 NAND 2 0\n \
+4 NOR 1 5 #Q\n \
+5 NOR 3 4 #!Q\n \
+6 OUT 4\n \
+7 IN #D\n \
+#21 NAND 25 0\n \
+#22 NOT 25\n \
+#23 NAND 22 0\n \
+#24 NAND 21 25 #Q\n \
+#25 NAND 23 24 #!Q\n \
+\n \
+#31 NAND 35 0\n \
+#32 NOT 35\n \
+#33 NAND 32 0\n \
+#34 NAND 31 35 #Q\n \
+#35 NAND 33 34 #!Q\n \
+\n \
+#41 NAND 45 0\n \
+#42 NOT 45\n \
+#43 NAND 42 0\n \
+#44 NAND 41 45 #Q\n \
+#45 NAND 43 44 #!Q");*/
 
-    graph *g = graphCreate();
+    dispatcher *d = dispatcherCreate(g, 1);
 
-    unsigned long A = graphAddGLI(g, UNITY, false, 1, 0);
-    unsigned long B = graphAddGLI(g, UNITY, false, 2, 0);
+    graphGetGLI(g, 0)->state = 0;
+	graphGetGLI(g, 1)->state = 0;
 
-    unsigned long a = graphAddGLI(g, UNITY, false, 3, 0);
-    unsigned long b = graphAddGLI(g, INPUT, false, 4, 0);
+    for(int j = 0; j < graphGetNodeCount(g); j++) {
+    	dispatcherAddJob(d, j, 1);
+    }
 
-    printf("connection A-a: %i\n", graphAddConnection(g, A, a));
-    printf("connection B-a: %i\n", graphAddConnection(g, B, a));
-    printf("connection B-b: %i\n", graphAddConnection(g, B, a));
+    graphPrint(g);
 
-    graphDelete(g);
+    for(int j = 0; j < 100; j++) {
+    	//printf(" %i,", j);
+    	dispatcherStep(d);
+    }
+
+    graphPrint(g);
+
+
+
+    graphGetGLI(g, 0)->state = 1;
+    dispatcherAddJob(d, 0, 1);
+
+	graphPrint(g);
+
+	for(int j = 0; j < 100; j++) {
+		//printf(" %i,", j);
+		dispatcherStep(d);
+	}
+
+	graphPrint(g);
+
+	graphGetGLI(g, 0)->state = 0;
+	    dispatcherAddJob(d, 0, 1);
+
+		graphPrint(g);
+
+		for(int j = 0; j < 100; j++) {
+			//printf(" %i,", j);
+			dispatcherStep(d);
+		}
+
+		graphPrint(g);
+	/*
+    return
+
+	graphGetGLI(g, 1)->state = 0;
+	dispatcherAddJob(d, 1, 1);
+
+	for(int i = 0; i < 10; i++) {
+		dispatcherStep(d);
+		printf("\n");
+		graphPrint(g);
+	}
+
+	graphGetGLI(g, 0)->state = 0;
+	dispatcherAddJob(d, 0, 1);
+
+	for(int i = 0; i < 10; i++) {
+			dispatcherStep(d);
+			printf("\n");
+			graphPrint(g);
+		}*/
+	
+	dispatcherDelete(d);
+	    
+	graphDelete(g);
 
     return 0;    
 }

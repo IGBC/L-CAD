@@ -1,8 +1,30 @@
-#include <lcadengine/logicGraph.h>
+/*
+ * This file is part of the L-CAD project
+ * Copyright (c) 2016  Ashley Brown, Katharina Sabel
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ */
+
+
+#include "logicGraph.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "utils/hashmap.h"
+
+#include "utils/lcadLogger.h"
 
 #define GLI genericLogicInterface
 #define CONN_LIST_SIZE 5
@@ -11,11 +33,13 @@ struct s_graph {
 	hashmap *GIDMap; // Gates
 	hashmap *CIDMap, *srcMap, *drnMap; // Connections
 	fastlist *nodes, *connections;
-	unsigned long nodeCount;
+	size_t nodeCount;
 };
 
 graph *graphCreate() {
     graph *ctx = (graph*) malloc(sizeof(graph));
+    if(!ctx) return NULL;
+
     ctx->GIDMap = hashmapCreate(0);
     ctx->CIDMap = hashmapCreate(0);
     ctx->srcMap = hashmapCreate(0);
@@ -50,7 +74,7 @@ void graphDelete(graph *ctx) {
     free(ctx);
 };
 
-unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned long ID, unsigned int delay) {
+unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, size_t ID, unsigned int delay) {
     // if hashmapGet does not return null then there is already a gate with the desired ID.
 	if ((GLI*) hashmapGet(ctx->GIDMap, ID)) return -1; //Give up.
 
@@ -58,11 +82,14 @@ unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned lon
 
     gli->ID = ID; // set ID.
     // TODO: Generate Better IDs
-    gli->state = false; // All GLI's start off
+    gli->state = DTKNOW; // Lets be honest about this.
     // Just copy this across.
     gli->delay = delay;
     gli->inputMode = type;
     gli->inputNegate = nin;
+    gli->seen = false;
+    gli->lastUpdated = -1;
+    gli->updatedBy = -1;
 
     // Push gli into the map
     hashmapInsert(ctx->GIDMap, (void*)gli, gli->ID);
@@ -84,7 +111,7 @@ unsigned long graphAddGLI(graph *ctx, gateInputType type, bool nin, unsigned lon
     // gli goes out of scope here. (psst, don't tell anyone the ID is a pointer)
 };
 
-void graphRemoveGLI(graph *ctx, unsigned long ID) {
+void graphRemoveGLI(graph *ctx, size_t ID) {
     //Unregister this GLI;
     GLI *gli = (GLI*) hashmapRemove(ctx->GIDMap, ID);
     fastlistRemoveByPointer(ctx->nodes, gli);
@@ -95,11 +122,11 @@ void graphRemoveGLI(graph *ctx, unsigned long ID) {
 
     // Remove src connections here.
     {
-        unsigned long count = fastlistSize(srcList);
-        for (unsigned long i = 0; i < count; i++) {
+        size_t count = fastlistSize(srcList);
+        for (size_t i = 0; i < count; i++) {
             // Get the connection.
             connection *conn = (connection *) fastlistGetIndex(srcList, i);
-            unsigned long index = conn->ID;
+            size_t index = conn->ID;
             // Remove it
             graphRemoveConnection(ctx, index);
         }
@@ -107,11 +134,11 @@ void graphRemoveGLI(graph *ctx, unsigned long ID) {
 
     // Remove drn connections here.
     {
-        unsigned long count = fastlistSize(drnList);
-        for (unsigned long i = 0; i < count; i++) {
+        size_t count = fastlistSize(drnList);
+        for (size_t i = 0; i < count; i++) {
             // Get the connection.
             connection *conn = (connection *) fastlistGetIndex(drnList, i);
-            unsigned long index = conn->ID;
+            size_t index = conn->ID;
             // Remove it
             graphRemoveConnection(ctx, index);
         }
@@ -129,7 +156,7 @@ void graphRemoveGLI(graph *ctx, unsigned long ID) {
     ctx->nodeCount--;
 };
 
-unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long drn) {
+unsigned long graphAddConnection(graph *ctx, size_t src, size_t drn) {
     // get src and drn
 	GLI* srcGli = (GLI*) hashmapGet(ctx->GIDMap, src);
     GLI* drnGli = (GLI*) hashmapGet(ctx->GIDMap, drn);
@@ -151,7 +178,7 @@ unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long dr
 	// TODO: safety this
     connection *conn = (connection*) malloc(sizeof(connection));
 
-    conn->ID = (unsigned long) conn; // We're using the pointer as a UUID, as we don't have a generator.
+    conn->ID = (size_t) conn; // We're using the pointer as a UUID, as we don't have a generator.
     // TODO: Generate Better IDs
 
     conn->srcEp = srcGli;
@@ -176,7 +203,7 @@ unsigned long graphAddConnection(graph *ctx, unsigned long src, unsigned long dr
     return conn->ID;
 };
 
-void graphRemoveConnection(graph *ctx, unsigned long ID) {
+void graphRemoveConnection(graph *ctx, size_t ID) {
     // Remove Connection from hashmap
     connection *conn = (connection*) hashmapRemove(ctx->CIDMap, ID);
 
@@ -193,33 +220,48 @@ void graphRemoveConnection(graph *ctx, unsigned long ID) {
     free(conn);
 }
 
-genericLogicInterface *graphGetGLI(graph *ctx, unsigned long ID) {
+genericLogicInterface *graphGetGLI(graph *ctx, size_t ID) {
     return (GLI*) hashmapGet(ctx->GIDMap, ID);
 }
 
-connection *graphGetConnectionByID(graph *ctx, unsigned long ID) {
+fastlist *graphGetGLIList(graph *ctx) {
+	return ctx->nodes;
+}
+
+
+connection *graphGetConnectionByID(graph *ctx, size_t ID) {
     return (connection*) hashmapGet(ctx->CIDMap, ID);
 }
 
-fastlist *graphGetConnectionsBySrc(graph *ctx, unsigned long srcID) {
+fastlist *graphGetConnectionsBySrc(graph *ctx, size_t srcID) {
     return (fastlist*) hashmapGet(ctx->srcMap, srcID);
 }
 
-fastlist *graphGetConnectionsByDrn(graph *ctx, unsigned long drnID) {
+fastlist *graphGetConnectionsByDrn(graph *ctx, size_t drnID) {
     return (fastlist*) hashmapGet(ctx->drnMap, drnID);
 }
 
-unsigned long graphGetNodeCount(graph *ctx){
+size_t graphGetNodeCount(graph *ctx){
     return ctx->nodeCount;
 }
 
-#include <stdio.h>
-
 void graphPrint(graph* ctx) {
-	printf(" NODE |  Type  | State | Inputs\n");
-	for (unsigned long i = 0; i < fastlistSize(ctx->nodes); i++) {
+	printf(" NODE |  Type  | State |  Updated  | Inputs\n");
+	printf("------+--------+-------+-----------+---------\n");
+	for (size_t i = 0; i < fastlistSize(ctx->nodes); i++) {
 		GLI *gli = (GLI*) fastlistGetIndex(ctx->nodes, i);
-		printf(" %4i |  ", gli->ID);
+
+		// Set colour
+		switch (gli->state) {
+		case TRUE:   printf(RESET "\x1B[1;37m"); break;
+		case FALSE:  printf(RESET "\x1B[2;37m"); break;
+		case DTKNOW: printf(RESET "\x1B[0;34m"); break;
+		}
+
+		// Print ID
+		printf(" %4li |  ", gli->ID);
+
+		// Print Modestring
 		switch (gli->inputMode) {
 		case AND:
 			if (gli->inputNegate) {
@@ -257,21 +299,40 @@ void graphPrint(graph* ctx) {
 			}
 			break;
 		case OUTPUT:
-				if (gli->inputNegate) {
-					printf("N-OUT");
-				} else {
-					printf("OUT  ");
-				}
-				break;
+			if (gli->inputNegate) {
+				printf("N-OUT");
+			} else {
+				printf("OUT  ");
+			}
+			break;
 		}
-		printf(" |   %i   |", (int) gli->state);
 
+		// print state
+		switch (gli->state) {
+		case TRUE:   printf(" |   T   |"); break;
+		case FALSE:  printf(" |   F   |"); break;
+		case DTKNOW: printf(" |   -   |"); break;
+		}
+
+		// print last updated
+		if (((long)gli->lastUpdated) < 0) {
+			printf("           |");
+		} else {
+			if (((long)gli->updatedBy) < 0) {
+				printf("     @%-4i |", (int)gli->lastUpdated);
+			} else {
+				printf(" %4i@%-4i |", (int)gli->updatedBy, (int)gli->lastUpdated);
+			}
+		}
+
+		//print inputs
 		fastlist *inputs = (fastlist*)hashmapGet(ctx->drnMap, gli->ID);
 		for (unsigned int i = 0; i < fastlistSize(inputs); i++) {
-			printf(" %4i", ((connection*)fastlistGetIndex(inputs, i))->srcID);
+			printf(" %4li", ((connection*)fastlistGetIndex(inputs, i))->srcID);
 		}
 
 		printf("\n");
 	}
-	printf("\n");
+
+	printf(RESET "\n");
 }

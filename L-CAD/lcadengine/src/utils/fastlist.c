@@ -1,10 +1,30 @@
-#include <lcadengine/fastlist.h>
+/*
+ * This file is part of the L-CAD project
+ * Copyright (c) 2016  Ashley Brown, Katharina Sabel
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/.
+ */
+
+
+#include "fastlist.h"
+
 #include <stdlib.h>
 
 struct s_fastlist {
-    unsigned long originalSize;
-    unsigned long currentSize;
-    unsigned long numItems;
+    size_t originalSize;
+    size_t currentSize;
+    size_t numItems;
     void ** pointer;
 };
 
@@ -12,7 +32,7 @@ struct s_fastlist {
  * Create new list
  * Returns FASTLIST_FAILED on failure
  * else returns pointer to list */
-fastlist *fastlistCreate(unsigned long size) {
+fastlist *fastlistCreate(size_t size) {
     // allocate space for the list
     fastlist *fl = (fastlist*) malloc(sizeof(fastlist));
     if (!fl) return (fastlist*) FASTLIST_FAILED;
@@ -39,7 +59,7 @@ void fastlistDelete(fastlist *ctx) {
  * Get's <index> element from list 
  * Returns FASTLIST_FAILED if item outside of accepted range 
  * else returns pointer to the index */
-void *fastlistGetIndex(fastlist *ctx, unsigned long index) {
+void *fastlistGetIndex(fastlist *ctx, size_t index) {
     if (index > ctx->numItems) 
         return (void*) FASTLIST_FAILED;
     return ctx->pointer[index];
@@ -47,7 +67,7 @@ void *fastlistGetIndex(fastlist *ctx, unsigned long index) {
 
 /**
  * Returns size of the list */
-unsigned long fastlistSize(fastlist *ctx) {
+size_t fastlistSize(fastlist *ctx) {
     return ctx->numItems;
 }
 
@@ -55,7 +75,7 @@ unsigned long fastlistSize(fastlist *ctx) {
  * Adds item to the end of the list 
  * Return FASTLIST_FAILED on failure
  * else returns new length of the list */
-unsigned long fastlistAdd(fastlist *ctx, void *item) {
+size_t fastlistAdd(fastlist *ctx, void *item) {
     // Check if full
     if (ctx->numItems == ctx->currentSize) { 
         // New size is number of desired pointers * size of a pointer
@@ -74,11 +94,11 @@ unsigned long fastlistAdd(fastlist *ctx, void *item) {
  * Removes item of index from the list and returns it.
  * Returns FASTLIST_FAILED if index outside of accepted range
  * else retuŕns <SOMETHING> TODO: Work out how this works */
-void *fastlistRemoveIndex(fastlist *ctx, unsigned long index) {
+void *fastlistRemoveIndex(fastlist *ctx, size_t index) {
     if (index > ctx->numItems) 
         return (void*) FASTLIST_FAILED;
     void *dead = ctx->pointer[index];
-    for (unsigned long i = index + 1; i < ctx->numItems; i++) {
+    for (size_t i = index + 1; i < ctx->numItems; i++) {
         ctx->pointer[i-1] = ctx->pointer[i];
     };
     ctx->numItems--;
@@ -97,8 +117,8 @@ void *fastlistRemoveIndex(fastlist *ctx, unsigned long index) {
  * Removes Item from list with matching pointer
  * Returns FASTLIST_FAILED if pointer not found,
  * else returns index removed */
-unsigned long fastlistRemoveByPointer(fastlist *ctx, void* pointer) {
-    for (unsigned long i = 0; i < ctx->numItems; i++) {
+size_t fastlistRemoveByPointer(fastlist *ctx, void* pointer) {
+    for (size_t i = 0; i < ctx->numItems; i++) {
         if (ctx->pointer[i] == pointer) {
             // We've found our index
             fastlistRemoveIndex(ctx, i);
@@ -107,7 +127,3 @@ unsigned long fastlistRemoveByPointer(fastlist *ctx, void* pointer) {
     }
     return FASTLIST_FAILED;
 }
-
-/**
- * NOT IMPLEMENTED */
-//void **fastlist_dma(fastlist *ctx, unsigned long size);

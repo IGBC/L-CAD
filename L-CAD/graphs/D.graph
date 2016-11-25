@@ -1,0 +1,11 @@
+#D-Flip Flop test graph
+#L-CAD logic Simulator
+0 IN # D
+1 IN # E / Clk
+2 NOT 0
+3 AND 1 2
+4 AND 1 0
+5 NOR 6 3
+6 NOR 5 4
+7 OUT 5 # Q
+8 OUT 6 # !Q
