@@ -27,7 +27,7 @@
 #include "logicSolver.h"
 
 #ifdef MULTITHREADING
-#include "utils/thpool.h"
+// TODO: fix threading
 #endif
 
 #define LOGMODULE "DISPATCHER"
@@ -57,7 +57,7 @@ struct {
 
 struct s_dispatcher {
 #ifdef MULTITHREADING
-    threadpool pool;
+    // TODO: fix threading
 #endif
     unsigned long timestep;
 	size_t n;
@@ -91,7 +91,7 @@ dispatcher *dispatcherCreate(graph *logicGraph, int threads) {
     ctx->n = graphGetNodeCount(logicGraph);
 
 #ifdef MULTITHREADING
-    ctx->pool = thpool_init(threads);
+    // TODO: fix threading
 
 #else
     threads = 0;
@@ -143,7 +143,7 @@ void dispatcherDelete(dispatcher *ctx) {
     // Free everything
 	// Graph Should be in a safe state;
 #ifdef MULTITHREADING
-	thpool_destroy(ctx->pool);
+	// TODO: fix threading
 #endif
     free(ctx->lockPool);
     free(ctx->jobpool);
@@ -169,11 +169,8 @@ int dispatcherStep(dispatcher *ctx) {
     for (i = 0; i < ctx->jobpoolCount[time]; i++) {
         job *j = &ctx->jobpool[JPadr(ctx, 0, i)];
 #ifdef MULTITHREADING
-        // Distribute the work to the thread pool.
-        thpool_add_work(ctx->pool, (void*) workerDoWork, (void*) j);
+        // TODO: fix threading
     }
-    // Wait for the step execution to complete.
-    thpool_wait(ctx->pool);
 #else
         // No threading, have to do the work manually :(
     	workerDoWork(j);

@@ -5,10 +5,3 @@ set(CMAKE_BUILD_TYPE Debug)
 project(l-cad)
 add_subdirectory(lcadengine)
 
-#set(UI_SOURCE lcadui/src/main.cpp)
-#add_executable(lcad ${UI_SOURCE})
-#target_include_directories(lcad PRIVATE "lcadui/include-private")
-
-#target_link_libraries(lcad lcadengine
-#					SDL2 GL GLU GLEW)
-
