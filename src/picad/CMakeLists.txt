@@ -1,5 +1,5 @@
 set(PICAD_SRC
-	src/main.c
+	main.c
 	)
 
 add_executable(picad ${PICAD_SRC})
