@@ -1,3 +1,12 @@
+##
+# Build file for lcadengine
+# This file builds the core library that all lcad functionality is built on
+#
+# Currently this library has no dependancies other than -pthread.
+# This build script outputs a statically linkable library and a debug test
+# program; however this can easily be updated to produce a .so
+# 
+
 cmake_minimum_required(VERSION 2.8.11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c11")
 set(CMAKE_BUILD_TYPE Debug)
@@ -29,10 +38,10 @@ target_link_libraries(lcadengine pthread)
 # Add Lib to the name of the library
 set_target_properties(lcadengine PROPERTIES PREFIX "lib")
 
+# Debug test mainfile
+add_executable(debug tests/main.c)
+target_link_libraries(debug lcadengine)
 
 # Debug test mainfile
-add_executable(testmain src/main.c)
-target_link_libraries(testmain lcadengine)
-
-# Add tests subdirectory
-# add_subdirectory(tests)
+add_executable(tests tests/tests.c)
+target_link_libraries(tests lcadengine)

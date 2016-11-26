@@ -18,11 +18,11 @@
 
 
 #include <stdio.h>
-#include "dispatcher.h"
-#include "graphLoader.h"
-#include "logicGraph.h"
+#include "../dispatcher.h"
+#include "../graphLoader.h"
+#include "../logicGraph.h"
 #define LOGMODULE "MAIN"
-#include "utils/lcadLogger.h"
+#include "../utils/lcadLogger.h"
 
 void simulate_adder() {
     graph *g = graphCreate();
