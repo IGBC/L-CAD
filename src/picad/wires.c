@@ -22,6 +22,7 @@
     void pullUpDnControl(int pin, int pud){
     };
     void digitalWrite(int pin, int value){
+        // Write only memory anyone?
     };
     void pwmWrite(int pin, int value){
     };

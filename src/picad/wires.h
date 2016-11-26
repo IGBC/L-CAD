@@ -1,5 +1,8 @@
 // Dependancy Injection Layer over wiringPi
 
+#ifndef WIRES_H_INCLUDED
+#define WIRES_H_INCLUDED
+
 #if __has_include (<wiringPi.h>)
 #include <wiringPi.h>
 #else
@@ -28,4 +31,6 @@
     #define HIGH 1
     #define LOW 0
 
-#endif
+#endif // __has_include (<wiringPi.h>)
+
+#endif // WIRES_H_INCLUDED
