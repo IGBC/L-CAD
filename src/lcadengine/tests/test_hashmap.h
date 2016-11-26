@@ -28,6 +28,6 @@ char *test_hashmap_insert() {
 
 }
 
-test_hashmap_multinsert_profit() {
+void test_hashmap_multinsert_profit() {
 
 }

@@ -98,14 +98,14 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in3)->state = false;
     dispatcherAddJob(d, ID, 1);
     dispatcherStep(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int) graphGetGLI(g, in1)->state, (int) graphGetGLI(g, in2)->state, (int) graphGetGLI(g, in3)->state, (int) graphGetGLI(g, ID)->state);
 
     graphGetGLI(g, in1)->state = false;
     graphGetGLI(g, in2)->state = false;
     graphGetGLI(g, in3)->state = true;
     dispatcherAddJob(d, ID, 1);
     dispatcherStep(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int) graphGetGLI(g, in1)->state, (int) graphGetGLI(g, in2)->state, (int) graphGetGLI(g, in3)->state, (int) graphGetGLI(g, ID)->state);
 
 
 
@@ -114,7 +114,7 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in3)->state = false;
     dispatcherAddJob(d, ID, 1);
     dispatcherStep(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int) graphGetGLI(g, in1)->state, (int) graphGetGLI(g, in2)->state, (int) graphGetGLI(g, in3)->state, (int) graphGetGLI(g, ID)->state);
 
 
 
@@ -123,7 +123,7 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in3)->state = true;
     dispatcherAddJob(d, ID, 1);
     dispatcherStep(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int) graphGetGLI(g, in1)->state, (int) graphGetGLI(g, in2)->state, (int) graphGetGLI(g, in3)->state, (int) graphGetGLI(g, ID)->state);
 
 
 
@@ -132,7 +132,7 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in3)->state = false;
     dispatcherAddJob(d, ID, 1);
     dispatcherStep(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int) graphGetGLI(g, in1)->state, (int) graphGetGLI(g, in2)->state, (int) graphGetGLI(g, in3)->state, (int) graphGetGLI(g, ID)->state);
 
 
 
@@ -141,7 +141,7 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in3)->state = true;
     dispatcherAddJob(d, ID, 1);
     dispatcherStep(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int) graphGetGLI(g, in1)->state, (int) graphGetGLI(g, in2)->state, (int) graphGetGLI(g, in3)->state, (int) graphGetGLI(g, ID)->state);
 
 
 
@@ -150,7 +150,7 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in3)->state = false;
     dispatcherAddJob(d, ID, 1);
     dispatcherStep(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int) graphGetGLI(g, in1)->state, (int) graphGetGLI(g, in2)->state, (int) graphGetGLI(g, in3)->state, (int) graphGetGLI(g, ID)->state);
 
 
 
@@ -159,7 +159,7 @@ void calculate_truth_table(gateInputType t, bool n) {
     graphGetGLI(g, in3)->state = true;
     dispatcherAddJob(d, ID, 1);
     dispatcherStep(d);
-    printf("output values are: %i, %i, %i = %i\n",(int *) graphGetGLI(g, in1)->state, (int *) graphGetGLI(g, in2)->state, (int *) graphGetGLI(g, in3)->state, (int *) graphGetGLI(g, ID)->state);
+    printf("output values are: %i, %i, %i = %i\n",(int) graphGetGLI(g, in1)->state, (int) graphGetGLI(g, in2)->state, (int) graphGetGLI(g, in3)->state, (int) graphGetGLI(g, ID)->state);
 
     dispatcherDelete(d);
     graphDelete(g);
