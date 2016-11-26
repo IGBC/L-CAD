@@ -5,4 +5,5 @@ set(CMAKE_BUILD_TYPE Debug)
 project(l-cad)
 # Build modules
 add_subdirectory(lcadengine)
+add_subdirectory(picad)
 

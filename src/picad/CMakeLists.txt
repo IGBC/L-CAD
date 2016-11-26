@@ -1,9 +1,11 @@
 set(PICAD_SRC
 	main.c
+    IO.c
+    wires.c
 	)
 
 add_executable(picad ${PICAD_SRC})
-target_link_libraries(testmain 
+target_link_libraries(picad 
 					  lcadengine
 					  wiringPi
 					  )

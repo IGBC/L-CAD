@@ -1,4 +1,5 @@
 #include "stdint.h"
+#include <stdbool.h>
 
 typedef enum { IOM_OUT, IOM_IN, IOM_IN_UP, IOM_IN_DOWN } IO_Mode;
 
@@ -8,6 +9,7 @@ struct {
 } typedef IO_Item;
 
 IO_Item *setupPin(uint8_t pin, IO_Mode mode);
+void cleanPin(IO_Item *pin);
 
 bool readInput(IO_Item *input);
 void writeOutput(IO_Item *output, bool state);
