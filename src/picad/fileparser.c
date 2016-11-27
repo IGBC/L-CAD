@@ -97,6 +97,9 @@ struct fileInfoDataset parseFile(char *filename) {
 		switch (set.command) {
 		    case CMD_GRAPH:
 		        info.g = loaderLoadFromStr(end_token);
+		        free(str);	  
+                return info;
+		        break;
 		    case CMD_INPUT:
 		        info.inputs = realloc(info.inputs, sizeof(IO_Item*)*(info.inputCount + 1));
 		        info.inputs[info.inputCount] = setupPin(set.phy_addr, IOM_IN); 
@@ -107,13 +110,10 @@ struct fileInfoDataset parseFile(char *filename) {
 		        info.outputs = realloc(info.outputs, sizeof(IO_Item*)*(info.outputCount + 1));
 		        info.outputs[info.outputCount] = setupPin(set.phy_addr, IOM_OUT);
 	            info.outputs[info.outputCount]->ID = set.gate_id;
-	            info.inputCount++;
+	            info.outputCount++;
 		        break;
 		}
 	}
-	
-	free(str);	  
-    return info;
 };
 
 void cleanFile(struct fileInfoDataset file){

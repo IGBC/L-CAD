@@ -18,7 +18,7 @@
 #define TRACE 7
 #define DEBUG 8
 
-#define LOGLEVEL DEBUG
+#define LOGLEVEL FATAL
 
 #define LOGFILE "/tmp/lcad.log"
 #define STDOUT 1

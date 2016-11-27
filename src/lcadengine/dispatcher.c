@@ -185,8 +185,6 @@ int dispatcherStep(dispatcher *ctx) {
         GLI *g = graphGetGLI(ctx->LG, d->ID);
         g->state = d->newState;
     }
-    
-    graphPrint(ctx->LG);
 
     // In both of these memset commands only the used memory is cleared, 
     // so as to not to waste time clearing blank memory. 

@@ -36,17 +36,25 @@ int main(int argc, char *argv[]) {
         
     // Run until someone presses ^C
     signal(SIGINT, intHandler);
-	
+
+    for(int j = 0; j < graphGetNodeCount(file.g); j++) {
+    	dispatcherAddJob(d, j, 1);
+    }
+
+    for(int j = 0; j < 100; j++) {
+    	dispatcherStep(d);
+    }
+
 	while(keepRunning) {
         //get time 
         int start = useconds();
         // Read inputs
-        for (size_t i; i < file.inputCount; i++) {
+        for (size_t i = 0; i < file.inputCount; i++) {
             bool in = readInput(file.inputs[i]);
             graphGetGLI(file.g, file.inputs[i]->ID)->state = in;
 	        dispatcherAddJob(d, file.inputs[i]->ID, 1);
         }
-  
+
 		// Run simulation one step
 		dispatcherStep(d);
 
@@ -59,7 +67,7 @@ int main(int argc, char *argv[]) {
         int end = useconds();
         int time = end - start;
         if (time > delay) {
-            printf("Can't Keep Up. Delay set to %iµs, update took %iµs", delay, time);
+            printf("Can't Keep Up. Delay set to %iµs, update took %iµs\n\n", delay, time);
         } else {
             usleep((delay - time));
         }        
