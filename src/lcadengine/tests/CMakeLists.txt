@@ -1,4 +1,5 @@
 # Set our source file scope for the library
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11")
 set(LCADENGINE_TESTS 
     tests.c
 )

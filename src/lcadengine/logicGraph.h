@@ -178,7 +178,7 @@ fastlist *graphGetConnectionsByDrn(graph *ctx, size_t drnID);
  *
  * @Returns unsigned long       Number of nodes on the provided graph
  */
-unsigned long graphGetNodeCount(graph *ctx);
+size_t graphGetNodeCount(graph *ctx);
 
 
 /**
