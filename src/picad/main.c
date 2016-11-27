@@ -23,7 +23,8 @@ int useconds(void) {
 }
 
 int main(int argc, char *argv[]) {
-    
+    // Set Up GPIO
+    wiringPiSetup();
 	// Read File
 	struct fileInfoDataset file = parseFile(argv[1]);
     

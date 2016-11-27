@@ -1,19 +1,23 @@
-// Dependancy Injection Layer over wiringPi
+// Dependency Injection Layer over wiringPi
 #include "wires.h"
 #include <time.h>
 #include <stdlib.h>
 
 #ifdef FAKEWIRES_IMPLEMENT
     int wiringPiSetup(void){
+        printf("Using Fake GPIO Library\n");
         return 0;
     };
     int wiringPiSetupGpio(void){
+        printf("Using Fake GPIO Library\n");
         return 0;
     };
     int wiringPiSetupPhys(void){
+        printf("Using Fake GPIO Library\n");        
         return 0;
     };
     int wiringPiSetupSys(void){
+        printf("Using Fake GPIO Library\n");
         return 0;
     };
     
