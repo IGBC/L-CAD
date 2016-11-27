@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 		dispatcherStep(d);
 
 		// Update outputs
-		for (size_t i; i < file.outputCount; i++) {
+		for (size_t i = 0; i < file.outputCount; i++) {
             writeOutput(file.outputs[i], graphGetGLI(file.g, file.inputs[i]->ID)->state);
         }
         
