@@ -1,6 +1,9 @@
 #include "../lcadengine/logicGraph.h"
 #include "../lcadengine/dispatcher.h"
+
 #include "IO.h"
+#include "fileparser.h"
+
 #include <signal.h>
 #include <unistd.h>
 #include <sys/time.h>
@@ -21,29 +24,37 @@ int useconds(void) {
 
 int main(int argc, char *argv[]) {
     
-	// TODO: Read File
+	// Read File
+	struct fileInfoDataset file = parseFile(argv[1]);
     
     // TODO: Get this.
     // speed of simulation (in µs)
     int delay = 1000; //(1ms)
 
-	graph *g;
-
 	// Load engine
-	dispatcher *d = dispatcherCreate(g, 0);
+	dispatcher *d = dispatcherCreate(file.g, 0);
         
     // Run until someone presses ^C
     signal(SIGINT, intHandler);
+	
 	while(keepRunning) {
         //get time 
         int start = useconds();
-        // TODO: Read inputs
-
+        // Read inputs
+        for (size_t i; i < file.inputCount; i++) {
+            bool in = readInput(file.inputs[i]);
+            graphGetGLI(file.g, file.inputs[i]->ID)->state = in;
+	        dispatcherAddJob(d, file.inputs[i]->ID, 1);
+        }
+  
 		// Run simulation one step
 		dispatcherStep(d);
 
-		// TODO: Update outputs
-
+		// Update outputs
+		for (size_t i; i < file.outputCount; i++) {
+            writeOutput(file.outputs[i], graphGetGLI(file.g, file.inputs[i]->ID)->state);
+        }
+        
         //get time again
         int end = useconds();
         int time = end - start;
@@ -54,12 +65,15 @@ int main(int argc, char *argv[]) {
         }        
 	}
 
+    // Cleanup
 	dispatcherDelete(d);
-	graphDelete(g);
-
-    // TODO: Cleanup GPIO 
-
-	// TODO: kill all humans
+	
+    // Cleanup GPIO 
+    cleanFile(file);
+ 
+    return 0;   
+    
+	// kill all humans
 
 	return 0;
 }

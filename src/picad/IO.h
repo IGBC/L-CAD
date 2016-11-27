@@ -3,6 +3,7 @@
 
 #include "stdint.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 typedef enum { IOM_OUT, IOM_IN, IOM_IN_UP, IOM_IN_DOWN } IO_Mode;
 

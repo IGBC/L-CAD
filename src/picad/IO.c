@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "wires.h"
 
-
 IO_Item *setupPin(uint8_t pin, IO_Mode mode) {
     IO_Item *store = (IO_Item*) malloc(sizeof(IO_Item));
     if (!store) {
