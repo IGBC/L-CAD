@@ -32,3 +32,6 @@ local.properties
 
 ### Log Files ###
 *.log
+
+### Generated Documentation ###
+docs/
