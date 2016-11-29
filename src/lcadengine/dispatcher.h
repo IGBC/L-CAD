@@ -16,6 +16,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
+/** @file */
 
 #ifndef DISPATCHER_H_INCLUDED
 #define DISPATCHER_H_INCLUDED
@@ -24,7 +25,11 @@
 #include <stddef.h>
 #include "logicGraph.h"
 
+
+/** Struct that describes the dispatcher */
 struct s_dispatcher;
+
+
 typedef struct s_dispatcher dispatcher;
 
 /**
@@ -36,7 +41,7 @@ typedef struct s_dispatcher dispatcher;
  *
  * Note: Crashes on error
  *
- * @param graph *logicGraph   graph to use with the new dispatcher.
+ * @param graph* logicGraph   graph to use with the new dispatcher.
  * @param int   threads       number of worker threads to use.
  *
  * @return dispatcher*  Newly created dispatcher.
@@ -73,7 +78,7 @@ int dispatcherStep(dispatcher *ctx);
  * This is particularly useful for updating graph inputs. first set the input's
  * state in the graph then use this command to tell the dispatcher it changed.
  *
- * @param dispatcher     *ctx   dispatcher to use
+ * @param dispatcher*    ctx   dispatcher to use
  * @param unsigned long  ID     ID of gate to update
  * @param unsigned int   delay  how many steps from now to update (min 1)
  *

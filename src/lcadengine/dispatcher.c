@@ -16,6 +16,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
+
 //Comment out the line below to disable threading.
 //#define MULTITHREADING
 
@@ -55,21 +56,46 @@ struct {
     logicType newState;
 } typedef diff;
 
+
+/** @brief Struct that describes the dispatcher
+ *  
+ *  This struct provides the backing storage for the dispatcher class.
+ */
 struct s_dispatcher {
 #ifdef MULTITHREADING
     // TODO: fix threading
 #endif
+    /** @brief Current time in the simulation
+     *
+     *  Value wraps around to 0 after it exeeds MAX_DELAY */ 
     unsigned long timestep;
+    /** @brief Number of graph nodes in the simulation */
 	size_t n;
+	/** @brief Pointer to the graph this sim is operating on */
     graph *LG;
-    // Array containing all jobs for all upcoming timesteps.
+    /** @brief Array containing all jobs for all upcoming timesteps
+     *  
+     *  Array size is n * (MAX_DELAY + 1) */
     job *jobpool;
-    // Array containing number of used slots in each given timestep.
-    size_t *jobpoolCount; // size = (MAX_DELAY + 1)
+    /** @brief Array containing number of used slots in each given timestep 
+     *  
+     *  Array size is MAX_DELAY + 1 */
+    size_t *jobpoolCount;
+    /** @brief Buffer of changes to the graph
+     *
+     *  Buffer array of diff for changes to the graph to be aplied
+     *  after computation is finished. 
+     *  Array size is n */ 
     diff *diffBuffer;
+    /** @brief Number of items currently in the diffBuffer */
     size_t diffBufferCount;
-
-    //pool containing update locks.
+    /** @brief Array containing update locks
+     *
+     * The update locks are booleans for each node at each timestep that 
+     * indicate if the node already has an update job queued at that timestep.
+     * This prevents duplicate jobs being generated, crashing the engine.
+     *
+     * Array size is n * (MAX_DELAY + 1) */
     bool *lockPool;
 };
 
