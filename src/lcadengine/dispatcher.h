@@ -26,10 +26,11 @@
 #include "logicGraph.h"
 
 
-/** Struct that describes the dispatcher */
 struct s_dispatcher;
 
-
+/** @brief Access type for s_dispatcher. 
+ *
+ *  See s_dispatcher docs for more information */
 typedef struct s_dispatcher dispatcher;
 
 /**

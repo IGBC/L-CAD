@@ -1,4 +1,4 @@
-# L-CAD
+# L-CAD                                                          {#mainpage}
 ### Project Goal:
 L-CAD is a Logic Design / Simulation Package, for aiding the design of logic Systems. Ultimately the goals for this project are for it to function as a stand in replacement for proprietary solutions provided by companies like Xilinx and Altera, providing everything necessary for designing a HDL system right up to the point where the system must be compiled and uploaded to a chip. 
 
