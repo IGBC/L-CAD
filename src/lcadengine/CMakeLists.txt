@@ -13,11 +13,14 @@ set(CMAKE_BUILD_TYPE Debug)
 
 # Set our source file scope for the library
 set(LCADENGINE_SRC 
-    logicGraph.c
-    dispatcher.c
+    base/logicGraph.c
+    base/genericlogic.c
+      
+    sim/dispatcher.c
+	sim/logicSolver.c
+
     graphLoader.c
-    logicSolver.c
-    genericlogic.c
+    
     
     utils/fastlist.c
     utils/hashmap.c

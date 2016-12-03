@@ -20,7 +20,8 @@
 #define LCADENGINE_LOGICSOLVER_H_
 
 #include <stdbool.h>
-#include "genericlogic.h"
+
+#include "../base/genericlogic.h"
 
 bool solver_sumComparitor(genericLogicInterface *unit, size_t sum, size_t inputCount);
 

@@ -2,7 +2,7 @@
 #define FILEPARSER_H_INCLUDED
 
 #include "IO.h"
-#include "../lcadengine/logicGraph.h" // <- When your library doesn't have a public API
+#include "../lcadengine/base/logicGraph.h" // <- When your library doesn't have a public API
 
 #include <stdlib.h>
 

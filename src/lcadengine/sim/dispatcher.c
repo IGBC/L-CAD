@@ -20,12 +20,12 @@
 //Comment out the line below to disable threading.
 //#define MULTITHREADING
 
-#include "dispatcher.h"
+#include "sim/dispatcher.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-#include "logicSolver.h"
+#include "sim/logicSolver.h"
 
 #ifdef MULTITHREADING
 // TODO: fix threading

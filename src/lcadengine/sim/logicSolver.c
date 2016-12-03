@@ -16,7 +16,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-#include "logicSolver.h"
+#include "sim/logicSolver.h"
 
 bool solver_sumComparitor(genericLogicInterface *unit, size_t sum, size_t inputCount) {
 	bool output = false;

@@ -23,7 +23,8 @@
 
 
 #include <stddef.h>
-#include "logicGraph.h"
+
+#include "../base/logicGraph.h"
 
 
 struct s_dispatcher;

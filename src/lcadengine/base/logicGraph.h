@@ -25,7 +25,7 @@
 #include <stddef.h>
 
 #include "genericlogic.h"
-#include "utils/fastlist.h"
+#include "../utils/fastlist.h"
 
 struct s_graph;
 typedef struct s_graph graph;

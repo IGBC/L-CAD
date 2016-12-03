@@ -10,5 +10,5 @@ set(PICAD_SRC
 add_executable(picad ${PICAD_SRC})
 target_link_libraries(picad 
 					  lcadengine
-					  wiringPi
+					  #wiringPi
 					  )

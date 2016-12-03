@@ -114,6 +114,9 @@ struct fileInfoDataset parseFile(char *filename) {
 		        break;
 		}
 	}
+
+	return info;
+
 };
 
 void cleanFile(struct fileInfoDataset file){

@@ -18,9 +18,9 @@
 
 
 #include <stdio.h>
-#include "../dispatcher.h"
+#include "../sim/dispatcher.h"
 #include "../graphLoader.h"
-#include "../logicGraph.h"
+#include "../base/logicGraph.h"
 #define LOGMODULE "MAIN"
 #include "../utils/lcadLogger.h"
 

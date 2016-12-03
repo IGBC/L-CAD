@@ -21,7 +21,7 @@
 #ifndef GRAPHLOADER_H_INCLUDED
 #define GRAPHLOADER_H_INCLUDED
 
-#include "logicGraph.h"
+#include "base/logicGraph.h"
 
 /**
  * @brief Creates a graph from the given string.

@@ -17,7 +17,7 @@
  */
 
 
-#include "logicGraph.h"
+#include "base/logicGraph.h"
 
 #include <stdlib.h>
 #include <stdio.h>

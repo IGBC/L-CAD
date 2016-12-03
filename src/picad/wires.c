@@ -2,6 +2,7 @@
 #include "wires.h"
 #include <time.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #ifdef FAKEWIRES_IMPLEMENT
     int wiringPiSetup(void){

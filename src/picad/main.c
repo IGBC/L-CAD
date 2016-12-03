@@ -1,6 +1,3 @@
-#include "../lcadengine/logicGraph.h"
-#include "../lcadengine/dispatcher.h"
-
 #include "IO.h"
 #include "fileparser.h"
 
@@ -8,6 +5,9 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdio.h>
+
+#include "../lcadengine/base/logicGraph.h"
+#include "../lcadengine/sim/dispatcher.h"
 
 static volatile int keepRunning = 1;
 

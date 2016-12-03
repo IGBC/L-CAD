@@ -16,7 +16,7 @@
  * along with this program. If not, see http://www.gnu.org/licenses/.
  */
 
-#include "genericlogic.h"
+#include "base/genericlogic.h"
 
 bool logic_isState(genericLogicInterface *val) {
 	return (bool)(val->state & VAL_FIELD);
